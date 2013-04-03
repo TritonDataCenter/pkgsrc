@@ -124,6 +124,7 @@ adduser()
 				-g $group -u $userid $user
 			;;
 		esac
+		passwd -N $user
 	fi
 	return 0
 }
