@@ -14,81 +14,89 @@
 # group_exists group [groupid]
 #	Returns 0 if $group exists and has gid $groupid
 #	Returns 1 if neither $group nor $groupid exist
-#	Returns 2 if $group or $groupid exist but don't match
-#	Returns 3 for all errors
+#	Returns 2 if $group exists but $groupid does not match
+#	Returns 3 if $group does not exist but $groupid does
+#	Returns 4 for all errors
 #
 group_exists()
 {
 	_group="$1"; _groupid="$2"
-	${TEST} -n "$_group" || return 3
+	${TEST} -n "$_group" || return 4
 
 	# Check using chgrp to work properly in an NSS/NIS environment.
 	_tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $_tmpdir 2>/dev/null || return 3
+	${MKDIR} -p $_tmpdir 2>/dev/null || return 4
 	${CHMOD} 0700 $_tmpdir
 	_testpath="$_tmpdir/group_exists"
 	${ECHO} > $_testpath
 	if ${CHGRP} $_group $_testpath >/dev/null 2>&1; then
 		# $_group exists
 		_id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
+		${RM} -fr $_tmpdir
 		${TEST} -n "$_groupid" || _groupid=$_id
 		if ${TEST} "$_groupid" = "$_id"; then
-			${RM} -fr $_tmpdir; return 0
+			return 0
 		fi
-		${RM} -fr $_tmpdir; return 2
+		return 2
 	elif ${TEST} -z "$_groupid"; then
+		${RM} -fr $_tmpdir
 		# $_group doesn't exist and $_groupid is not set
-		${RM} -fr $_tmpdir; return 1
+		return 1
 	elif ${CHGRP} $_groupid $_testpath >/dev/null 2>&1; then
 		_name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $4 }'`
+		${RM} -fr $_tmpdir
 		if ${TEST} "$_name" != "$_groupid"; then
 			# $_group doesn't exist, but $_groupid exists
-			${RM} -fr $_tmpdir; return 2
+			return 3
 		fi
 		# neither $_group nor $_groupid exist
-		${RM} -fr $_tmpdir; return 1
+		return 1
 	fi
-	${RM} -fr $_tmpdir; return 3
+	${RM} -fr $_tmpdir; return 4
 }
 
 # user_exists user [userid]
 #	Returns 0 if $user exists and has uid $userid
 #	Returns 1 if neither $user nor $userid exist
-#	Returns 2 if $user or $userid exist but don't match
-#	Returns 3 for all errors
+#	Returns 2 if $user exists but $userid does not match
+#	Returns 3 if $user does not exist but $userid does
+#	Returns 4 for all errors
 #
 user_exists()
 {
 	_user="$1"; _userid="$2"
-	${TEST} -n "$_user" || return 3
+	${TEST} -n "$_user" || return 4
 
 	# Check using chown to work properly in an NSS/NIS environment.
 	_tmpdir="./.pkginstall.$$"
-	${MKDIR} -p $_tmpdir 2>/dev/null || return 3
+	${MKDIR} -p $_tmpdir 2>/dev/null || return 4
 	${CHMOD} 0700 $_tmpdir
 	_testpath="$_tmpdir/user_exists"
 	${ECHO} > $_testpath
 	if ${CHOWN} $_user $_testpath >/dev/null 2>&1; then
 		# $_user exists
 		_id=`${LS} -ln $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
+		${RM} -fr $_tmpdir
 		${TEST} -n "$_userid" || _userid=$_id
 		if ${TEST} "$_userid" = "$_id"; then
-			${RM} -fr $_tmpdir; return 0
+			return 0
 		fi
-		${RM} -fr $_tmpdir; return 2
+		return 2
 	elif ${TEST} -z "$_userid"; then
+		${RM} -fr $_tmpdir
 		# $_user doesn't exist and $_userid is not set
-		${RM} -fr $_tmpdir; return 1
+		return 1
 	elif ${CHOWN} $_userid $_testpath >/dev/null 2>&1; then
 		_name=`${LS} -l $_testpath 2>/dev/null | ${AWK} '{ print $3 }'`
+		${RM} -fr $_tmpdir
 		if ${TEST} "$_name" != "$_userid"; then
 			# $_user doesn't exist, but $_userid exists
-			${RM} -fr $_tmpdir; return 2
+			return 3
 		fi
 		# neither $_user nor $_userid exist
-		${RM} -fr $_tmpdir; return 1
+		return 1
 	fi
-	${RM} -fr $_tmpdir; return 3
+	${RM} -fr $_tmpdir; return 4
 }
 
 # adduser user group [userid] [descr] [home] [shell]
