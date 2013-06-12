@@ -74,6 +74,15 @@ PKG_METADATA_DIR="${2-${CURDIR}}"
 PKG_REFCOUNT_USERS_DBDIR="${PKG_REFCOUNT_DBDIR}/users"
 PKG_REFCOUNT_GROUPS_DBDIR="${PKG_REFCOUNT_DBDIR}/groups"
 
+case "${PKGINSTALL_IGNORE_UIDGID:-@PKGINSTALL_IGNORE_UIDGID@}" in
+[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
+	_PKGINSTALL_IGNORE_UIDGID=yes
+	;;
+[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
+	_PKGINSTALL_IGNORE_UIDGID=no
+	;;
+esac
+
 case "${PKG_CREATE_USERGROUP:-@PKG_CREATE_USERGROUP@}" in
 [Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
 	_PKG_CREATE_USERGROUP=yes
@@ -126,8 +135,10 @@ ADD)
 		token="$shadow_dir/${PKGNAME}"
 		if ${TEST} ! -d "$shadow_dir"; then
 			${MKDIR} $shadow_dir
-			group_exists $group $groupid &&
-				${ECHO} "${PKGNAME}" > $preexist
+			group_exists $group $groupid
+			case $? in
+			0|2)	${ECHO} "${PKGNAME}" > $preexist ;;
+			esac
 		fi
 		if ${TEST} -f "$token" && \
 		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
@@ -139,8 +150,11 @@ ADD)
 		yes)
 			group_exists $group $groupid
 			case $? in
-			0)	;;
 			1)	addgroup "$group" "$groupid" ;;
+			3)	case ${_PKGINSTALL_IGNORE_UIDGID} in
+				yes)	addgroup "$group" "" ;;
+				esac
+				;;
 			esac
 			;;
 		esac
@@ -163,8 +177,10 @@ ADD)
 		token="$shadow_dir/${PKGNAME}"
 		if ${TEST} ! -d "$shadow_dir"; then
 			${MKDIR} $shadow_dir
-			user_exists $user $userid &&
-				${ECHO} "${PKGNAME}" > $preexist
+			user_exists $user $userid
+			case $? in
+			0|2)	${ECHO} "${PKGNAME}" > $preexist ;;
+			esac
 		fi
 		if ${TEST} -f "$token" && \
 		   ${GREP} "^${PKG_METADATA_DIR}$" $token >/dev/null; then
@@ -177,9 +193,15 @@ ADD)
 			group_exists $group || continue
 			user_exists $user $userid
 			case $? in
-			0)	;;
 			1)	adduser "$user" "$group" "$userid"	\
 					"$descr" "$home" "$shell"
+				;;
+			3)	case ${_PKGINSTALL_IGNORE_UIDGID} in
+				yes)
+					adduser "$user" "$group" ""	\
+						"$descr" "$home" "$shell"
+					;;
+				esac
 				;;
 			esac
 			;;
@@ -254,7 +276,15 @@ CHECK-ADD)
 		IFS="$SAVEIFS"
 		case $group in
 		"")	continue ;;
-		*)	group_exists $group $groupid && continue ;;
+		*)	group_exists $group $groupid
+			case $? in
+			0)	continue ;;
+			2)	case ${_PKGINSTALL_IGNORE_UIDGID} in
+				yes)	continue ;;
+				esac
+				;;
+			esac
+			;;
 		esac
 		case "$printed_header" in
 		yes)	;;
@@ -266,7 +296,15 @@ CHECK-ADD)
 		esac
 		case $groupid in
 		"")	${ECHO} "	$group" ;;
-		*)	${ECHO} "	$group (gid = $groupid)" ;;
+		*)	${ECHO} "	$group (gid = $groupid)"
+			${ECHO} ""
+			${ECHO} "If you wish to ignore this check and either re-use an existing '$group' group"
+			${ECHO} "or create a new one with a system-assigned gid then set"
+			${ECHO} ""
+			${ECHO} "	PKGINSTALL_IGNORE_UIDGID=yes"
+			${ECHO} ""
+			${ECHO} "in the environment."
+			;;
 		esac
 	done
 	case "$printed_header" in
@@ -285,7 +323,15 @@ CHECK-ADD)
 		IFS="$SAVEIFS"
 		case $user in
 		"")	continue ;;
-		*)	user_exists $user $userid && continue ;;
+		*)	user_exists $user $userid
+			case $? in
+			0)	continue ;;
+			2)	case ${_PKGINSTALL_IGNORE_UIDGID} in
+				yes)	continue ;;
+				esac
+				;;
+			esac
+			;;
 		esac
 		case "$printed_header" in
 		yes)	;;
@@ -299,7 +345,15 @@ CHECK-ADD)
 		: ${shell:="@PKG_USER_SHELL@"}
 		case $userid in
 		"")	${ECHO} "	$user: $group, $home, $shell" ;;
-		*)	${ECHO} "	$user (uid = $userid): $group, $home, $shell" ;;
+		*)	${ECHO} "	$user (uid = $userid): $group, $home, $shell"
+			${ECHO} ""
+			${ECHO} "If you wish to ignore this check and either re-use an existing '$user' user"
+			${ECHO} "or create a new one with a system-assigned uid then set"
+			${ECHO} ""
+			${ECHO} "	PKGINSTALL_IGNORE_UIDGID=yes"
+			${ECHO} ""
+			${ECHO} "in the environment."
+			;;
 		esac
 	done
 	case "$printed_header" in
@@ -321,7 +375,11 @@ CHECK-REMOVE)
 		IFS="$SAVEIFS"
 		case $user in
 		"")	continue ;;
-		*)	user_exists $user $userid || continue ;;
+		*)	user_exists $user $userid
+			case $? in
+			0|2)	continue ;;
+			esac
+			;;
 		esac
 		shadow_dir="${PKG_REFCOUNT_USERS_DBDIR}/$user"
 		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
@@ -348,7 +406,11 @@ CHECK-REMOVE)
 		IFS="$SAVEIFS"
 		case $group in
 		"")	continue ;;
-		*)	group_exists $group $groupid || continue ;;
+		*)	group_exists $group $groupid
+			case $? in
+			0|2)	continue ;;
+			esac
+			;;
 		esac
 		shadow_dir="${PKG_REFCOUNT_GROUPS_DBDIR}/$group"
 		${TEST} ! -d "$shadow_dir" || continue	# refcount isn't zero
