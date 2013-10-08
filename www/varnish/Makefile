@@ -67,6 +67,10 @@ CFLAGS+=		-fexcess-precision=standard
 .endif
 LDFLAGS.NetBSD+=	-lm	# for ldexp
 
+.if ${PKGSRC_COMPILER} == "gcc"
+DEPENDS+=	${_GCC_DEPENDENCY}
+.endif
+
 INSTALL_MAKE_FLAGS+=	sysconfdir=${EGDIR}
 
 # not signed/unsigned char safe
