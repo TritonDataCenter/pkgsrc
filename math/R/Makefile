@@ -100,6 +100,9 @@ CONFIGURE_ENV+=		ac_cv_path_PDFLATEX=""
 # We don't want "lib64"
 CONFIGURE_ENV+=		LIBnn=lib
 
+# Prepopulate R_LD_LIBRARY_PATH as the default one is useless
+CONFIGURE_ENV+=		R_LD_LIBRARY_PATH=${PREFIX}/lib:${LIBGCC_PREFIX}/${GCC_TARGET_MACHINE}/lib${LIBABISUFFIX}:${LIBGCC_PREFIX}/lib${LIBABISUFFIX}
+
 # Package assumes it can append to files (specifically DESCRIPTION) that have
 # been installed SHAREMODE
 SHAREMODE=		644
