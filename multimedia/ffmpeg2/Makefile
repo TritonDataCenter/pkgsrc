@@ -35,7 +35,7 @@ post-install:
 .include "options.mk"
 
 # disable asm on i386 to avoid text relocations
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_ARCH} == "i386" || ${OPSYS} == "SunOS"
 CONFIGURE_ARGS+=	--disable-asm
 .endif
 
