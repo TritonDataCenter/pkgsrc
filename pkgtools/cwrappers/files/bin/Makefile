@@ -17,13 +17,13 @@ LDADD+=		-lnbcompat
 CC_SRCS=	${LIB_SRCS} generic-transform-cc.c normalise-cc.c
 
 SRCS.as-wrapper=	${CC_SRCS} as-wrapper.c normalise-as.c
-SRCS.cc-wrapper=	${CC_SRCS} cc-wrapper.c transform-cc.c
-SRCS.c++-wrapper=	${CC_SRCS} c++-wrapper.c transform-cc.c
+SRCS.cc-wrapper=	${CC_SRCS} cc-wrapper.c ldadd-cc.c transform-cc.c
+SRCS.c++-wrapper=	${CC_SRCS} c++-wrapper.c ldadd-cc.c transform-cc.c
 SRCS.cpp-wrapper=	${CC_SRCS} cpp-wrapper.c
 SRCS.f77-wrapper=	${CC_SRCS} f77-wrapper.c
 SRCS.imake-wrapper=	${CC_SRCS} imake-wrapper.c
 SRCS.ld-wrapper=	${LIB_SRCS} generic-transform-ld.c \
-			normalise-ld.c ld-wrapper.c
+			normalise-ld.c ldadd-ld.c ld-wrapper.c
 SRCS.libtool-wrapper=	${LIB_SRCS} generic-transform-libtool.c \
 			normalise-cc.c libtool-wrapper.c fixup-libtool.c
 SRCS.shlibtool-wrapper=	${LIB_SRCS} generic-transform-libtool.c \
