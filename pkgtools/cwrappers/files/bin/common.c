@@ -52,6 +52,10 @@ char *sysroot;
 int debug;
 enum operation_mode current_operation_mode = mode_unknown;
 
+int rflag = 0;
+int linking = 1;
+
+static struct arglist ldadd_args = TAILQ_HEAD_INITIALIZER(ldadd_args);
 static struct arglist prepend_args = TAILQ_HEAD_INITIALIZER(prepend_args);
 static struct arglist append_args = TAILQ_HEAD_INITIALIZER(append_args);
 static struct arglist prepend_executable_args =
@@ -195,6 +199,41 @@ arglist_apply_config(struct arglist *args)
 }
 
 void
+arglist_register_globals(struct arglist *args)
+{
+	struct argument *arg;
+
+	TAILQ_FOREACH(arg, args, link) {
+		if (strcmp(arg->val, "-r") == 0) {
+			rflag = 1;
+			continue;
+		}
+		if ((strcmp(arg->val, "-c") == 0) ||
+		    (strcmp(arg->val, "-E") == 0) ||
+		    (strncmp(arg->val, "-M", 2) == 0) ||
+		    (strcmp(arg->val, "-S") == 0) ||
+		    (strcmp(arg->val, "-xc-header") == 0) ||
+		    (strcmp(arg->val, "-xc++-header") == 0) ||
+		    (strcmp(arg->val, "c-header") == 0) ||
+		    (strcmp(arg->val, "c++-header") == 0)) {
+			linking = 0;
+			continue;
+		}
+	}
+}
+
+void
+arglist_apply_ldadd(struct arglist *args)
+{
+	struct argument *arg, *arg2;
+
+	TAILQ_FOREACH(arg, &ldadd_args, link) {
+		arg2 = argument_copy(arg->val);
+		TAILQ_INSERT_TAIL(args, arg2, link);
+	}
+}
+
+void
 argument_unlink(struct arglist *args, struct argument **argp)
 {
 	struct argument *arg;
@@ -251,6 +290,11 @@ parse_config(const char *wrapper)
 			free(exec_name);
 			exec_name = xstrdup(line + 5);
 			continue;
+		}
+		if (strncmp(line, "ldadd=", 6) == 0) {
+			struct argument *arg;
+			arg = argument_copy(line + 6);
+			TAILQ_INSERT_TAIL(&ldadd_args, arg, link);
 		}
 		if (strncmp(line, "reorder=", 8) == 0) {
 			register_reorder(line + 8);
