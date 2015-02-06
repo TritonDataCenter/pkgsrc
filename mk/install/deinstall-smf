@@ -1,0 +1,38 @@
+# $NetBSD$
+#
+# Print deinstall messages instructing the user how to handle the
+# newly-installed SMF services.
+#
+
+SMF_PROJECT="@SMF_PROJECT@"
+SMF_PROJECT_ID="@SMF_PROJECT_ID@"
+SMF_PROJECT_DESC="@SMF_PROJECT_DESC@"
+SMF_PROJECT_USER="@SMF_PROJECT_USER@"
+SMF_PROJECT_GROUP="@SMF_PROJECT_GROUP@"
+SMF_PROJECT_ATTRS="@SMF_PROJECT_ATTRS@"
+
+case ${STAGE} in
+DEINSTALL)
+	if svcprop -q "svc:/@SMF_PREFIX@/@SMF_NAME@"; then
+		cat <<EOF
+===========================================================================
+This package has SMF support. You can remove the SMF service from your
+system with the following command:
+
+	/usr/sbin/svccfg delete svc:/@SMF_PREFIX@/@SMF_NAME@
+
+EOF
+		if [ -n "${SMF_PROJECT}" ] && projects -l "${SMF_PROJECT}" >/dev/null 2>&1; then
+			cat <<EOF
+You can also remove the appropriate SunOS project if not needed anymore:
+
+	/usr/sbin/projdel ${SMF_PROJECT}
+
+EOF
+		fi
+		cat <<EOF
+===========================================================================
+EOF
+	fi
+	;;
+esac
