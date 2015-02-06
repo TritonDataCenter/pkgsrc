@@ -40,6 +40,28 @@
 # SMF_METHOD_SHELL
 #	The default shell to use in method scripts.
 #
+# SMF_PROJECT
+#	The name of the SunOS project to be created. Usually set to PKGBASE.
+#	Also can be set outside the package using
+#
+#		SMF_PROJECT.<pkgbase>=<project>
+#
+# SMF_PROJECT_ID.<project>
+# 	Force set the project ID (normally assigned incrementally)
+#
+# SMF_PROJECT_DESC.<project>
+# 	Description of the project.
+#
+# SMF_PROJECT_USER.<project>
+# 	Username(s) the project should be bound to.
+#
+# SMF_PROJECT_GROUP.<project>
+# 	Groupname the project should be bound to.
+#
+# SMF_PROJECT_ATTRS.<project>
+# 	List of attributes to add to the project definition. Just the
+# 	attribute argument should be passed, e.g.
+# 	process.max-file-descriptor=(basic,10000,deny)
 
 .if !defined(SMF_MK)
 SMF_MK=				# defined
@@ -60,6 +82,15 @@ SMF_METHODS?=			# empty
 SMF_METHOD_SHELL?=		/sbin/sh
 SMF_SRCDIR?=			${FILESDIR}/smf
 
+SMF_PROJECT?=			${SMF_PROJECT.${PKGBASE}}
+.if !empty(SMF_PROJECT)
+SMF_PROJECT_ID?=		${SMF_PROJECT_ID.${SMF_PROJECT}}
+SMF_PROJECT_DESC?=		${SMF_PROJECT_DESC.${SMF_PROJECT}}
+SMF_PROJECT_USER?=		${SMF_PROJECT_USER.${SMF_PROJECT}}
+SMF_PROJECT_GROUP?=		${SMF_PROJECT_GROUP.${SMF_PROJECT}}
+SMF_PROJECT_ATTRS?=		${SMF_PROJECT_ATTRS.${SMF_PROJECT}}
+.endif
+
 # Dynamically remove rc.d entries, primarily for pkgsrc-{joyent,wip}
 PLIST_AWK+=			-f ${PKGSRCDIR}/mk/plist/plist-smf.awk
 
@@ -79,6 +110,12 @@ FILES_SUBST+=			SMF_INSTANCES=${SMF_INSTANCES:Q}
 FILES_SUBST+=			SMF_MANIFEST=${SMF_MANIFEST:Q}
 FILES_SUBST+=			SMF_MANIFEST_FILE=${SMF_MANIFEST_FILE:Q}
 FILES_SUBST+=			SMF_METHOD_SHELL=${SMF_METHOD_SHELL:Q}
+FILES_SUBST+=			SMF_PROJECT=${SMF_PROJECT:Q}
+FILES_SUBST+=			SMF_PROJECT_ID=${SMF_PROJECT_ID:Q}
+FILES_SUBST+=			SMF_PROJECT_DESC=${SMF_PROJECT_DESC:Q}
+FILES_SUBST+=			SMF_PROJECT_USER=${SMF_PROJECT_USER:Q}
+FILES_SUBST+=			SMF_PROJECT_GROUP=${SMF_PROJECT_GROUP:Q}
+FILES_SUBST+=			SMF_PROJECT_ATTRS=${SMF_PROJECT_ATTRS:Q}
 
 INSTALLATION_DIRS+=		${PKG_SMF_MANIFEST_DIR}
 MULTIARCH_SKIP_DIRS.lib+=	${PKG_SMF_DIR}
@@ -101,7 +138,12 @@ PRINT_PLIST_AWK+=		/^${SMF_MANIFEST_FILE:S|/|\\/|g}/ { next; }
 ${WRKDIR}/.smfinstall: ${PKGSRCDIR}/mk/install/install-smf
 	@${CP} ${PKGSRCDIR}/mk/install/install-smf ${WRKDIR}/.smfinstall
 
+# Target to add the DEINSTALL script to suggest removal of the SMF service
+${WRKDIR}/.smfdeinstall: ${PKGSRCDIR}/mk/install/deinstall-smf
+	@${CP} ${PKGSRCDIR}/mk/install/deinstall-smf ${WRKDIR}/.smfdeinstall
+
 INSTALL_TEMPLATES+=		${WRKDIR}/.smfinstall
+DEINSTALL_TEMPLATES+=		${WRKDIR}/.smfdeinstall
 
 # Install optional SMF methods
 #
