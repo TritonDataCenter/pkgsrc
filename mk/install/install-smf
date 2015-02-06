@@ -4,6 +4,13 @@
 # newly-installed SMF services.
 #
 
+SMF_PROJECT="@SMF_PROJECT@"
+SMF_PROJECT_ID="@SMF_PROJECT_ID@"
+SMF_PROJECT_DESC="@SMF_PROJECT_DESC@"
+SMF_PROJECT_USER="@SMF_PROJECT_USER@"
+SMF_PROJECT_GROUP="@SMF_PROJECT_GROUP@"
+SMF_PROJECT_ATTRS="@SMF_PROJECT_ATTRS@"
+
 case ${STAGE} in
 POST-INSTALL)
 	cat <<EOF
@@ -14,25 +21,50 @@ or 'restart' services.  To enable the instance(s) for this package, run:
 EOF
 	for svc in @SMF_INSTANCES@; do
 		cat <<EOF
-	/usr/sbin/svcadm enable svc:/@SMF_PREFIX@/@SMF_NAME@:${svc}
+	/usr/sbin/svcadm enable -r svc:/@SMF_PREFIX@/@SMF_NAME@:${svc}
 EOF
 	done
 	cat <<EOF
 
 Use svcs(1) to check on service status.  See smf(5) for more information.
 EOF
+
 	if [ -z "${PKG_SKIP_SMF}" ]; then
-		/usr/sbin/svccfg import ${PKG_PREFIX}/@SMF_MANIFEST_FILE@
-	else
+		/usr/sbin/svccfg import ${PKG_PREFIX}/@SMF_MANIFEST_FILE@ >/dev/null 2>&1
+		_SMF_IMPORT=$?
+	fi
+	if [ -n "${PKG_SKIP_SMF}" ] || [ "${_SMF_IMPORT:-0}" != 0 ]; then
 		cat <<EOF
 
-The PKG_SKIP_SMF variable was set, automatic import of SMF manifests was
-skipped.  You must import the SMF manifest first with:
+The PKG_SKIP_SMF variable was set or automatic import of SMF manifests
+failed.  You must import the SMF manifest manually with:
 
 	/usr/sbin/svccfg import ${PKG_PREFIX}/@SMF_MANIFEST_FILE@
 
 EOF
 	fi
+
+	if [ -n "${SMF_PROJECT}" ]; then
+	  for attr in ${SMF_PROJECT_ATTRS}; do
+	    SMF_PROJECT_ARGS="${SMF_PROJECT_ARGS} -K '${attr}'"
+	  done
+	  if ! projects -l "${SMF_PROJECT}" >/dev/null 2>/dev/null; then
+	    eval "/usr/sbin/projadd \
+	      ${SMF_PROJECT_ID:+-o -p '${SMF_PROJECT_ID}'} \
+	      ${SMF_PROJECT_DESC:+-c '${SMF_PROJECT_DESC}'} \
+	      ${SMF_PROJECT_USER:+-U '${SMF_PROJECT_USER}'} \
+	      ${SMF_PROJECT_GROUP:+-G '${SMF_PROJECT_GROUP}'} \
+	      ${SMF_PROJECT_ARGS} ${SMF_PROJECT}"
+
+	    # Check if SMF service has project attached, fix if not
+	    if svcprop -q svc:/@SMF_PREFIX@/@SMF_NAME@ && \
+	       [ ! "$(svcprop -q -p method_context/project svc:/@SMF_PREFIX@/@SMF_NAME@)" == "${SMF_PROJECT}" ]; then
+	      svccfg -s svc:/@SMF_PREFIX@/@SMF_NAME@ setprop method_context/project = "${SMF_PROJECT}"
+	      svcadm refresh svc:/@SMF_PREFIX@/@SMF_NAME@
+	    fi
+	  fi
+	fi
+
 	cat <<EOF
 ===========================================================================
 EOF
