@@ -81,7 +81,29 @@ ${_BUILD_INFO_FILE}: ${_PLIST_NOKEYWORDS}
 	ELF)								\
 		libs=`${AWK} '/\/lib.*\.so(\.[0-9]+)*$$/ { print "${DESTDIR}${PREFIX}/" $$0 } END { exit 0 }' ${_PLIST_NOKEYWORDS}`; \
 		if ${TEST} -n "$$bins" -o -n "$$libs"; then		\
-			requires=`(${PKGSRC_SETENV} ${LDD_ENV:U} $$ldd $$bins $$libs 2>/dev/null || ${TRUE}) | ${AWK} '$$2 == "=>" && $$3 ~ "/" { print $$3 }' | ${SORT} -u`; \
+			requires=`(${PKGSRC_SETENV} elfdump -d $$bins $$libs 2>/dev/null || ${TRUE}) | ${AWK} ' \
+				/NEEDED/ {									\
+					dsolibs = dsolibs (dsolibs ? ":" : "") $$NF;				\
+				}										\
+				/RPATH/ {									\
+					nrpath = split($$NF ":${DESTDIR}${PREFIX}/lib${LIBARCHSUFFIX}:${SYSTEM_DEFAULT_RPATH}", rpath, ":"); \
+					nlibs = split(dsolibs, libs, ":");					\
+					for (l = 1; l <= nlibs; l++) {						\
+						for (r = 1; r <= nrpath; r++) {					\
+							sub(/\/$$/, "", rpath[r]);				\
+							libfile = rpath[r] "/" libs[l];				\
+							if (!(libfile in libcache)) {				\
+								libcache[libfile] = system("test -f " libfile); \
+							}							\
+							if (libcache[libfile] == 0) {				\
+								print libfile;					\
+								break;						\
+							}							\
+						}								\
+					}									\
+					dsolibs = "";								\
+				}										\
+				' | ${SED} -e 's,^${DESTDIR},,' | ${SORT} -u`; \
 		fi;							\
 		linklibs=`${AWK} '/.*\.so(\.[0-9]+)*$$/ { print "${DESTDIR}${PREFIX}/" $$0 }' ${_PLIST_NOKEYWORDS}`; \
 		for i in $$linklibs; do					\
