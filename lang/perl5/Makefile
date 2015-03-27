@@ -119,6 +119,7 @@ CONFIGURE_ARGS+=	-Duseshrplib
 # files, so make sure the paths to the ones in ${TOOLS_DIR} aren't used.
 #
 USE_TOOLS+=		hostname ln rm sed test
+SUBST_VARS.policysh+=	AR
 SUBST_VARS.policysh+=	TOOLS_HOSTNAME_CMD
 SUBST_VARS.policysh+=	TOOLS_LN
 TOOLS_ALIASES.sed=	${TOOLS_SED:T}

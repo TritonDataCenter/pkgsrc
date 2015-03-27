@@ -15,6 +15,7 @@ installstyle='lib/perl5'
 
 # Perl embeds the full paths to the following tools in several installed
 # files, so make sure the paths to the ones in ${TOOLS_DIR} aren't used.
+ar='@AR@'
 aphostname='@TOOLS_HOSTNAME_CMD@'
 ln='@TOOLS_LN@'
 lns='@TOOLS_LN@ -s'
@@ -120,5 +121,6 @@ case "\$libswanted" in *gdbm*)
 esac
 
 # (re)Set sed here so that sed _and_ full_sed are correctly *both* set
+ar='@AR@'
 sed='@TOOLS_SED@'
 EOCBU
