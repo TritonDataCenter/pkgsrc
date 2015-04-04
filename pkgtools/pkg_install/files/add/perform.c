@@ -135,6 +135,17 @@ compatible_platform(const char *opsys, const char *host, const char *package)
 	size_t majorlen = 0;
 
 	/*
+	 * Ignore version checks for our Darwin packages.  They are backwards
+	 * compatible, and thanks to PREFER_PKGSRC are often forward compatible
+	 * too.  REQUIRES should weed out any missing library support.
+	 *
+	 * This can be removed once the new CHECK_OS_VERSION support added below
+	 * is enabled across user pkg_install.conf (may be a while...)
+	 */
+	if (strcmp(opsys, "Darwin") == 0)
+		return 1;
+
+	/*
 	 * If the user has set the CHECK_OS_VERSION variable to "no" then skip any
 	 * uname version checks and assume they know what they are doing.  This can
 	 * be useful on OS where the kernel version is not a good indicator of
