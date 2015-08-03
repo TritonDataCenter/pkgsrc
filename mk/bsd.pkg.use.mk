@@ -104,7 +104,8 @@ SHLIBTOOL?=		${WRAPPER_BINDIR}/shlibtool
 LIBTOOL_REQD?=		2.4.2nb9
 .if !empty(USE_CROSS_COMPILE:M[yY][eE][sS])
 TOOL_DEPENDS+=		cross-libtool-base-${MACHINE_PLATFORM}>=${_OPSYS_LIBTOOL_REQD:U${LIBTOOL_REQD}}:../../cross/cross-libtool-base
-.else
+# We use an external libtool for binutils.
+.elif empty(PKGPATH:Mdevel/binutils)
 TOOL_DEPENDS+=		libtool-base>=${_OPSYS_LIBTOOL_REQD:U${LIBTOOL_REQD}}:../../devel/libtool-base
 .endif
 CONFIGURE_ENV+=		LIBTOOL="${LIBTOOL} ${LIBTOOL_FLAGS}"
