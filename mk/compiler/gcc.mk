@@ -1355,7 +1355,9 @@ PREPEND_PATH+=	${_GCC_DIR}/bin
 # Add dependency on GCC libraries if requested.
 .if (defined(_USE_GCC_SHLIB) && !empty(_USE_GCC_SHLIB:M[Yy][Ee][Ss])) && !empty(USE_PKGSRC_GCC_RUNTIME:M[Yy][Ee][Ss])
 #  Special case packages which are themselves a dependency of gcc runtime.
-.  if ${PKGPATH} != devel/libtool-base && ${PKGPATH} != devel/binutils && \
+.  if ${PKGPATH} != devel/binutils && \
+      empty(PKGPATH:Mextra/gcc?) && empty(PKGPATH:Mextra/gcc??) && \
+      empty(PKGPATH:Mjoyent/gcc?) && empty(PKGPATH:Mjoyent/gcc??) && \
       empty(PKGPATH:Mlang/gcc*-aux) && empty(PKGPATH:Mlang/gcc*-gnat) && \
       empty(PKGPATH:Mlang/gcc[6-9]) && \
       empty(PKGPATH:Mlang/gcc10) && empty(PKGPATH:Mlang/gcc1[2-5])
