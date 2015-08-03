@@ -70,6 +70,7 @@ fix-libtool:
 	cd ${WRKSRC}; for f in libtool; do				\
 		${SED}	-e "s,-L${BUILDLINK_DIR}/lib *,,g"		\
 			-e "s,${BUILDLINK_DIR}/lib *,,g"		\
+			-e "s,${TOOLS_BASEDIR}/bin/,,g"			\
 			$$f > $$f.new;					\
 		if [ -x $$f ]; then ${CHMOD} +x $$f.new; fi;		\
 		${MV} -f $$f.new $$f;					\
