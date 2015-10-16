@@ -1,7 +1,7 @@
 #!@SH@
 # $NetBSD: client-prepare,v 1.5 2020/04/04 15:17:48 riastradh Exp $
 
-. @PBULK_CONFIG@
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 set -e
 
