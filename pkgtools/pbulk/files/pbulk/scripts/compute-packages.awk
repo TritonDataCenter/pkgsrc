@@ -59,7 +59,7 @@ BEGIN {
 			status[cur] = substr($0, 14)
 
 		if ($0 ~ "^NO_BIN_ON_FTP=.")
-			initial_restricted[cur] = 1
+			restricted[cur] = 1
 
 		if ($0 ~ "^DEPENDS=")
 			depends[cur] = substr($0, 9)
