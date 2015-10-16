@@ -30,7 +30,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-. @PBULK_CONFIG@
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 if [ "${config_version}" != "@PBULK_CONFIG_VERSION@" ]; then
 	echo "Your configuration has version ${config_version}."
