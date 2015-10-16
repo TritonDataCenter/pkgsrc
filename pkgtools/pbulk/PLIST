@@ -4,6 +4,7 @@ bin/bulkbuild-rebuild
 bin/bulkbuild-restart
 libexec/pbulk/build
 libexec/pbulk/build-client-start
+libexec/pbulk/chroot
 libexec/pbulk/client-clean
 libexec/pbulk/client-prepare
 libexec/pbulk/compute-packages

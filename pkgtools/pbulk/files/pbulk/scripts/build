@@ -46,7 +46,9 @@ case "${master_mode}" in
 	${pbuild} -r ${loc}/pbuild -v -b ${pbuild_script} ${loc}/presolve ${loc}/success ${loc}/error
 	;;
 [yY][eE][sS])
+	[ -n "${chroot_dir}" ] && ${chroot_script} build create ${chroot_dir}
 	${pbuild} -r ${loc}/pbuild -I ${pbuild_start_script} -m ${master_port_build} -v ${loc}/presolve ${loc}/success ${loc}/error
+	[ -n "${chroot_dir}" ] && ${chroot_script} build delete ${chroot_dir}
 	;;
 *)
 	echo "master_mode must be either yes or no."
