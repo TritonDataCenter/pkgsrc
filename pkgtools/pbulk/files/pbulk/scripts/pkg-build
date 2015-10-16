@@ -218,6 +218,11 @@ rm -rf ${bulklog}/${pkgname}
 mkdir -p ${logpkgdir}
 rm -f ${logpkgdir}/*
 
+# Ensure we log any failures from this script itself, otherwise it is very
+# difficult to debug.
+exec >${logpkgdir}/pkg-build.log 2>&1
+set -x
+
 touch ${logpkgdir}/work.log
 @CHOWN@ ${unprivileged_user} ${logpkgdir}/work.log
 
