@@ -225,6 +225,17 @@ find_full_tree(void)
 		if (cat_len == 0)
 			break;
 
+		/*
+		 * Check for SUBDIR including a '/', if so then it has been
+		 * passed via USER_ADDITIONAL_PKGS from the top-level Makefile,
+		 * and should be added as a package path directly.
+		 */
+		if (memchr(cat, '/', cat_len) != NULL) {
+			add_job_pkgpath(cat, cat_len);
+			cat += cat_len;
+			continue;
+		}
+
 		cat_path = xasprintf("%s/%.*s", pkgsrc_tree, (int)cat_len, cat);
 		buf_orig = buf = read_from_child(cat_path, bmake_path, extract_subdir);
 		free(cat_path);
