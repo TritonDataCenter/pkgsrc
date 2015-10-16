@@ -1,7 +1,7 @@
 #!@SH@
 # $NetBSD: scan-client-start,v 1.7 2016/12/18 22:59:35 joerg Exp $
 
-. @PBULK_CONFIG@
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 set -e
 
