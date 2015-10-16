@@ -42,7 +42,7 @@ fi
 
 echo "Build reports..."
 ${report_script} ${loc}
-${bzip2} -zc ${loc}/report > ${loc}/report.bz2
+${xz} -zc ${loc}/report > ${loc}/report.xz
 ${report_html_script} ${loc} ${bulklog}
 ${report_txt_script} ${loc}
 
@@ -79,11 +79,11 @@ cat ${loc}/report.txt | ${mail} -s "${report_subject_prefix} ${platform} ${build
 cd ${bulklog}
 echo "Uploading report..."
 {
-	echo "meta/report.bz2"
 	echo "meta/report.txt"
 	echo "meta/report.html"
 	echo "meta/report.dot"
 	echo "meta/report.svg"
+	echo "meta/report.xz"
 	echo "meta/status"
 	while read pkg; do
 		echo "${pkg}/pre-clean.log"
