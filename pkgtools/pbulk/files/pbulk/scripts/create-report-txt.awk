@@ -153,7 +153,7 @@ BEGIN {
 		print "" > txt_report
 		print "Package                               Breaks Maintainer" > txt_report
 		print "-------------------------------------------------------------------------" > txt_report
-		for (i = 0; i < 10 && sorted_top_count[i] != ""; ++i) {
+		for (i = 0; i < 25 && sorted_top_count[i] != ""; ++i) {
 			loc = top_count[sorted_top_count[i]]
 			printf "%- 37s % 6d %s\n", loc, broken_location[loc],
 			    maintainer[pkg_location[loc]] > txt_report
