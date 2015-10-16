@@ -101,44 +101,8 @@ case "${master_mode}" in
 	;;
 esac
 
-# Log common settings...
-opsys=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OPSYS`
-os_version=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OS_VERSION`
-os_variant=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OS_VARIANT`
-lower_variant_version=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=LOWER_VARIANT_VERSION`
-machine_arch=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=MACHINE_ARCH`
-pkgsrc_compiler=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=PKGSRC_COMPILER`
-
-# Check if it is an OS with variants where we would rather use the
-# variant name and version rather than common name and version
-platform_opsys=${opsys}
-platform_os_version=${os_version}
-case "$opsys" in
-Cygwin | SCO_SV)
-	platform_opsys=${os_variant}
-	;;
-SunOS)
-	if [ -n "${os_variant}" ]; then
-		platform_opsys=${os_variant}
-		platform_os_version=${lower_variant_version}
-	fi
-	;;
-esac
-
-
-echo "PLATFORM=${platform_opsys} ${platform_os_version}/${machine_arch}" > ${loc}/status
-echo "OPSYS=${opsys}" >> ${loc}/status
-echo "OS_VERSION=${os_version}" >> ${loc}/status
-echo "MACHINE_ARCH=${machine_arch}" >> ${loc}/status
-echo "OS_VARIANT=${os_variant}" >> ${loc}/status
-echo "LOWER_VARIANT_VERSION=${lower_variant_version}" >> ${loc}/status
-echo "COMPILER=${pkgsrc_compiler}" >> ${loc}/status
-
-if [ -f /etc/os-release ]; then
-	awk '/^PRETTY_NAME/ {gsub(/\"/, "");print;}' /etc/os-release >> ${loc}/status
-fi
-
+# Start status file, it will be moved into place by the first build.
 date '+BUILD_START_ISO=%Y-%m-%d %H:%M
 BUILD_START_DIR=%Y%m%d.%H%M
-BUILD_START_EPOCHE=%s' >> ${loc}/status
-echo "BASE_URL=${base_url}" >> ${loc}/status
+BUILD_START_EPOCHE=%s' > ${loc}/status.pre-build
+echo "BASE_URL=${base_url}" >> ${loc}/status.pre-build
