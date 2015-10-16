@@ -173,6 +173,17 @@ fi
 
 ${pkg_up_to_date_script} ${pkgname} ${dependencies} && exit 0
 
+# Ensure we start with a clean passwd/group.
+if [ `uname` != "Darwin" ]; then
+	for file in group passwd shadow user_attr; do
+		if [ -f ${loc}/${file} ]; then
+			cp -p ${loc}/${file} /etc/${file}
+		elif [ -f /etc/${file} ]; then
+			cp -p /etc/${file} ${loc}/${file}
+		fi
+	done
+fi
+
 set -e
 
 @PREFIX@/libexec/pbulk/client-clean
