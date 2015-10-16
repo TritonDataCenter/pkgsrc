@@ -315,7 +315,7 @@ BEGIN {
 		print "      </thead>" > html_report
 		print "      <tbody>" > html_report
 
-		for (i = 0; i < 10 && sorted_top_count[i] != ""; ++i) {
+		for (i = 0; i < 25 && sorted_top_count[i] != ""; ++i) {
 			pkg = top_count[sorted_top_count[i]]
 			print_failed(pkg)
 		}
