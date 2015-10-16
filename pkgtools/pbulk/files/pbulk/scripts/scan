@@ -54,7 +54,9 @@ if [ -z "${limited_list}" ]; then
 		${pscan} -v -M ${make} ${extra_pscan_args} ${pkgsrc} ${loc}/pscan 2>> ${loc}/pscan.stderr
 		;;
 	[yY][eE][sS])
+		[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
 		${pscan} -v -I ${pscan_start_script} -m ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc} ${loc}/pscan 2>> ${loc}/pscan.stderr
+		[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 		;;
 	*)
 		echo "master_mode must be either yes or no."
@@ -89,7 +91,9 @@ else
 			${pscan} -v -l -M ${make} ${pkgsrc} ${loc}/pscan < ${loc}/missing.s
 			;;
 		[yY][eE][sS])
+			[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
 			${pscan} -v -l -I ${pscan_start_script} -m ${master_port_scan} -M ${make} ${pkgsrc} ${loc}/pscan < ${loc}/missing.s
+			[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 			;;
 		*)
 			echo "master_mode must be either yes or no."

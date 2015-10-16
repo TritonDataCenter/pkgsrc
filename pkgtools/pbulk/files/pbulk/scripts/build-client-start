@@ -29,7 +29,13 @@ for client in ${build_clients}; do
 		;;
 	esac
 	if [ -z "$path" ]; then
-		ssh $port $client "${pbuild} -c ${master_port_build} -b ${pbuild_script}" &
+		if [ -n "${chroot_create}" -a "${chroot_dir}" ]; then
+			ssh $port $client "for dir in ${chroot_dir}-build*; do
+				PBULK_CONF=${PBULK_CONF} chroot \${dir} @SH@ -c \"${pbuild} -c ${master_port_build} -b ${pbuild_script}\" &
+			done" &
+		else
+			ssh $port $client "${pbuild} -c ${master_port_build} -b ${pbuild_script}" &
+		fi
 	else
 		chroot "$path" ${pbuild} -c ${master_port_build} -b ${pbuild_script} &
 	fi
