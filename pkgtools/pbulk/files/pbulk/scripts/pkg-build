@@ -135,6 +135,42 @@ if [ `@ID@ -u` -ne 0 ]; then
 	run_install=run_direct
 fi
 
+# Attempt to move the pre-build status file into place.  If we're successful
+# we are the first build and we can now log the remaining details.
+ret=`mv ${loc}/status.pre-build ${loc}/status 2>/dev/null; echo $?`
+if [ ${ret} -eq 0 ]; then
+	@PREFIX@/libexec/pbulk/client-clean
+	opsys=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OPSYS`
+	os_version=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OS_VERSION`
+	os_variant=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=OS_VARIANT`
+	lower_variant_version=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=LOWER_VARIANT_VERSION`
+	machine_arch=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=MACHINE_ARCH`
+	pkgsrc_compiler=`cd ${pkgsrc}/pkgtools/pkg_install && ${make} show-var VARNAME=PKGSRC_COMPILER`
+	platform_opsys=${opsys}
+	platform_os_version=${os_version}
+	case "$opsys" in
+	Cygwin | SCO_SV)
+		platform_opsys=${os_variant}
+		;;
+	SunOS)
+		if [ -n "${os_variant}" ]; then
+			platform_opsys=${os_variant}
+			platform_os_version=${lower_variant_version}
+		fi
+		;;
+	esac
+	echo "PLATFORM=${platform_opsys} ${platform_os_version}/${machine_arch}" > ${loc}/status
+	echo "OPSYS=${opsys}" >> ${loc}/status
+	echo "OS_VERSION=${os_version}" >> ${loc}/status
+	echo "MACHINE_ARCH=${machine_arch}" >> ${loc}/status
+	echo "OS_VARIANT=${os_variant}" >> ${loc}/status
+	echo "LOWER_VARIANT_VERSION=${lower_variant_version}" >> ${loc}/status
+	echo "COMPILER=${pkgsrc_compiler}" >> ${loc}/status
+	if [ -f /etc/os-release ]; then
+		awk '/^PRETTY_NAME/ {gsub(/\"/, "");print;}' /etc/os-release >> ${loc}/status
+	fi
+fi
+
 ${pkg_up_to_date_script} ${pkgname} ${dependencies} && exit 0
 
 set -e
