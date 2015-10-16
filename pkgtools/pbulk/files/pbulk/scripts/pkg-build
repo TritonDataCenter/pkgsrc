@@ -43,7 +43,15 @@ default_sync_package() {
 	cp "$1" "${packages}/All/${pkgname}${pkg_sufx}"
 }
 
+logpkgtime() {
+	stop_time=`date '+%s'`
+	build_time=`expr ${stop_time} - ${start_time}`
+	mkdir -p ${packages}/pkgtimes
+	echo "${build_time}" >${packages}/pkgtimes/${pkgname}.pkgtime
+}
+
 cleanup() {
+	logpkgtime
 	if [ "$keep_wrkdir" = yes ]; then
 		${make} pbulk-save-wrkdir INTO=${bulklog}/${pkgname}/wrkdir.tar.gz TAR="${tar}"
 	fi
@@ -224,6 +232,9 @@ else
 	cur_pkgdb="${pkgdb}"
 fi
 
+# Save package start time
+start_time=`date '+%s'`
+
 # Go to target directory
 cd ${pkgsrc}/${pkgdir}
 # Clean build area, just in case
@@ -269,6 +280,9 @@ ${sync_package} ${pkgfile} ${pkgname} "${categories}" || cleanup
 
 # Clean build area
 ${make} clean > ${bulklog}/${pkgname}/clean.log 2>&1 || true
+
+# Save build runtime
+logpkgtime
 
 # Save a SHA512 sum of the package (if not restricted), saves doing all of
 # them single-threaded at the end of a bulk build and avoids re-computing for
