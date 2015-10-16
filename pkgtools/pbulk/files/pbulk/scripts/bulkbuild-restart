@@ -1,7 +1,21 @@
 #!@SH@
 # $NetBSD: bulkbuild-restart,v 1.4 2016/12/18 22:38:16 joerg Exp $
 
-. @PBULK_CONFIG@
+if [ "$1" = "-h" ]; then
+	echo "usage: $0 [-h] [<config file>]"
+	exit 2
+elif [ -f "$1" ]; then
+	case "$1" in
+	/*)
+		export PBULK_CONF="$1"; shift
+		;;
+	*)
+		export PBULK_CONF="$(pwd)/$1"; shift
+		;;
+	esac
+fi
+
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 set -e
 
