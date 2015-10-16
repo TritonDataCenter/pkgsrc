@@ -43,6 +43,7 @@ function mark_restricted(PKG, dep, depend_list) {
 
 BEGIN {
 	meta_dir = ARGV[1]
+	pkg_sufx = ARGV[2]
 	success_file = meta_dir "/success"
 	presolve_file = meta_dir "/presolve"
 
@@ -90,7 +91,7 @@ BEGIN {
 				print "+ " cat "/"
 				printed_cats[cat] = cat
 			}
-			print "+ " cat "/" pkg ".tgz"
+			print "+ " cat "/" pkg pkg_sufx
 		}
 	}
 	close(success_file)
