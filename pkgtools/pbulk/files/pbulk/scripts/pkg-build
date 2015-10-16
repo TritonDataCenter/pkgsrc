@@ -52,6 +52,10 @@ logpkgtime() {
 
 cleanup() {
 	logpkgtime
+	if [ -n "${local_bulklog}" ]; then
+		mkdir -p ${bulklog}
+		mv ${logpkgdir} ${bulklog}/${pkgname}
+	fi
 	if [ "$keep_wrkdir" = yes ]; then
 		${make} pbulk-save-wrkdir INTO=${bulklog}/${pkgname}/wrkdir.tar.gz TAR="${tar}"
 	fi
@@ -79,7 +83,7 @@ run_make() {
 		BATCH=1 \
 		DEPENDS_TARGET=/nonexistent \
 		${MAKE_FLAGS} \
-		WRKLOG=${bulklog}/${pkgname}/work.log
+		WRKLOG=${logpkgdir}/work.log
 }
 
 run_usergroup() {
@@ -133,6 +137,15 @@ if [ "$use_unprivileged_checksum" != "no" ]; then
 else
 	run_checksum=run_direct
 fi
+
+# Sometimes writing logs to NFS can cause issues, support writing to a local
+# bulklog directory before moving to NFS at the end.
+if [ -n "${local_bulklog}" ]; then
+	logpkgdir="${local_bulklog}/${pkgname}"
+else
+	logpkgdir="${bulklog}/${pkgname}"
+fi
+
 if [ "$use_destdir" = user-destdir ]; then
 	run_build=run_su
 	run_install=run_su
@@ -201,11 +214,12 @@ set -e
 @PREFIX@/libexec/pbulk/client-clean
 
 # Create the output directory and clean it up
-mkdir -p ${bulklog}/${pkgname}
-rm -f ${bulklog}/${pkgname}/*
+rm -rf ${bulklog}/${pkgname}
+mkdir -p ${logpkgdir}
+rm -f ${logpkgdir}/*
 
-touch ${bulklog}/${pkgname}/work.log
-@CHOWN@ ${unprivileged_user} ${bulklog}/${pkgname}/work.log
+touch ${logpkgdir}/work.log
+@CHOWN@ ${unprivileged_user} ${logpkgdir}/work.log
 
 pkg_add_normal() {
 	PKG_PATH=${packages}/All ${pkg_add} -K ${cur_pkgdb} "$@"
@@ -238,20 +252,20 @@ start_time=`date '+%s'`
 # Go to target directory
 cd ${pkgsrc}/${pkgdir}
 # Clean build area, just in case
-${make} clean > ${bulklog}/${pkgname}/pre-clean.log 2>&1
+${make} clean > ${logpkgdir}/pre-clean.log 2>&1 || cleanup
 # Install all dependencies the package said it would need
 if [ ! -z "$dependencies" ]; then
-	${pkg_add_cmd} $dependencies > ${bulklog}/${pkgname}/depends.log 2>&1 || cleanup
+	${pkg_add_cmd} $dependencies > ${logpkgdir}/depends.log 2>&1 || cleanup
 fi
 # Build package, create a separate log file for each major phase
-run_make ${run_checksum} checksum  > ${bulklog}/${pkgname}/checksum.log 2>&1 || cleanup
-run_usergroup configure > ${bulklog}/${pkgname}/configure.log 2>&1 || cleanup
-run_make ${run_build} configure >> ${bulklog}/${pkgname}/configure.log 2>&1 || cleanup
-run_usergroup build> ${bulklog}/${pkgname}/build.log 2>&1 || cleanup
-run_make ${run_build} all >> ${bulklog}/${pkgname}/build.log 2>&1 || cleanup
-run_usergroup install > ${bulklog}/${pkgname}/install.log 2>&1 || cleanup
-run_make ${run_install} stage-install >> ${bulklog}/${pkgname}/install.log 2>&1 || cleanup
-run_make run_direct stage-package-create > ${bulklog}/${pkgname}/package.log 2>&1 || cleanup
+run_make ${run_checksum} checksum > ${logpkgdir}/checksum.log 2>&1 || cleanup
+run_usergroup configure > ${logpkgdir}/configure.log 2>&1 || cleanup
+run_make ${run_build} configure >> ${logpkgdir}/configure.log 2>&1 || cleanup
+run_usergroup build> ${logpkgdir}/build.log 2>&1 || cleanup
+run_make ${run_build} all >> ${logpkgdir}/build.log 2>&1 || cleanup
+run_usergroup install > ${logpkgdir}/install.log 2>&1 || cleanup
+run_make ${run_install} stage-install >> ${logpkgdir}/install.log 2>&1 || cleanup
+run_make run_direct stage-package-create > ${logpkgdir}/package.log 2>&1 || cleanup
 
 pkgfile=$(run_make run_direct show-var VARNAME=STAGE_PKGFILE)
 
@@ -259,7 +273,7 @@ pkgfile=$(run_make run_direct show-var VARNAME=STAGE_PKGFILE)
 # potential bootstrap packages as they might already be installed.
 if [ -z "${is_bootstrap}" ]; then
 	if ! ${pkg_add_cmd} ${pkgfile} \
-	    >> ${bulklog}/${pkgname}/package.log 2>&1; then
+	    >> ${logpkgdir}/package.log 2>&1; then
 		cleanup
 	fi
 fi
@@ -269,7 +283,7 @@ fi
 # part of the bootstrap, those have the preserve flag set.
 if [ "$cross_compile" = "no" ] && \
    [ -z "${is_bootstrap}" ]; then
-	${pkg_delete} -K ${cur_pkgdb} ${pkgname} > ${bulklog}/${pkgname}/deinstall.log 2>&1 || cleanup
+	${pkg_delete} -K ${cur_pkgdb} ${pkgname} > ${logpkgdir}/deinstall.log 2>&1 || cleanup
 fi
 
 # Comment the following out if you want to test all deinstall scripts.
@@ -279,7 +293,7 @@ fi
 ${sync_package} ${pkgfile} ${pkgname} "${categories}" || cleanup
 
 # Clean build area
-${make} clean > ${bulklog}/${pkgname}/clean.log 2>&1 || true
+${make} clean > ${logpkgdir}/clean.log 2>&1 || cleanup
 
 # Save build runtime
 logpkgtime
@@ -299,4 +313,4 @@ if [ -z "${restricted}" ]; then
 fi
 
 # Cleanup build logs on success
-rm -R ${bulklog}/${pkgname}
+rm -R ${logpkgdir}
