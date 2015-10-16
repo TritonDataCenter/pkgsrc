@@ -61,7 +61,7 @@ BUILD_END_EPOCHE=%s' >> ${loc}/status
 
 echo "Building pkg_summary..."
 cd ${packages}/All
-sed 's/$/.tgz/' < ${loc}/success | sort | xargs ${pkg_info} -X | ${gzip} -c > pkg_summary.gz
+sed -e 's,^,../pkginfo/,' -e 's/$/.pkginfo/' < ${loc}/success | sort | xargs cat 2>/dev/null | ${gzip} -c > pkg_summary.gz
 ${gzip} -dc < pkg_summary.gz | ${bzip2} -c > pkg_summary.bz2
 
 if [ "${checksum_packages}" != "no" ] && \
@@ -69,8 +69,8 @@ if [ "${checksum_packages}" != "no" ] && \
 	echo "Building SHA512..."
 	cd ${packages}
 	{
-		echo "All/pkg_summary.bz2"
-		echo "All/pkg_summary.gz"
-		sed 's|^\(.*\)$|All/\1.tgz|' < ${loc}/success
-	} | sort | xargs ${digest} SHA512 | ${bzip2} -c > SHA512.bz2
+		${digest} SHA512 All/pkg_summary.bz2
+		${digest} SHA512 All/pkg_summary.gz
+		sed -e 's,^,checksums/,' -e 's/$/.sha512/' < ${loc}/success | xargs cat 2>/dev/null
+	} | sort | ${bzip2} -c > SHA512.bz2
 fi
