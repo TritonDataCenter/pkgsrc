@@ -5,6 +5,9 @@
 
 set -e
 
+# Support older configs which used scan_chroots
+scan_procs=${scan_procs:-${scan_chroots:-1}}
+
 if [ "${config_version}" != "@PBULK_CONFIG_VERSION@" ]; then
 	echo "Your configuration has version ${config_version}."
 	echo "This version of pbulk expects version @PBULK_CONFIG_VERSION@."
@@ -37,8 +40,27 @@ for client in ${scan_clients}; do
 		;;
 	esac
 	if [ -z "$path" ]; then
-		ssh $port $client "${pscan} -c ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc}" &
+		if [ -n "${chroot_create}" -a "${chroot_dir}" ]; then
+			ssh $port $client "
+				i=1
+				while true; do
+					PBULK_CONF=${PBULK_CONF} chroot ${chroot_dir}-scan @SH@ -c \"${pscan} -c ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc}\" &
+					i=\$((i + 1))
+					if [ \$i -gt ${scan_procs} ]; then
+						break
+					fi
+				done" &
+		else
+			ssh $port $client "PBULK_CONF=${PBULK_CONF} ${pscan} -c ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc}" &
+		fi
 	else
-		chroot "$path" ${pscan} -c ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc} &
+		i=1
+		while true; do
+			chroot "$path" ${pscan} -c ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc} &
+			i=$((i + 1))
+			if [ $i -gt ${scan_procs} ]; then
+				break
+			fi
+		done
 	fi
 done
