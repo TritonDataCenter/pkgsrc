@@ -129,7 +129,7 @@ BEGIN {
 	print "" > txt_report
 	report_base_url = pkgsrc_base_url "/" pkgsrc_build_start_dir
 	print "Full report: " report_base_url "/meta/report.html" > txt_report
-	print "Machine readable version: " report_base_url "/meta/report.bz2" > txt_report
+	print "Machine readable version: " report_base_url "/meta/report.xz" > txt_report
 	print "" > txt_report
 	all_pkgs = pkgs_done + pkgs_failed + pkgs_prefailed + pkgs_indirect_failed + pkgs_indirect_prefailed
 	printf "Total number of packages:      %5d\n", all_pkgs > txt_report
