@@ -23,6 +23,11 @@ rm -rf ${cur_destdir}${varbase}/qmail 2> /dev/null || true
 # Note: It is not an error if ${prefix} still exists at this point,
 # because it might be a mount point.
 
+# Source optional cleanup script
+if [ -f "${client_clean_local}" ]; then
+	. ${client_clean_local}
+fi
+
 # Install fresh bootstrap state
 if [ -f "${bootstrapkit}" ]; then
 	${tar} -xzf ${bootstrapkit} -C ${cur_destdir}/
