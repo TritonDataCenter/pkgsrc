@@ -44,7 +44,13 @@ for client in ${unique_clients}; do
 		;;
 	esac
 	if [ -z "$path" ]; then
-		ssh $port $client "${client_prepare_action}" &
+		if [ -n "${chroot_create}" -a "${chroot_dir}" ]; then
+			ssh $port $client "for dir in ${chroot_dir}-scan*; do
+				PBULK_CONF=${PBULK_CONF} chroot \${dir} @SH@ -c \"${client_prepare_action}\" &
+			done" &
+		else
+			ssh $port $client "${client_prepare_action}" &
+		fi
 	else
 		$client_prepare_chroot "$path" &
 	fi
