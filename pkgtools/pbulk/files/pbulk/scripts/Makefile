@@ -2,7 +2,7 @@
 
 SCRIPTS=	build build-client-start bulkbuild bulkbuild-rebuild \
 		bulkbuild-restart \
-		client-clean client-prepare \
+		chroot client-clean client-prepare \
 		pkg-build pkg-up-to-date pre-build report \
 		scan scan-client-start upload \
 		compute-packages.awk create-broken-graph.awk \
