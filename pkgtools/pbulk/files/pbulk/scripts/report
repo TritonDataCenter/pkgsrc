@@ -107,4 +107,19 @@ echo "Uploading report..."
 		[ -f "$file" ] && echo "+ $file"
 	done
 	echo "- *"
-} | ${rsync} --exclude-from=- ${report_rsync_args} . ${report_rsync_target}/${build_start_dir}
+} | {
+	if [ -n "${report_manta_target}" ]; then
+		# Variables sourced from pbulk.conf
+		export MANTA_USER MANTA_KEY_ID MANTA_URL MANTA_SUBUSER
+		PATH=${MANTA_PATH}:${PATH}
+		# Output directory only needs to not exist or be empty.
+		tmpdir="${bulklog}/pbulk-rsync-dir"
+		tmptar="${bulklog}/pbulk-rsync.tar"
+		rm -rf ${tmpdir} ${tmptar}
+		${rsync} -rn --exclude-from=- --out-format='%n' . ${tmpdir} \
+		    | grep -v '/$' | @TAR@ -cf ${tmptar} -T -
+		muntar -f ${tmptar} ${report_manta_target}/${build_start_dir}
+	else
+		${rsync} --exclude-from=- ${report_rsync_args} . ${report_rsync_target}/${build_start_dir}
+	fi
+}
