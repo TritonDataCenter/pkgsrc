@@ -25,7 +25,7 @@ SUBST_STAGE.tools=	pre-configure
 SUBST_MESSAGE.tools=	Fixing references to tools
 SUBST_FILES.tools=	pbulk.conf scripts/build scripts/build-client-start \
 	scripts/bulkbuild scripts/bulkbuild-rebuild scripts/bulkbuild-restart \
-	scripts/client-clean scripts/client-prepare \
+	scripts/chroot scripts/client-clean scripts/client-prepare \
 	scripts/pkg-build scripts/pkg-up-to-date scripts/pre-build \
 	scripts/report scripts/scan scripts/scan-client-start scripts/upload \
 	scripts/compute-packages.awk scripts/create-broken-graph.awk \
