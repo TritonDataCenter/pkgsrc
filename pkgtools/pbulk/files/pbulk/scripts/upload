@@ -40,6 +40,17 @@ if [ "${config_version}" != "@PBULK_CONFIG_VERSION@" ]; then
 	exit 1
 fi
 
+#
+# Run optional check script.  This allows ensuring certain criteria are met
+# before continuing with the upload process, for example to avoid publishing
+# a new package set with critical packages missing.  PBULK_CONF is passed in
+# the environment so that the script can source it for useful variables.
+#
+if [ -x "${script_phase_pre_upload}" ]; then
+	echo "Running pre-upload check script..."
+	PBULK_CONF=${PBULK_CONF:-@PBULK_CONFIG@} ${script_phase_pre_upload}
+fi
+
 echo "Uploading packages..."
 cd ${packages}
 {
