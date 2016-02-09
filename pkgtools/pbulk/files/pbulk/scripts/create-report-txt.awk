@@ -72,6 +72,8 @@ BEGIN {
 			pkgsrc_build_end_iso = substr($0, 15)
 		else if ($0 ~ "^BASE_URL=")
 			pkgsrc_base_url = substr($0, 10)
+		else if ($0 ~ "^DESCRIPTION=")
+			pkgsrc_description = substr($0, 13)
 	}
 	close(status_file)
 
@@ -121,6 +123,10 @@ BEGIN {
 	print "pkgsrc bulk build report" > txt_report
 	print "========================" > txt_report
 	print "" > txt_report
+	if (pkgsrc_description) {
+		print "Description: " pkgsrc_description > txt_report
+		print "" > txt_report
+	}
 	print pkgsrc_platform > txt_report
 	print "Compiler: " pkgsrc_compiler > txt_report
 	print "" > txt_report
