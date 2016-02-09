@@ -232,6 +232,8 @@ BEGIN {
 			pkgsrc_build_start_iso = substr($0, 17)
 		else if ($0 ~ "^BUILD_END_ISO=")
 			pkgsrc_build_end_iso = substr($0, 15)
+		else if ($0 ~ "^DESCRIPTION=")
+			pkgsrc_description = substr($0, 13)
 	}
 	close(status_file)
 
@@ -276,6 +278,8 @@ BEGIN {
 	print "  </head>" > html_report
 	print "  <body>" > html_report
 	printf("    <h1> pkgsrc bulk build for %s</h1>\n", pkgsrc_platform) > html_report
+	if (pkgsrc_description)
+		printf("    <h2> Description: %s</h2>\n", pkgsrc_description) > html_report
 	printf("    <h2> Build start: %s</h2>\n", pkgsrc_build_start_iso) > html_report
 	printf("    <h2> Build end: %s</h2>\n", pkgsrc_build_end_iso) > html_report
 	print "    <hr />" > html_report
