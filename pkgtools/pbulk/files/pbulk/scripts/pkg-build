@@ -194,6 +194,9 @@ if [ ${ret} -eq 0 ]; then
 	if [ -f /etc/os-release ]; then
 		awk '/^PRETTY_NAME/ {gsub(/\"/, "");print;}' /etc/os-release >> ${loc}/status
 	fi
+	if [ -s ${pkgsrc}/README.push ]; then
+		echo "DESCRIPTION=`head -1 ${pkgsrc}/README.push`" >> ${loc}/status
+	fi
 fi
 
 ${pkg_up_to_date_script} ${pkgname} ${dependencies} && exit 0
