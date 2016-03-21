@@ -62,4 +62,41 @@ cd ${packages}
 	echo "+ All/pkg_summary.xz"
 	${packages_script} ${loc} ${pkg_sufx}
 	echo "- *"
-} | LC_ALL=C sort | ${rsync} --exclude-from=- ${pkg_rsync_args} . ${pkg_rsync_target}
+} | LC_ALL=C sort >/tmp/rsync-exclude-$$
+
+# Joyent specific.  Additional pbulk.conf variables provide host + directory so
+# that we can insert the rsync --link-dest argument and ensure atomic directory
+# updates.  Requires pkg_rsync_target_linkdest and pkg_rsync_target_tmpdest to
+# reside on the same file system for hardlinks.
+if [ -z "${pkg_rsync_target_host}" -o \
+     -z "${pkg_rsync_target_linkdest}" -o \
+     -z "${pkg_rsync_target_tmpdest}" ]; then
+	# Legacy sync, just performed in-place directly to target.
+	${rsync} --exclude-from=/tmp/rsync-exclude-$$ ${pkg_rsync_args} \
+	    . ${pkg_rsync_target}
+else
+	# Use link-dest to create/update to a shadow directory.  The tmpdest
+	# argument requires the usual parent directories to exist first.  If
+	# link-dest doesn't exist (e.g. an initial sync) it is not an error.
+	${rsync} --exclude-from=/tmp/rsync-exclude-$$  ${pkg_rsync_args} \
+	    --link-dest=${pkg_rsync_target_linkdest} \
+	    . ${pkg_rsync_target_host}:${pkg_rsync_target_tmpdest}
+
+	# Move any existing linkdest out of the way, promote the new tmpdest,
+	# and remove the previous linkdest.  We move it to a directory based
+	# on tmpdest as that is usually a hidden directory, avoiding directory
+	# listings showing the old directory while it is being deleted.
+	ssh ${pkg_rsync_target_host} "
+		if [ -f ${pkg_rsync_target_tmpdest}/All/pkg_summary.gz ]; then
+			if [ -d ${pkg_rsync_target_linkdest} ]; then
+				mv ${pkg_rsync_target_linkdest} ${pkg_rsync_target_tmpdest}-old
+			else
+				mkdir -p $(dirname ${pkg_rsync_target_linkdest})
+			fi
+			mv ${pkg_rsync_target_tmpdest} ${pkg_rsync_target_linkdest}
+			rm -rf ${pkg_rsync_target_tmpdest}-old
+		fi
+	"
+fi
+
+rm -f /tmp/rsync-exclude-$$
