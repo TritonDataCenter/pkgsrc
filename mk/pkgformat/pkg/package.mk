@@ -75,6 +75,25 @@ ${PKGFILE}: ${STAGE_PKGFILE}
 		${CP} -f ${STAGE_PKGFILE} ${PKGFILE}
 .endif
 
+#
+# Create additional metadata files when the "package" target is invoked
+# directly.  This should ideally not be done, preferring to use pbulk to
+# perform a clean and sanitised build.  However, it is essential when
+# building packages manually for any reason, that all the files under
+# PACKAGES are in sync, otherwise bad things happen.
+#
+# pbulk invokes the "stage-package-create" target and has its own handling
+# of saving these files to PACKAGES directly in the "pkg-build" script, so
+# while there is code duplication, they aren't invoked twice.
+#
+PKGINFOFILE?=	${PACKAGES}/pkginfo/${PKGNAME}.pkginfo
+package-create: ${PKGINFOFILE}
+${PKGINFOFILE}: ${PKGFILE}
+	@${RUN}								\
+	${STEP_MSG} "Creating pkginfo file ${.TARGET}";			\
+	${TEST} -d ${.TARGET:H} || ${MKDIR} ${.TARGET:H};		\
+	${PKG_INFO} -X ${PKGFILE} >${.TARGET}
+
 ######################################################################
 ### package-remove (PRIVATE)
 ######################################################################
