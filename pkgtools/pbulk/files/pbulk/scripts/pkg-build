@@ -184,7 +184,11 @@ if [ ${ret} -eq 0 ]; then
 		fi
 		;;
 	esac
-	echo "PLATFORM=${platform_opsys} ${platform_os_version}/${machine_arch}" > ${loc}/status
+	if [ -n "${report_platform}" ]; then
+		echo "PLATFORM=${report_platform}" >> ${loc}/status
+	else
+		echo "PLATFORM=${platform_opsys} ${platform_os_version}/${machine_arch}" >> ${loc}/status
+	fi
 	echo "OPSYS=${opsys}" >> ${loc}/status
 	echo "OS_VERSION=${os_version}" >> ${loc}/status
 	echo "MACHINE_ARCH=${machine_arch}" >> ${loc}/status
