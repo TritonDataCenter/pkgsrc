@@ -321,6 +321,8 @@ if [ -z "${restricted}" ]; then
 		    > ${packages}/checksums/${pkgname}.sha512 || cleanup
 		${pkg_info} -X All/${pkgname}${pkg_sufx} \
 		    > ${packages}/pkginfo/${pkgname}.pkginfo || cleanup
+		${pkg_info} -L All/${pkgname}${pkg_sufx} \
+		    > ${packages}/pkginfo/${pkgname}.pkglist || cleanup
 	)
 fi
 
