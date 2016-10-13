@@ -111,7 +111,6 @@ BUILDLINK_API_DEPENDS.libarchive+=	libarchive>=3.3.1
 .include "../../archivers/xz/builtin.mk"
 .include "../../archivers/libarchive/builtin.mk"
 .include "../../devel/zlib/builtin.mk"
-.include "../../security/openssl/builtin.mk"
 
 .include "options.mk"
 
