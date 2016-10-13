@@ -57,6 +57,9 @@ cd ${packages}
 	[ "${checksum_packages}" != "no" ] && \
 	    [ "${checksum_packages}" != "NO" ] && \
 	    echo "+ SHA512.bz2"
+	echo "+ All/pkg_files.bz2"
+	echo "+ All/pkg_files.gz"
+	echo "+ All/pkg_files.xz"
 	echo "+ All/pkg_summary.bz2"
 	echo "+ All/pkg_summary.gz"
 	echo "+ All/pkg_summary.xz"
