@@ -53,9 +53,6 @@ BEGIN {
 			pkgs[cur] = cur
 		}
 
-		if ($0 ~ "^CATEGORIES=")
-			categories[cur] = substr($0, 12)
-
 		if ($0 ~ "^BUILD_STATUS=")
 			status[cur] = substr($0, 14)
 
@@ -82,17 +79,7 @@ BEGIN {
 		# skip restricted packages
 		if (pkg in restricted)
 			continue;
-		# build category/file list
-		split(categories[pkg], cats, "[ \t]+")
-		cats[0] = "All"
-		for (cat_idx in cats) {
-			cat = cats[cat_idx]
-			if (!(cat in printed_cats)) {
-				print "+ " cat "/"
-				printed_cats[cat] = cat
-			}
-			print "+ " cat "/" pkg pkg_sufx
-		}
+		print "+ All/" pkg pkg_sufx
 	}
 	close(success_file)
 }
