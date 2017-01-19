@@ -77,13 +77,13 @@ if [ -z "${pkg_rsync_target_host}" -o \
      -z "${pkg_rsync_target_tmpdest}" ]; then
 	# Legacy sync, just performed in-place directly to target.
 	${rsync} --exclude-from=/tmp/rsync-exclude-$$ ${pkg_rsync_args} \
-	    . ${pkg_rsync_target}
+	    --partial-dir=.rsync-partial . ${pkg_rsync_target}
 else
 	# Use link-dest to create/update to a shadow directory.  The tmpdest
 	# argument requires the usual parent directories to exist first.  If
 	# link-dest doesn't exist (e.g. an initial sync) it is not an error.
-	${rsync} --exclude-from=/tmp/rsync-exclude-$$  ${pkg_rsync_args} \
-	    --link-dest=${pkg_rsync_target_linkdest} \
+	${rsync} --exclude-from=/tmp/rsync-exclude-$$ ${pkg_rsync_args} \
+	    --partial-dir=.rsync-partial --link-dest=${pkg_rsync_target_linkdest} \
 	    . ${pkg_rsync_target_host}:${pkg_rsync_target_tmpdest}
 
 	# Move any existing linkdest out of the way, promote the new tmpdest,
