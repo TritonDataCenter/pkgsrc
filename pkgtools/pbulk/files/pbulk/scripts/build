@@ -61,12 +61,25 @@ BUILD_END_EPOCHE=%s' >> ${loc}/status
 
 echo "Building pkg_summary..."
 cd ${packages}/All
-sed -e 's,^,../pkginfo/,' -e 's/$/.pkglist/' < ${loc}/success | sort | xargs cat 2>/dev/null | ${gzip} -c > pkg_files.gz
-${gzip} -dc < pkg_files.gz | ${bzip2} -c > pkg_files.bz2
-${gzip} -dc < pkg_files.gz | ${xz} -zc > pkg_files.xz
-sed -e 's,^,../pkginfo/,' -e 's/$/.pkginfo/' < ${loc}/success | sort | xargs cat 2>/dev/null | ${gzip} -c > pkg_summary.gz
-${gzip} -dc < pkg_summary.gz | ${bzip2} -c > pkg_summary.bz2
-${gzip} -dc < pkg_summary.gz | ${xz} -zc > pkg_summary.xz
+{
+	sed -e 's,^,../pkginfo/,' -e 's/$/.pkglist/' < ${loc}/success \
+	    | sort | xargs cat 2>/dev/null > pkg_files || true
+	cat pkg_files | ${gzip} -c > pkg_files.gz &
+	cat pkg_files | ${bzip2} -c > pkg_files.bz2 &
+	cat pkg_files | ${xz} -zc > pkg_files.xz &
+	wait
+	rm -f pkg_files
+} &
+{
+	sed -e 's,^,../pkginfo/,' -e 's/$/.pkginfo/' < ${loc}/success \
+	    | sort | xargs cat 2>/dev/null > pkg_summary || true
+	cat pkg_summary | ${gzip} -c > pkg_summary.gz &
+	cat pkg_summary | ${bzip2} -c > pkg_summary.bz2 &
+	cat pkg_summary | ${xz} -zc > pkg_summary.xz &
+	wait
+	rm -f pkg_summary
+} &
+wait
 
 if [ "${checksum_packages}" != "no" ] && \
    [ "${checksum_packages}" != "NO" ]; then
