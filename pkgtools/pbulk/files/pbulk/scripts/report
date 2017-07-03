@@ -73,9 +73,6 @@ if [ -z "${build_start_iso}" ] || [ -z "${build_start_dir}" ]; then
 	exit 1
 fi
 
-echo "Sending report mail..."
-cat ${loc}/report.txt | ${mail} -s "${report_subject_prefix} ${platform} ${build_start_iso}" ${report_recipients}
-
 cd ${bulklog}
 echo "Uploading report..."
 {
@@ -123,3 +120,6 @@ echo "Uploading report..."
 		${rsync} --exclude-from=- ${report_rsync_args} . ${report_rsync_target}/${build_start_dir}
 	fi
 }
+
+echo "Sending report mail..."
+cat ${loc}/report.txt | ${mail} -s "${report_subject_prefix} ${platform} ${build_start_iso}" ${report_recipients}
