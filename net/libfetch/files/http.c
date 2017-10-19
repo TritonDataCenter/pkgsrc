@@ -493,6 +493,16 @@ http_match(const char *str, const char *hdr)
 	return (hdr);
 }
 
+/* Remove whitespace at the end of the buffer */
+static void
+http_conn_trimright(conn_t *conn)
+{
+	while (conn->buflen &&
+	    isspace((unsigned char)conn->buf[conn->buflen - 1]))
+		conn->buflen--;
+	conn->buf[conn->buflen] = '\0';
+}
+
 /*
  * Get the next header and return the appropriate symbolic code.
  */
@@ -501,13 +511,20 @@ http_next_header(conn_t *conn, const char **p)
 {
 	int i;
 
-	if (fetch_getln(conn) == -1)
-		return (hdr_syserror);
-	while (conn->buflen && isspace((unsigned char)conn->buf[conn->buflen - 1]))
-		conn->buflen--;
-	conn->buf[conn->buflen] = '\0';
+	/*
+	 * Have to do the stripping here because of the first line. So
+	 * it's done twice for the subsequent lines. No big deal
+	 */
+	http_conn_trimright(conn);
+
 	if (conn->buflen == 0)
 		return (hdr_end);
+
+	if (fetch_getln(conn) == -1)
+		return (hdr_syserror);
+
+	http_conn_trimright(conn);
+
 	/*
 	 * We could check for malformed headers but we don't really care.
 	 * A valid header starts with a token immediately followed by a
@@ -780,7 +797,7 @@ http_connect(struct url *URL, struct url *purl, const char *flags, int *cached)
 			default:
 				/* ignore */ ;
 			}
-		} while (h < hdr_end);
+		} while (h > hdr_end);
 	}
 	if (strcasecmp(URL->scheme, SCHEME_HTTPS) == 0 &&
 	    fetch_ssl(conn, URL, verbose) == -1) {
