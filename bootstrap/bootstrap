@@ -1389,20 +1389,6 @@ if test -n "$XARGS"; then
 	echo "TOOLS_PLATFORM.xargs?=		$XARGS" >> ${TARGET_MKCONF}
 	echo "TOOLS_PLATFORM.xargs?=		$XARGS" >> ${BOOTSTRAP_MKCONF}
 fi
-if test -n "$CFLAGS"; then
-	echo "CFLAGS+=		$CFLAGS" >> ${TARGET_MKCONF}
-	echo "DBG=			# prevent DBG from adding default optimizer flags" >> ${TARGET_MKCONF}
-	echo "DBG=			# prevent DBG from adding default optimizer flags" >> ${BOOTSTRAP_MKCONF}
-fi
-if test -n "$CPPFLAGS"; then
-	echo "CPPFLAGS+=		$CPPFLAGS" >> ${TARGET_MKCONF}
-fi
-if test -n "$LDFLAGS"; then
-	echo "LDFLAGS+=		$LDFLAGS" >> ${TARGET_MKCONF}
-fi
-if test -n "$LIBS"; then
-	echo "LIBS+=		$LIBS" >> ${TARGET_MKCONF}
-fi
 if test -n "$MACOSX_DEPLOYMENT_TARGET"; then
 	echo "MACOSX_DEPLOYMENT_TARGET=	$MACOSX_DEPLOYMENT_TARGET" >>${TARGET_MKCONF}
 	echo "MACOSX_DEPLOYMENT_TARGET=	$MACOSX_DEPLOYMENT_TARGET" >>${BOOTSTRAP_MKCONF}
