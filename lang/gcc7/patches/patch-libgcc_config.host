@@ -19,7 +19,7 @@ arm64 support
  aarch64*-*-linux*)
  	extra_parts="$extra_parts crtfastmath.o"
  	md_unwind_header=aarch64/linux-unwind.h
-@@ -396,7 +402,16 @@
+@@ -396,7 +396,16 @@ arm*-*-freebsd*)                # ARM Fr
  	tmake_file="${tmake_file} t-softfp-sfdf t-softfp-excl arm/t-softfp t-softfp"
  	;;
  arm*-*-netbsdelf*)
