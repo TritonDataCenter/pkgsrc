@@ -1,0 +1,29 @@
+$NetBSD$
+
+Support -fclone-functions and -fstrict-calling-conventions.
+
+--- gcc/common.opt.orig	2017-06-22 11:38:22.113724000 +0000
++++ gcc/common.opt
+@@ -1076,6 +1076,11 @@ fcode-hoisting
+ Common Report Var(flag_code_hoisting) Optimization
+ Enable code hoisting.
+ 
++fclone-functions
++Common Report Var(flag_clone_functions) Init(1)
++Allow the compiler to clone functions to facilitate certain optimizations.
++Enabled by default.
++
+ fcombine-stack-adjustments
+ Common Report Var(flag_combine_stack_adjustments) Optimization
+ Looks for opportunities to reduce stack adjustments and stack references.
+@@ -2341,6 +2346,10 @@ fstrict-aliasing
+ Common Report Var(flag_strict_aliasing) Optimization
+ Assume strict aliasing rules apply.
+ 
++fstrict-calling-conventions
++Common Report Var(flag_strict_calling_conventions) Init(1)
++Use strict ABI calling conventions even for static functions
++
+ fstrict-overflow
+ Common Report Var(flag_strict_overflow) Optimization
+ Treat signed overflow as undefined.
