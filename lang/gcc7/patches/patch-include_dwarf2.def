@@ -1,0 +1,15 @@
+$NetBSD$
+
+Support -msave-args.
+
+--- include/dwarf2.def.orig	2017-02-25 08:18:24.431993000 +0000
++++ include/dwarf2.def
+@@ -457,6 +457,8 @@ DW_TAG (DW_AT_GNU_denominator, 0x2304)
+ /* Biased integer extension.
+    See https://gcc.gnu.org/wiki/DW_AT_GNU_bias .  */
+ DW_TAG (DW_AT_GNU_bias, 0x2305)
++/* Sun extension. */
++DW_AT (DW_AT_SUN_amd64_parmdump, 0x2224)
+ /* UPC extension.  */
+ DW_AT (DW_AT_upc_threads_scaled, 0x3210)
+ /* PGI (STMicroelectronics) extensions.  */
