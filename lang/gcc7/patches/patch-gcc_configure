@@ -1,8 +1,19 @@
 $NetBSD: patch-gcc_configure,v 1.1 2017/05/03 00:21:03 maya Exp $
 
---- gcc/configure.orig	2015-09-30 23:06:11.000000000 +0000
+Fix detection of native TLS on SunOS, joyent/pkgsrc#264
+
+--- gcc/configure.orig	2017-11-21 09:31:12.135035000 +0000
 +++ gcc/configure
-@@ -28321,7 +28321,7 @@ case "$target" in
+@@ -23957,7 +23958,7 @@ $as_echo "#define TLS_SECTION_ASM_FLAG '
+       tls_first_major=2
+       tls_first_minor=14
+       tls_section_flag=T
+-      tls_as_opt="--fatal-warnings"
++      tls_as_opt="-32 --fatal-warnings"
+     fi
+     case "$target" in
+       i[34567]86-*-*)
+@@ -29111,7 +29114,7 @@ case "$target" in
        gcc_cv_target_dl_iterate_phdr=no
      fi
      ;;
