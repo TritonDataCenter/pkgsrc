@@ -109,13 +109,50 @@ echo "Uploading report..."
 		# Variables sourced from pbulk.conf
 		export MANTA_USER MANTA_KEY_ID MANTA_URL MANTA_SUBUSER
 		PATH=${MANTA_PATH}:${PATH}
-		# Output directory only needs to not exist or be empty.
-		tmpdir="${bulklog}/pbulk-rsync-dir"
-		tmptar="${bulklog}/pbulk-rsync.tar"
-		rm -rf ${tmpdir} ${tmptar}
-		${rsync} -rn --exclude-from=- --out-format='%n' . ${tmpdir} \
-		    | grep -v '/$' | @TAR@ -cf ${tmptar} -T -
-		muntar -f ${tmptar} ${report_manta_target}/${build_start_dir}
+		#
+		# Use manta-sync if the args have been set.  manta-sync does
+		# not (yet) support --exclude-from, so a manual list of -x
+		# exclusions needs to be supplied instead of using stdin.
+		#
+		# Using 'noglob' makes things a lot simpler with expansion and
+		# globs in variables.
+		#
+		# Moving the 'report' file is a hack due to manta-sync not
+		# currently having a way to limit excludes, so "-x report" will
+		# exclude report.* which is definitely not what we want!
+		#
+		if [ -n "${MANTA_SYNC_ARGS}" ]; then
+			set -o noglob
+			mv ${loc}/report ${loc}/report.save
+			#
+			# Run it a few times to catch any temporarily failures,
+			# the client does not yet support retries.
+			#
+			sync_failed=true
+			for retry in 1 2 3 4 5; do
+				echo "manta-sync attempt ${retry}..."
+				manta-sync ${MANTA_SYNC_ARGS} . ${report_manta_target}/${build_start_dir} || continue
+				sync_failed=false
+				break
+			done
+			set +o noglob
+			if ${sync_failed}; then
+				echo "All sync attempts failed, aborting..."
+				exit 1
+			fi
+		#
+		# Otherwise fall back to muntar, using rsync to create a
+		# temporary tar to unpack without excluded files.
+		#
+		else
+			# Output directory only needs to not exist or be empty.
+			tmpdir="${bulklog}/pbulk-rsync-dir"
+			tmptar="${bulklog}/pbulk-rsync.tar"
+			rm -rf ${tmpdir} ${tmptar}
+			${rsync} -rn --exclude-from=- --out-format='%n' . ${tmpdir} \
+			    | grep -v '/$' | @TAR@ -cf ${tmptar} -T -
+			muntar -f ${tmptar} ${report_manta_target}/${build_start_dir}
+		fi
 	else
 		${rsync} --exclude-from=- ${report_rsync_args} . ${report_rsync_target}/${build_start_dir}
 	fi
