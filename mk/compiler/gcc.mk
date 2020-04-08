@@ -847,13 +847,13 @@ _USE_GCC_SHLIB?=	yes
 # We require gcc-9.x in the lang/gcc9-* directory.
 #
 _GCC_PKGBASE=		gcc9
-.  if ${PKGPATH} == lang/gcc9
+.  if ${PKGPATH} == joyent/gcc9
 _IGNORE_GCC=		yes
 MAKEFLAGS+=		_IGNORE_GCC=yes
 .  endif
 .  if !defined(_IGNORE_GCC) && !empty(_LANGUAGES.gcc)
-_GCC_PKGSRCDIR=		../../lang/gcc9
-_GCC_DEPENDENCY=	gcc9>=${_GCC_REQD}:../../lang/gcc9
+_GCC_PKGSRCDIR=		../../joyent/gcc9
+_GCC_DEPENDENCY=	gcc9>=${_GCC_REQD}:../../joyent/gcc9
 .    if !empty(_LANGUAGES.gcc:Mc++) || \
         !empty(_LANGUAGES.gcc:Mfortran) || \
         !empty(_LANGUAGES.gcc:Mfortran77) || \
@@ -868,13 +868,13 @@ _USE_GCC_SHLIB?=	yes
 # We require gcc-10.x in the lang/gcc10-* directory.
 #
 _GCC_PKGBASE=		gcc10
-.  if ${PKGPATH} == lang/gcc10
+.  if ${PKGPATH} == joyent/gcc10
 _IGNORE_GCC=		yes
 MAKEFLAGS+=		_IGNORE_GCC=yes
 .  endif
 .  if !defined(_IGNORE_GCC) && !empty(_LANGUAGES.gcc)
-_GCC_PKGSRCDIR=		../../lang/gcc10
-_GCC_DEPENDENCY=	gcc10>=${_GCC_REQD}:../../lang/gcc10
+_GCC_PKGSRCDIR=		../../joyent/gcc10
+_GCC_DEPENDENCY=	gcc10>=${_GCC_REQD}:../../joyent/gcc10
 .    if !empty(_LANGUAGES.gcc:Mc++) || \
         !empty(_LANGUAGES.gcc:Mfortran) || \
         !empty(_LANGUAGES.gcc:Mfortran77) || \
@@ -889,13 +889,13 @@ _USE_GCC_SHLIB?=	yes
 # We require gcc-12.x in the lang/gcc12-* directory.
 #
 _GCC_PKGBASE=		gcc12
-.  if ${PKGPATH} == lang/gcc12
+.  if ${PKGPATH} == extra/gcc12
 _IGNORE_GCC=		yes
 MAKEFLAGS+=		_IGNORE_GCC=yes
 .  endif
 .  if !defined(_IGNORE_GCC) && !empty(_LANGUAGES.gcc)
-_GCC_PKGSRCDIR=		../../lang/gcc12
-_GCC_DEPENDENCY=	gcc12>=${_GCC_REQD}:../../lang/gcc12
+_GCC_PKGSRCDIR=		../../extra/gcc12
+_GCC_DEPENDENCY=	gcc12>=${_GCC_REQD}:../../extra/gcc12
 .    if !empty(_LANGUAGES.gcc:Mc++) || \
         !empty(_LANGUAGES.gcc:Mfortran) || \
         !empty(_LANGUAGES.gcc:Mfortran77) || \
@@ -910,13 +910,13 @@ _USE_GCC_SHLIB?=	yes
 # We require gcc-13.x in the lang/gcc13-* directory.
 #
 _GCC_PKGBASE=		gcc13
-.  if ${PKGPATH} == lang/gcc13
+.  if ${PKGPATH} == extra/gcc13
 _IGNORE_GCC=		yes
 MAKEFLAGS+=		_IGNORE_GCC=yes
 .  endif
 .  if !defined(_IGNORE_GCC) && !empty(_LANGUAGES.gcc)
-_GCC_PKGSRCDIR=		../../lang/gcc13
-_GCC_DEPENDENCY=	gcc13>=${_GCC_REQD}:../../lang/gcc13
+_GCC_PKGSRCDIR=		../../extra/gcc13
+_GCC_DEPENDENCY=	gcc13>=${_GCC_REQD}:../../extra/gcc13
 .    if !empty(_LANGUAGES.gcc:Mc++) || \
         !empty(_LANGUAGES.gcc:Mfortran) || \
         !empty(_LANGUAGES.gcc:Mfortran77) || \
@@ -1351,13 +1351,13 @@ PREPEND_PATH+=	${_GCC_DIR}/bin
 .    elif !empty(_GCC_PKGBASE:Mgcc8)
 .      include "../../lang/gcc8-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc9)
-.      include "../../lang/gcc9-libs/buildlink3.mk"
+.      include "../../joyent/gcc9-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc10)
-.      include "../../lang/gcc10-libs/buildlink3.mk"
+.      include "../../joyent/gcc10-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc12)
-.      include "../../lang/gcc12-libs/buildlink3.mk"
+.      include "../../extra/gcc12-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc13)
-.      include "../../lang/gcc13-libs/buildlink3.mk"
+.      include "../../extra/gcc13-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc14)
 .      include "../../lang/gcc14-libs/buildlink3.mk"
 .    elif !empty(_GCC_PKGBASE:Mgcc15)
