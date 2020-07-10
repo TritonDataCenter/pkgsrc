@@ -52,6 +52,15 @@ USE_NATIVE_GCC=		yes
 
 .include "../../mk/bsd.prefs.mk"
 
+#
+# Register a dependency on mksh if it is used as the bootstrap shell to ensure
+# that we can run +INSTALL scripts etc.  This match is deliberate to catch both
+# of the prefixes used during bootstrap, we can't simply match on LOCALBASE.
+#
+.if ${TOOLS_PLATFORM.sh:M?*/bin/mksh}
+DEPENDS+=		mksh-[0-9]*:../../shells/mksh
+.endif
+
 .if ${OS_VARIANT} == "SCOOSR5"
 # SCO OpenServer 5.0.7/3.2's strings.h defines strcasecmp with
 # "unsigned size_t". We cannot use -Werror for net/libfetch.
