@@ -39,6 +39,8 @@ CONFIGURE_ARGS+=	--enable-narrowproto
 CONFIGURE_ARGS+=	--enable-wide-chars
 .endif
 
+CONFIGURE_ARGS+=	--with-utempter
+
 .include "../../x11/libX11/buildlink3.mk"
 .include "../../x11/libXt/buildlink3.mk"
 ###
