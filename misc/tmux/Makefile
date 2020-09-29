@@ -18,6 +18,8 @@ CONFIGURE_ARGS+=	--enable-sixel
 USE_TOOLS+=	pkg-config
 USE_FEATURES+=	strnlen
 
+CONFIGURE_ARGS+=	--enable-utempter
+
 SUBST_CLASSES+=			sysconfdir
 SUBST_STAGE.sysconfdir=		pre-configure
 SUBST_MESSAGE.sysconfdir=	Do not force sysconfdir to /etc
