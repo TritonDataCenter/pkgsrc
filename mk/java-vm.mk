@@ -182,11 +182,13 @@ _ONLY_FOR_PLATFORMS.openjdk8= \
 	SunOS-*-x86_64			SunOS-*-i386			\
 	FreeBSD-10.*-x86_64
 _ONLY_FOR_PLATFORMS.openjdk11= \
+	SunOS-5.11-x86_64						\
 	NetBSD-[8-9].*-x86_64		NetBSD-1[0-9].*-x86_64		\
         NetBSD-[8-9].*-i386		NetBSD-1[0-9].*i386		\
 	NetBSD-9.99.*-aarch64		NetBSD-1[0-9].*-aarch64		\
         NetBSD-9.99.*-earmv[67]hf	NetBSD-1[0-9].*-earmv[67]hf
 _ONLY_FOR_PLATFORMS.openjdk17= \
+	SunOS-5.11-x86_64						\
 	NetBSD-9.*-x86_64		NetBSD-1[0-9].*-x86_64		\
         NetBSD-9.*-i386			NetBSD-1[0-9].*-i386		\
 	NetBSD-9.99.*-aarch64		NetBSD-1[0-9].*-aarch64		\
@@ -196,6 +198,7 @@ _ONLY_FOR_PLATFORMS.oracle-jdk17= \
 	Darwin-*-aarch64		Darwin-*-x86_64			\
 	Linux-*-aarch64			Linux-*-x86_64
 _ONLY_FOR_PLATFORMS.openjdk21= \
+	SunOS-5.11-x86_64						\
 	NetBSD-9.*-x86_64		NetBSD-1[0-9].*-x86_64
 
 # Set ONLY_FOR_PLATFORM based on accepted JVMs
@@ -335,13 +338,13 @@ _JRE_PKGSRCDIR=		../../lang/openjdk-bin
 _JAVA_HOME=		${LOCALBASE}/java/openjdk-bin
 UNLIMIT_RESOURCES+=	datasize virtualsize
 .elif ${_PKG_JVM} == "openjdk11"
-_JDK_PKGSRCDIR=		../../lang/openjdk11
-_JRE_PKGSRCDIR=		../../lang/openjdk11
+_JDK_PKGSRCDIR=		../../extra/openjdk11
+_JRE_PKGSRCDIR=		../../extra/openjdk11
 _JAVA_HOME=		${LOCALBASE}/java/openjdk11
 UNLIMIT_RESOURCES+=	datasize virtualsize
 .elif ${_PKG_JVM} == "openjdk17"
-_JDK_PKGSRCDIR=		../../lang/openjdk17
-_JRE_PKGSRCDIR=		../../lang/openjdk17
+_JDK_PKGSRCDIR=		../../extra/openjdk17
+_JRE_PKGSRCDIR=		../../extra/openjdk17
 _JAVA_HOME=		${LOCALBASE}/java/openjdk17
 UNLIMIT_RESOURCES+=	datasize virtualsize
 .elif ${_PKG_JVM} == "oracle-jdk17"
@@ -350,8 +353,8 @@ _JRE_PKGSRCDIR=		../../lang/oracle-jdk17
 _JAVA_HOME=		${LOCALBASE}/java/oracle-jdk17
 UNLIMIT_RESOURCES+=	datasize virtualsize
 .elif ${_PKG_JVM} == "openjdk21"
-_JDK_PKGSRCDIR=		../../lang/openjdk21
-_JRE_PKGSRCDIR=		../../lang/openjdk21
+_JDK_PKGSRCDIR=		../../extra/openjdk21
+_JRE_PKGSRCDIR=		../../extra/openjdk21
 _JAVA_HOME=		${LOCALBASE}/java/openjdk21
 UNLIMIT_RESOURCES+=	datasize virtualsize
 .endif
