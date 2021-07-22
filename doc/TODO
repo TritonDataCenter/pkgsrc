@@ -1,4 +1,4 @@
-$NetBSD: TODO,v 1.20878 2021/07/20 17:36:40 wiz Exp $
+$NetBSD: TODO,v 1.20882 2021/07/21 12:30:05 yhardy Exp $
 
 Suggested new packages
 ======================
@@ -730,7 +730,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o eagle-8.1.0
 	o easymenu-0.7.2p1
 	o ec2-ami-tools-1.5.7
-	o ecl-21.2.1
 	o eclipse-3.2.0
 	o ed-1.17
 	o ede-2.0
@@ -746,7 +745,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o elscreen-1.5.3
 	o emerillon-0.1.90
 	o emulationstation-2.9.4
-	o endless-sky-0.9.13
 	o enlightenment-0.23.1
 	o eog-plugins-3.6.1
 	o epic4-2.10.6
@@ -1859,7 +1857,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o py-serpent-1.30.2
 	o py-setuptools-rust-0.12.1
 	o py-simpletal-5.1
-	o py-singledispatch-3.6.1
 	o py-solo-0.0.27
 	o py-sybase-0.37
 	o py-syslog-ng-3.31.2
@@ -2080,7 +2077,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o threadweaver-5.81.0
 	o tightvnc-2.7.10
 	o tile-0.7.4
-	o tinyproxy-1.11.0
 	o tkcon-2.7.3
 	o tkhylafax-3.2
 	o tkinfo-2.11

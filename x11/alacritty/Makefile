@@ -1,7 +1,7 @@
-# $NetBSD: Makefile,v 1.8 2021/07/12 14:10:10 tnn Exp $
+# $NetBSD: Makefile,v 1.10 2021/07/22 18:46:27 tnn Exp $
 
 DISTNAME=	alacritty-0.8.0
-PKGREVISION=	2
+PKGREVISION=	3
 CATEGORIES=	x11
 MASTER_SITES=	${MASTER_SITE_GITHUB:=alacritty/}
 GITHUB_TAG=	v${PKGVERSION_NOREV}
@@ -20,17 +20,16 @@ USE_LANGUAGES+=		c c++
 USE_TOOLS+=		gmake pkg-config	# for fontconfig-sys
 
 MAKE_ENV+=	OPENSSL_DIR=${BUILDLINK_PREFIX.openssl:Q}
-MAKE_ENV+=	RUSTFLAGS=${RUSTFLAGS:Q}
 RUSTFLAGS+=	-C link-arg=${COMPILER_RPATH_FLAG}${BUILDLINK_PREFIX.libxcb}/lib
 RUSTFLAGS+=	-C link-arg=${COMPILER_RPATH_FLAG}${BUILDLINK_PREFIX.fontconfig}/lib
 RUSTFLAGS+=	-C link-arg=${COMPILER_RPATH_FLAG}${BUILDLINK_PREFIX.freetype2}/lib
 
 .include "../../mk/bsd.prefs.mk"
 
-.if ${OPSYS} == "NetBSD" && ${X11_TYPE} == "native"
+.if ${OPSYS} == "NetBSD" && exists(${X11BASE}/lib/X11/locale/lib/common/xlcUTF8Load.so)
 # This works around XIM errors when RTLD local-binding libX11.
-# See: https://mail-index.netbsd.org/tech-x11/2021/07/12/msg002222.html
-# But it might also break GPU accelerated mode.
+# https://mail-index.netbsd.org/tech-x11/2021/07/12/msg002222.html
+# https://mail-index.netbsd.org/source-changes/2021/07/13/msg130884.html
 SUBST_CLASSES+=		rtld
 SUBST_MESSAGE.rtld=	amend RTLD_GLOBAL
 SUBST_STAGE.rtld=	pre-configure

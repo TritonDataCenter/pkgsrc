@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.33 2021/01/26 11:20:17 jperkin Exp $
+# $NetBSD: Makefile,v 1.36 2021/07/22 07:58:50 wiz Exp $
 
 DISTNAME=	libnet-1.2
 CATEGORIES=	devel net
@@ -12,5 +12,7 @@ LICENSE=	2-clause-bsd
 
 USE_LIBTOOL=	yes
 GNU_CONFIGURE=	yes
+
+.include "options.mk"
 
 .include "../../mk/bsd.pkg.mk"
