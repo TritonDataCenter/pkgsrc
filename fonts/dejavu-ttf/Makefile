@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.24 2017/08/01 17:40:11 wiz Exp $
+# $NetBSD: Makefile,v 1.26 2021/07/23 12:25:59 hauke Exp $
 
 DISTNAME=	dejavu-fonts-ttf-2.37
 PKGNAME=	${DISTNAME:S/fonts-//}
