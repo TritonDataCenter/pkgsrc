@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.3476 2021/07/23 11:30:31 wiz Exp $
+# $NetBSD: Makefile,v 1.3479 2021/07/30 17:37:36 adam Exp $
 #
 
 COMMENT=	Development utilities
@@ -923,10 +923,12 @@ SUBDIR+=	menhir
 SUBDIR+=	mercurial
 SUBDIR+=	meson
 SUBDIR+=	metslib
+SUBDIR+=	mimalloc
 SUBDIR+=	mk-configure
 SUBDIR+=	mkcmd
 SUBDIR+=	mm-common
 SUBDIR+=	mob
+SUBDIR+=	mold
 SUBDIR+=	monotone
 SUBDIR+=	monotone-server
 SUBDIR+=	monotone-viz
@@ -2361,6 +2363,7 @@ SUBDIR+=	py-ipython_genutils
 SUBDIR+=	py-iso-639
 SUBDIR+=	py-iso3166
 SUBDIR+=	py-isort
+SUBDIR+=	py-isort4
 SUBDIR+=	py-itanium_demangler
 SUBDIR+=	py-jaraco.classes
 SUBDIR+=	py-jaraco.functools

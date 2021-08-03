@@ -1,9 +1,8 @@
-# $NetBSD: Makefile,v 1.136 2021/04/21 13:25:07 adam Exp $
+# $NetBSD: Makefile,v 1.138 2021/07/29 14:00:57 wiz Exp $
 
-VERSION=	3.52.2
+VERSION=	3.55.0
 DISTNAME=	FileZilla_${VERSION}_src
 PKGNAME=	filezilla-${VERSION}
-PKGREVISION=	2
 CATEGORIES=	net x11
 MASTER_SITES=	https://download.filezilla-project.org/client/
 EXTRACT_SUFX=	.tar.bz2
@@ -19,6 +18,11 @@ USE_LANGUAGES=	c c++17
 USE_TOOLS+=	gmake pkg-config msgfmt msgmerge xgettext
 WRKSRC=		${WRKDIR}/${PKGNAME_NOREV}
 
+# remove on next update, when patch-src_commonui_Makefile.am is included
+USE_TOOLS+=	aclocal automake
+pre-configure:
+	cd ${WRKSRC} && aclocal && automake
+
 CONFIGURE_ARGS+=	--disable-autoupdatecheck
 # avoid xdg-utils dependency
 CONFIGURE_ENV+=		ac_cv_path_xdgopen=firefox
@@ -32,7 +36,7 @@ GCC_REQD+=		7
 .include "../../databases/sqlite3/buildlink3.mk"
 .include "../../devel/libidn/buildlink3.mk"
 .include "../../graphics/hicolor-icon-theme/buildlink3.mk"
-BUILDLINK_API_DEPENDS.libfilezilla+=	libfilezilla>=0.27
+BUILDLINK_API_DEPENDS.libfilezilla+=	libfilezilla>=0.31
 .include "../../net/libfilezilla/buildlink3.mk"
 BUILDLINK_API_DEPENDS.gnutls+=	gnutls>=3.4.0
 .include "../../security/gnutls/buildlink3.mk"

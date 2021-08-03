@@ -1,4 +1,4 @@
-# $NetBSD: gcc.mk,v 1.224 2021/04/06 12:07:57 nia Exp $
+# $NetBSD: gcc.mk,v 1.226 2021/08/03 07:19:20 nia Exp $
 #
 # This is the compiler definition for the GNU Compiler Collection.
 #
@@ -383,19 +383,20 @@ _WRAP_EXTRA_ARGS.CC+=	-std=gnu99
 CWRAPPERS_APPEND.cc+=	-std=gnu99
 .endif
 
-.if ${OPSYS} == "NetBSD"
+.if ${_PKGSRC_MKPIE} == "yes"
 _MKPIE_CFLAGS.gcc=	-fPIC
 # XXX for executables it should be:
 #_MKPIE_CFLAGS.gcc=	-fPIE
+_MKPIE_FCFLAGS.gcc=	-fPIC
 # XXX for libraries a sink wrapper around gcc is required and used instead
 _MKPIE_LDFLAGS.gcc=	-pie
-.endif
 
-.if ${_PKGSRC_MKPIE} == "yes"
 _GCC_CFLAGS+=		${_MKPIE_CFLAGS.gcc}
+_GCC_FCFLAGS+=		${_MKPIE_FCFLAGS.gcc}
 #_GCC_LDFLAGS+=		${_MKPIE_LDFLAGS.gcc}
 CWRAPPERS_APPEND.cc+=	${_MKPIE_CFLAGS.gcc}
 CWRAPPERS_APPEND.cxx+=	${_MKPIE_CFLAGS.gcc}
+CWRAPPERS_APPEND.f77+=	${_MKPIE_FCFLAGS.gcc}
 # this differs for libraries and executables (handled in mk/cwrappers.mk)
 # CWRAPPERS_APPEND.ld+=	${_MKPIE_LDFLAGS.gcc}
 .endif
@@ -449,6 +450,7 @@ CFLAGS+=	-Wno-import
 .endif
 
 CFLAGS+=	${_GCC_CFLAGS}
+FCFLAGS+=	${_GCC_FCFLAGS}
 
 .if !empty(_NEED_GCC2:M[yY][eE][sS])
 #
