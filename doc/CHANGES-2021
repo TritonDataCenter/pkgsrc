@@ -1,4 +1,4 @@
-$NetBSD: CHANGES-2021,v 1.4051 2021/08/02 20:36:07 adam Exp $
+$NetBSD: CHANGES-2021,v 1.4066 2021/08/04 13:33:26 schmonz Exp $
 
 Changes to the packages collection and infrastructure in 2021:
 
@@ -6450,3 +6450,19 @@ Changes to the packages collection and infrastructure in 2021:
 	Updated print/py-reportlab to 3.5.68 [adam 2021-08-02]
 	Updated www/py-django3 to 3.2.6 [adam 2021-08-02]
 	Updated devel/py-pybind11 to 2.7.0 [adam 2021-08-02]
+	Updated x11/xeyes to 1.2.0nb1 [ryoon 2021-08-03]
+	Updated x11/xrestop to 0.5 [wiz 2021-08-03]
+	Updated devel/byacc to 20210802 [fcambus 2021-08-03]
+	Updated net/minitube to 3.9 [ryoon 2021-08-03]
+	Updated graphics/vulkan-headers to 1.2.182.0 [triaxx 2021-08-03]
+	Added net/dnc version 0.2.0 [fcambus 2021-08-03]
+	Updated shells/nushell to 0.35.0 [pin 2021-08-03]
+	Updated sysutils/tiramisu to 2.0 [pin 2021-08-03]
+	Updated games/warzone2100 to 4.1.2 [triaxx 2021-08-03]
+	Updated chat/element-web to 1.7.34 [js 2021-08-03]
+	Added x11/qt5-qtwebengine version 5.15.2nb1 [markd 2021-08-03]
+	Updated x11/alacritty to 0.9.0 [tnn 2021-08-03]
+	Updated devel/py-astroid to 2.6.6 [adam 2021-08-04]
+	Updated lang/nodejs to 14.17.4 [adam 2021-08-04]
+	Updated net/fehqlibs to 18 [schmonz 2021-08-04]
+	Updated net/djbdnscurve6 to 38 [schmonz 2021-08-04]
