@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.3479 2021/07/30 17:37:36 adam Exp $
+# $NetBSD: Makefile,v 1.3481 2021/08/13 04:35:00 pin Exp $
 #
 
 COMMENT=	Development utilities
@@ -383,6 +383,7 @@ SUBDIR+=	giblib
 SUBDIR+=	gindent
 SUBDIR+=	git
 SUBDIR+=	git-base
+SUBDIR+=	git-cliff
 SUBDIR+=	git-contrib
 SUBDIR+=	git-cvs
 SUBDIR+=	git-docs
@@ -837,6 +838,7 @@ SUBDIR+=	libwnck3
 SUBDIR+=	libxenserver
 SUBDIR+=	libxtend
 SUBDIR+=	libyang
+SUBDIR+=	libyang2
 SUBDIR+=	libzen
 SUBDIR+=	libzookeeper
 SUBDIR+=	linenoise

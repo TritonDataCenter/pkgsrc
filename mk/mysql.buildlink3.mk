@@ -1,4 +1,4 @@
-# $NetBSD: mysql.buildlink3.mk,v 1.35 2021/06/23 19:55:39 nia Exp $
+# $NetBSD: mysql.buildlink3.mk,v 1.36 2021/08/04 16:08:43 nia Exp $
 #
 # This file is included by packages that require some version of the
 # MySQL database client.
@@ -8,7 +8,7 @@
 # MYSQL_VERSION_DEFAULT
 #	The preferred MySQL version.
 #
-#	Possible: 57 56 80 mariadb105 mariadb104
+#	Possible: 57 56 80 mariadb106 mariadb105 mariadb104
 #	Default: 57
 #
 # Package-settable variables:
@@ -40,7 +40,7 @@ _SYS_VARS.mysql+=	MYSQL_PKG_PREFIX
 #
 # Set variables for all possible MySQL variants
 #
-MYSQL_VERSIONS_ALL=		80 57 56 mariadb105 mariadb104
+MYSQL_VERSIONS_ALL=		80 57 56 mariadb106 mariadb105 mariadb104
 MYSQL_VERSIONS_ALL+=		percona80 percona57 percona56
 MYSQL_VERSIONS_ALL+=		percona80-cluster percona57-cluster
 
@@ -84,6 +84,9 @@ MYSQL_PKGBASE.percona57-cluster=	percona-cluster-5.7.*
 MYSQL_PKGSRCDIR.percona57-cluster=	../../joyent/percona57-cluster
 MYSQL_PKG_PREFIX.percona57-cluster=	percona57-cluster
 
+MYSQL_PKGBASE.mariadb106=	mariadb-client-10.6.*
+MYSQL_PKGSRCDIR.mariadb106=	../../databases/mariadb106-client
+
 .for ver in ${MYSQL_VERSIONS_ALL}
 MYSQL_OK.${ver}=		no
 MYSQL_INSTALLED.${ver}=		no
@@ -99,7 +102,7 @@ _SYS_VARS.mysql+=		MYSQL_PKG_PREFIX.${ver}
 # be chosen.
 #
 MYSQL_VERSION_DEFAULT?=		mariadb105
-MYSQL_VERSIONS_ACCEPTED?=	57 56 80 mariadb105 mariadb104 \
+MYSQL_VERSIONS_ACCEPTED?=	57 56 80 mariadb106 mariadb105 mariadb104 \
 				percona80 percona57 percona56 \
 				percona80-cluster percona57-cluster
 

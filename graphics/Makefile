@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.948 2021/07/26 19:19:02 bsiegert Exp $
+# $NetBSD: Makefile,v 1.950 2021/08/15 06:57:48 nia Exp $
 #
 
 COMMENT=	Graphics tools and libraries
@@ -150,6 +150,7 @@ SUBDIR+=	freetype
 SUBDIR+=	freetype-lib
 SUBDIR+=	freetype-utils
 SUBDIR+=	freetype2
+SUBDIR+=	fswebcam
 SUBDIR+=	ftgl
 SUBDIR+=	fujiplay
 SUBDIR+=	g2
@@ -425,6 +426,7 @@ SUBDIR+=	p5-Image-ExifTool
 SUBDIR+=	p5-Image-Imlib2
 SUBDIR+=	p5-Image-Info
 SUBDIR+=	p5-Image-JpegTran-AutoRotate
+SUBDIR+=	p5-Image-Sane
 SUBDIR+=	p5-Image-Size
 SUBDIR+=	p5-PerlMagick
 SUBDIR+=	p5-RRDTool-OO

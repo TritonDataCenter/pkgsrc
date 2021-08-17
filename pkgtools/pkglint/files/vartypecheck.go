@@ -549,6 +549,10 @@ func (cv *VartypeCheck) FetchURL() {
 		if !hasPrefix(trimURL, trimSiteURL) {
 			continue
 		}
+		if siteName == "MASTER_SITE_GITHUB" &&
+			hasPrefix(cv.Varname, "SITES.") {
+			continue
+		}
 
 		subdir := trimURL[len(trimSiteURL):]
 		if hasPrefix(trimURL, "github.com/") {
@@ -1189,8 +1193,8 @@ func (cv *VartypeCheck) PrefixPathname() {
 		}
 	})
 
-	if m, manSubdir := match1(cv.Value, `^man/(.+)`); m {
-		from := "${PKGMANDIR}/" + manSubdir
+	if hasPrefix(cv.Value, "man/") && cv.Varname != "INSTALLATION_DIRS" {
+		from := "${PKGMANDIR}/" + cv.Value[4:]
 		fix := cv.Autofix()
 		fix.Warnf("Please use %q instead of %q.", from, cv.Value)
 		fix.Replace(cv.Value, from)

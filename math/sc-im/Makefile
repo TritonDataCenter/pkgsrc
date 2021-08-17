@@ -1,11 +1,12 @@
-# $NetBSD: Makefile,v 1.27 2021/07/26 01:38:05 sjmulder Exp $
+# $NetBSD: Makefile,v 1.30 2021/08/09 07:06:09 sjmulder Exp $
 
 DISTNAME=	sc-im-0.8.2
+PKGREVISION=	2
 CATEGORIES=	math
 MASTER_SITES=	${MASTER_SITE_GITHUB:=andmarti1424/}
 GITHUB_TAG=	v${PKGVERSION_NOREV}
 
-MAINTAINER=	pkgsrc-users@NetBSD.org
+MAINTAINER=	sjmulder@NetBSD.org
 HOMEPAGE=	https://github.com/andmarti1424/sc-im/
 COMMENT=	Curses-based spreadsheet program based on sc
 LICENSE=	original-bsd
@@ -16,7 +17,9 @@ INSTALL_DIRS=	src
 .include "../../mk/bsd.prefs.mk"
 
 # pkg-config to avoid broken Makefile self-configuration
-USE_TOOLS+=	gmake pkg-config yacc
+USE_TOOLS+=	gmake pkg-config yacc bash:run
+
+REPLACE_BASH+=	src/scopen
 
 # gnuplot is invoked through the shell, no need to check at compile time
 CFLAGS+=	-DGNUPLOT

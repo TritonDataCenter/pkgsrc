@@ -1265,12 +1265,12 @@ func (s *Suite) Test_Package_loadPlistDirs__empty(c *check.C) {
 	pkg.load()
 
 	var dirs []RelPath
-	for dir := range pkg.Plist.Dirs {
+	for dir := range pkg.Plist.UnconditionalDirs {
 		dirs = append(dirs, dir)
 	}
 	sort.Slice(dirs, func(i, j int) bool { return dirs[i] < dirs[j] })
 
-	t.CheckDeepEquals(dirs, []RelPath{"bin"})
+	t.CheckDeepEquals(dirs, []RelPath{"bin"}) // see t.SetUpPackage
 }
 
 func (s *Suite) Test_Package_loadPlistDirs(c *check.C) {
@@ -1281,6 +1281,8 @@ func (s *Suite) Test_Package_loadPlistDirs(c *check.C) {
 		PlistCvsID,
 		"@exec echo hello",
 		"${PLIST.condition}dir/subdir/file",
+		"${PLIST.condition}mixed/conditional-file",
+		"mixed/unconditional-file",
 		"@unexec echo bye")
 	t.FinishSetUp()
 
@@ -1288,12 +1290,16 @@ func (s *Suite) Test_Package_loadPlistDirs(c *check.C) {
 	pkg.load()
 
 	var dirs []RelPath
-	for dir := range pkg.Plist.Dirs {
+	for dir := range pkg.Plist.UnconditionalDirs {
 		dirs = append(dirs, dir)
 	}
 	sort.Slice(dirs, func(i, j int) bool { return dirs[i] < dirs[j] })
 
-	t.CheckDeepEquals(dirs, []RelPath{"bin", "dir", "dir/subdir"})
+	t.CheckDeepEquals(dirs, []RelPath{
+		"bin", // from t.SetUpPackage
+		// dir is not listed because it is conditional.
+		// dir/subdir is not listed because it is conditional.
+		"mixed"})
 }
 
 func (s *Suite) Test_Package_check__files_Makefile(c *check.C) {
@@ -2632,7 +2638,9 @@ func (s *Suite) Test_Package_checkMesonGnuMake(c *check.C) {
 
 	G.Check(".")
 
-	// XXX: Giving the line number would be nice.
+	// XXX: Giving the line number where gmake is actually used by the
+	//  package would be nice. Without that information, it is unclear why
+	//  the package uses gmake at all.
 	t.CheckOutputLines(
 		"WARN: Meson packages usually don't need GNU make.")
 }
@@ -2652,6 +2660,29 @@ func (s *Suite) Test_Package_checkMesonConfigureArgs(c *check.C) {
 
 	t.CheckOutputLines(
 		"WARN: Makefile:20: Meson packages usually don't need CONFIGURE_ARGS.")
+}
+
+func (s *Suite) Test_Package_checkMesonConfigureArgs__include(c *check.C) {
+	t := s.Init(c)
+
+	t.CreateFileLines("devel/meson/build.mk")
+	t.CreateFileLines("devel/libcommon/use.mk",
+		MkCvsID,
+		"",
+		"CONFIGURE_ARGS+=\t--enable-feature")
+	t.SetUpPackage("category/package",
+		".include \"../../devel/libcommon/use.mk\"",
+		".include \"../../devel/meson/build.mk\"")
+	t.Chdir("category/package")
+	t.FinishSetUp()
+
+	G.Check(".")
+
+	// When checking the package x11/libxkbcommon, do not warn that
+	// converters/libiconv/builtin.mk defines CONFIGURE_ARGS, since that
+	// file may be used by other packages as well, or the relevant section
+	// may be guarded by '.if ${HAS_CONFIGURE}'.
+	t.CheckOutputEmpty()
 }
 
 func (s *Suite) Test_Package_checkMesonPython(c *check.C) {

@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.161 2021/07/30 12:21:06 ryoon Exp $
+# $NetBSD: Makefile,v 1.163 2021/08/10 08:53:36 nia Exp $
 
 DISTNAME=	pulseaudio-15.0
 CATEGORIES=	audio
@@ -108,6 +108,7 @@ PLIST.oss=		yes
 
 # LIBS is not passed to meson build system. Use LDFLAGS instead.
 LDFLAGS.NetBSD+=	${LIBOSSAUDIO}
+LDFLAGS.SunOS+=		-lsocket -lnsl
 
 # Do not depend on RPATH $ORIGIN.
 LDFLAGS+=		${COMPILER_RPATH_FLAG}${PREFIX}/lib/pulseaudio
@@ -135,6 +136,8 @@ PKG_GROUPS=		${PULSE_GROUP}
 PKG_GROUPS+=		${PULSE_GROUP_REALTIME}
 PKG_GROUPS+=		${PULSE_GROUP_ACCESS}
 PKG_USERS=		${PULSE_USER}:${PULSE_GROUP}
+
+BUILDLINK_TRANSFORM.SunOS+=	rm:-Wl,-version-script=${WRKSRC}/src/pulse/map-file
 
 .include "../../devel/meson/build.mk"
 .if ${OPSYS} != Linux && ${OPSYS} != "Darwin"

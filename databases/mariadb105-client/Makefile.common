@@ -1,9 +1,9 @@
-# $NetBSD: Makefile.common,v 1.9 2021/07/24 10:10:03 nia Exp $
+# $NetBSD: Makefile.common,v 1.12 2021/08/07 07:48:28 nia Exp $
 #
 # used by databases/mariadb105-client/Makefile
 # used by databases/mariadb105-server/Makefile
 
-DISTNAME=	mariadb-10.5.11
+DISTNAME=	mariadb-10.5.12
 CATEGORIES=	databases
 MASTER_SITES=	https://downloads.mariadb.org/f/${DISTNAME}/source/
 MASTER_SITES+=	https://archive.mariadb.org/${DISTNAME}/source/
@@ -54,6 +54,10 @@ CMAKE_ARGS+=		-DINSTALL_SQLBENCHDIR="share/mysql/sql-bench"
 CMAKE_ARGS+=		-DINSTALL_SUPPORTFILESDIR="share/mysql"
 CMAKE_ARGS+=		-DINSTALL_SYSCONFDIR="${PKG_SYSCONFDIR}"
 CMAKE_ARGS+=		-DMYSQL_DATADIR=${MARIADB_DATADIR}
+
+.if ${OPSYS} == "SunOS"
+CMAKE_ARGS+=		-DWITH_MARIABACKUP=OFF
+.endif
 
 CMAKE_ARGS+=		-DWITH_UNIT_TESTS=OFF
 CMAKE_ARGS+=		-DWITH_LIBWRAP=ON
@@ -111,4 +115,5 @@ PKGCONFIG_OVERRIDE+=	libmariadb/mariadb_config/libmariadb.pc.in
 .include "../../mk/dlopen.buildlink3.mk"
 BUILDLINK_TRANSFORM+=	opt:-ldl:${BUILDLINK_LDADD.dl:Q}
 .include "../../mk/krb5.buildlink3.mk"
+.include "../../mk/pam.buildlink3.mk"
 .include "../../mk/readline.buildlink3.mk"

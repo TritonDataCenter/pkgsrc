@@ -537,7 +537,9 @@ func (pkg *Package) loadPlistDirs(plistFilename CurrPath) {
 		pkg.Plist.Files[filename] = pline
 	}
 	for dirname, pline := range ck.allDirs {
-		pkg.Plist.Dirs[dirname] = pline
+		if len(pline.conditions) == 0 {
+			pkg.Plist.UnconditionalDirs[dirname] = pline
+		}
 	}
 	for _, plistLine := range plistLines {
 		if plistLine.HasPath() {
@@ -710,8 +712,8 @@ func (pkg *Package) checkfilePackageMakefile(filename CurrPath, mklines *MkLines
 	//  though.
 	// pkg.collectConditionalIncludes(allLines)
 
-	allLines.collectVariables()    // To get the tool definitions
-	mklines.Tools = allLines.Tools // TODO: also copy the other collected data
+	allLines.collectVariables(false, true) // To get the tool definitions
+	mklines.Tools = allLines.Tools         // TODO: also copy the other collected data
 
 	// TODO: Checking only mklines instead of allLines ignores the
 	//  .include lines. For example, including "options.mk" does not
@@ -1204,12 +1206,19 @@ func (pkg *Package) checkMesonGnuMake(mklines *MkLines) {
 }
 
 func (pkg *Package) checkMesonConfigureArgs() {
-	if mkline := pkg.vars.FirstDefinition("CONFIGURE_ARGS"); mkline != nil {
-		mkline.Warnf("Meson packages usually don't need CONFIGURE_ARGS.")
-		mkline.Explain(
-			"After migrating a package from GNU make to Meson,",
-			"CONFIGURE_ARGS are typically not needed anymore.")
+	mkline := pkg.vars.FirstDefinition("CONFIGURE_ARGS")
+	if mkline == nil {
+		return
 	}
+
+	if pkg.Rel(mkline.Location.Filename).HasPrefixPath("..") {
+		return
+	}
+
+	mkline.Warnf("Meson packages usually don't need CONFIGURE_ARGS.")
+	mkline.Explain(
+		"After migrating a package from GNU make to Meson,",
+		"CONFIGURE_ARGS are typically not needed anymore.")
 }
 
 func (pkg *Package) checkMesonPython(mklines *MkLines) {
@@ -1780,9 +1789,9 @@ func (pkg *Package) FixAddInclude(includedFile PackagePath) {
 // 2. Ensure that the entries mentioned in the ALTERNATIVES file
 // also appear in the PLIST files.
 type PlistContent struct {
-	Dirs       map[RelPath]*PlistLine
-	Files      map[RelPath]*PlistLine
-	Conditions map[string]bool // each ${PLIST.id} sets ["id"] = true.
+	UnconditionalDirs map[RelPath]*PlistLine
+	Files             map[RelPath]*PlistLine
+	Conditions        map[string]bool // each ${PLIST.id} sets ["id"] = true.
 }
 
 func NewPlistContent() PlistContent {

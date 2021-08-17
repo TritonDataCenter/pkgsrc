@@ -1011,6 +1011,16 @@ func (s *Suite) Test_VartypeCheck_FetchURL(c *check.C) {
 		"https://example.org/$@")
 
 	vt.OutputEmpty()
+
+	// For secondary distfiles, it does not make sense to refer to GitHub
+	// since pulling in the whole github.mk infrastructure is too much
+	// effort.
+	//
+	// Seen in net/unifi on 2021-08-14.
+	vt.Varname("SITES.secondary-distfile")
+	vt.Values("-https://github.com/org/proj/archive/v1.0.0.tar.gz")
+
+	vt.OutputEmpty()
 }
 
 func (s *Suite) Test_VartypeCheck_FetchURL__without_package(c *check.C) {
@@ -1823,6 +1833,13 @@ func (s *Suite) Test_VartypeCheck_PrefixPathname(c *check.C) {
 			"since it is not relative to PREFIX.",
 		"ERROR: filename.mk:11: VARBASE must not be used in INSTALLATION_DIRS "+
 			"since it is not relative to PREFIX.")
+
+	// INSTALLATION_DIRS automatically replaces "man" with "${PKGMANDIR}".
+	vt.Varname("INSTALLATION_DIRS")
+	vt.Values(
+		"man/man1")
+
+	vt.OutputEmpty()
 }
 
 func (s *Suite) Test_VartypeCheck_PythonDependency(c *check.C) {

@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.24 2021/07/25 13:20:47 gdt Exp $
+# $NetBSD: Makefile,v 1.28 2021/08/14 14:33:09 gdt Exp $
 
 # Update to 6.2 (wip) is on hold pending reports that the greater
 # Unifi world thinks it is stable enough. -- gdt, 2021-06-01
@@ -31,6 +31,8 @@ EXTRACT_ONLY=		${DEFAULT_DISTFILES}
 # because it only ship linux binaries. The rcd script takes care of loading the
 # correct library.
 SNAPPY_JAVA=		snappy-java-1.0.5.4
+# github.mk only works for the main MASTER_SITES definition and does
+# not support SITES
 SITES.${SNAPPY_JAVA}.tar.gz=	-https://github.com/xerial/snappy-java/archive/${SNAPPY_JAVA:S/snappy-java-//}.tar.gz
 DISTFILES+=		${SNAPPY_JAVA}.tar.gz
 EXTRACT_ONLY+=		${SNAPPY_JAVA}.tar.gz
@@ -52,7 +54,7 @@ PKG_JVMS_ACCEPTED=	openjdk8
 PKGSRC_MAKE_ENV+=	JAVA_HOME=${PKG_JAVA_HOME}
 USE_LANGUAGES=		c c++	# for snappy JNI library
 USE_TOOLS+=		gmake pax
-WRKSRC=			${WRKDIR}/UniFi
+WRKSRC=			${WRKDIR}
 
 # Upstream documents 3.4.15, but 3.4.4 actually works.  Avoid mongodb4 because it
 # has a problematic license.
@@ -76,7 +78,7 @@ OWN_DIRS_PERMS+=	${PREFIX}/unifi/${d} ${UNIFI_USER} ${UNIFI_GROUP} 0700
 
 post-extract:
 # drop executable bit
-	find ${WRKSRC} -type f -print0 | xargs -0 chmod -x
+	find ${WRKSRC}/UniFi -type f -print0 | xargs -0 chmod -x
 	mkdir ${WRKDIR}/${SNAPPY_JAVA}/target
 	ln -s ${WRKDIR}/${SNAPPY} ${WRKDIR}/${SNAPPY_JAVA}/target
 # drop platform specific binaries
@@ -86,32 +88,32 @@ post-extract:
 .if (${OPSYS} != "Linux")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Linux
 .else
-.if (${MACHINE_ARCH} != "aarch64")
+.  if (${MACHINE_ARCH} != "aarch64")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Linux/aarch64
-.endif
-.if (${MACHINE_ARCH} != "armv7")
+.  endif
+.  if (${MACHINE_ARCH} != "earmv7")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Linux/armv7
-.endif
-.if (${MACHINE_ARCH} != "x86_64")
+.  endif
+.  if (${MACHINE_ARCH} != "x86_64")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Linux/x86_64
-.endif
+.  endif
 .endif
 .if (${OPSYS} != "Darwin")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Mac
 .else
-.if (${MACHINE_ARCH} != "x86_64")
+.  if (${MACHINE_ARCH} != "x86_64")
 	rm -rf ${WRKDIR}/UniFi/lib/native/Mac/x86_64
-.endif
+.  endif
 .endif
 
 do-build:
 # bundled mongod is a linux binary; replace with symlink to native binary
-	rm -f ${WRKSRC}/bin/mongod
-	ln -s ${PREFIX}/bin/mongod ${WRKSRC}/bin/mongod
+	rm -f ${WRKSRC}/UniFi/bin/mongod
+	ln -s ${PREFIX}/bin/mongod ${WRKSRC}/UniFi/bin/mongod
 	cd ${WRKDIR}/${SNAPPY_JAVA} && ${BUILD_MAKE_CMD} native
 
 do-install:
-	cd ${WRKSRC} && pax -rw . ${DESTDIR}${PREFIX}/unifi
+	cd ${WRKSRC}/UniFi && pax -rw . ${DESTDIR}${PREFIX}/unifi
 	${INSTALL_LIB} ${WRKDIR}/${SNAPPY_JAVA}/target/snappy-1.0.5-Default/libsnappyjava.so ${DESTDIR}${PREFIX}/unifi/lib
 
 .include "../../mk/java-vm.mk"

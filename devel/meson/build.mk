@@ -1,6 +1,9 @@
-# $NetBSD: build.mk,v 1.11 2021/04/29 20:15:59 wiz Exp $
+# $NetBSD: build.mk,v 1.13 2021/08/15 11:50:03 rillig Exp $
 
-TOOL_DEPENDS+=	meson-[0-9]*:../../devel/meson
+MESON_REQD?=	0
+.for version in ${MESON_REQD}
+TOOL_DEPENDS+=	meson>=${version}:../../devel/meson
+.endfor
 
 CONFIGURE_DIRS?=	.
 BUILD_DIRS?=		${CONFIGURE_DIRS}
@@ -54,7 +57,8 @@ meson-test:
 .endfor
 
 _VARGROUPS+=		meson
-_PKG_VARS.meson=	CONFIGURE_DIRS
+_PKG_VARS.meson=	MESON_REQD
+_PKG_VARS.meson+=	CONFIGURE_DIRS
 _PKG_VARS.meson+=	BUILD_DIRS MAKE_ENV
 _PKG_VARS.meson+=	TEST_DIRS TEST_ENV
 _PKG_VARS.meson+=	INSTALL_DIRS INSTALL_ENV
@@ -62,6 +66,7 @@ _PKG_VARS.meson+=	LLVM_CONFIG_PATH
 _PKG_VARS.meson+=	USE_CMAKE MESON_ARGS
 _USER_VARS.meson=	MAKE_JOBS PKG_SYSCONFDIR
 _USE_VARS.meson=	TOOLS_PATH.false WRKSRC PREFIX PKGMANDIR
+_USE_VARS.meson+=	_MAKE_JOBS_N
 _DEF_VARS.meson=	TOOL_DEPENDS
 _LISTED_VARS.meson=	*_ARGS *_DEPENDS
 _SORTED_VARS.meson=	*_ENV

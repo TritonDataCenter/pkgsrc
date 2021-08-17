@@ -1,7 +1,7 @@
-# $NetBSD: Makefile,v 1.209 2021/06/28 08:48:20 wiz Exp $
+# $NetBSD: Makefile,v 1.211 2021/08/14 00:32:17 tnn Exp $
 
 DISTNAME=		nss-${NSS_RELEASE:S/.0$//}
-NSS_RELEASE=		3.67.0
+NSS_RELEASE=		3.69.0
 CATEGORIES=		devel security
 MASTER_SITES=		${MASTER_SITE_MOZILLA_ALL:=security/nss/releases/NSS_${NSS_DIST_DIR_VERSION:S/_0$//}_RTM/src/}
 
@@ -10,8 +10,7 @@ HOMEPAGE=		https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS
 COMMENT=		Libraries to support development of security-enabled applications
 LICENSE=		mpl-2.0
 
-CHECK_PORTABILITY_SKIP+=	nss/tests/libpkix/libpkix.sh
-CHECK_PORTABILITY_SKIP+=	nss/tests/multinit/multinit.sh
+CHECK_PORTABILITY_SKIP+=	nss/tests/*/*.sh
 CHECK_PORTABILITY_SKIP+=	js/src/configure
 CHECK_PORTABILITY_SKIP+=	configure
 
@@ -94,7 +93,7 @@ MOD_MINOR_VERSION=	${NSS_RELEASE:S/3.//:C/\.[0-9]*//}
 MOD_PATCH_VERSION=	${NSS_RELEASE:C/[0-9.]*\.//}
 NSS_DIST_DIR_VERSION=	${MOD_MAJOR_VERSION}_${MOD_MINOR_VERSION}_${MOD_PATCH_VERSION}
 
-NSPR_MINIMUM_VERSION=	4.30
+NSPR_MINIMUM_VERSION=	4.32
 
 PKGCONFIG_OVERRIDE=	nss.pc
 
