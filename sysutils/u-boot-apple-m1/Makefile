@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.3 2021/08/12 07:35:05 wiz Exp $
+# $NetBSD: Makefile,v 1.5 2021/08/19 07:47:48 wiz Exp $
 
 UBOOT_TARGET=		apple-m1
 UBOOT_CONFIG=		apple_m1_defconfig

@@ -1,6 +1,6 @@
-# $NetBSD: Makefile.common,v 1.2 2021/02/14 13:43:39 otis Exp $
+# $NetBSD: Makefile.common,v 1.4 2021/08/22 04:03:07 gutteridge Exp $
 #
-# used by www/libunit/Makefile
+# used by devel/libunit/Makefile
 # used by www/unit/Makefile
 # used by www/unit-perl/Makefile
 # used by www/unit-php/Makefile
@@ -49,6 +49,9 @@ CONFIGURE_ARGS+=	--control=unix:${UNIT_RUNDIR}/control.unit.sock
 CONFIGURE_ARGS+=	--tmp=${UNIT_TMPDIR}
 CONFIGURE_ARGS+=	--user=${UNIT_USER}
 CONFIGURE_ARGS+=	--group=${UNIT_GROUP}
+CONFIGURE_ARGS+=	--mandir=${PREFIX}/${PKGMANDIR}
+
+CHECK_WRKREF_SKIP=	libexec/unit/modules/ruby.unit.so
 
 .include "../../www/unit/options.mk"
 

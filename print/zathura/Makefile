@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.43 2021/08/14 07:36:55 nia Exp $
+# $NetBSD: Makefile,v 1.45 2021/08/19 12:46:44 mef Exp $
 
 DISTNAME=	zathura-0.4.8
 CATEGORIES=	print
@@ -25,8 +25,16 @@ SUBST_MESSAGE.py=	Setting Python version variables.
 SUBST_FILES.py+=	doc/meson.build
 SUBST_VARS.py+=		PYVERSSUFFIX
 
+.include "../../mk/bsd.prefs.mk"
+
+.if ${OPSYS} == "NetBSD"
+# Needs --desktop and --xml
+TOOLS_PLATFORM.msgfmt=
+.endif
+
 .include "../../databases/sqlite3/buildlink3.mk"
 .include "../../devel/meson/build.mk"
+.include "../../devel/gettext-tools/buildlink3.mk"
 .include "../../graphics/cairo/buildlink3.mk"
 BUILDLINK_ABI_DEPENDS.girara?=	girara>=0.3.6
 .include "../../graphics/girara/buildlink3.mk"

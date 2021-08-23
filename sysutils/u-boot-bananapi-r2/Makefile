@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.9 2021/08/12 07:25:55 wiz Exp $
+# $NetBSD: Makefile,v 1.11 2021/08/19 07:47:49 wiz Exp $
 
 UBOOT_TARGET=		bananapi-r2
 UBOOT_CONFIG=		mt7623n_bpir2_defconfig
