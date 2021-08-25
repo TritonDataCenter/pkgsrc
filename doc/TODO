@@ -1,4 +1,4 @@
-$NetBSD: TODO,v 1.20963 2021/08/23 03:25:16 ryoon Exp $
+$NetBSD: TODO,v 1.20973 2021/08/25 07:14:01 nia Exp $
 
 Suggested new packages
 ======================
@@ -413,7 +413,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o R-ggspatial-1.1.5
 	o R-ggtern-3.3.0
 	o R-ggthemes-4.2.4
-	o R-gh-1.2.1
 	o R-gss-2.2.2
 	o R-gstat-2.0.7
 	o R-gtools-3.8.2
@@ -454,14 +453,11 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o R-rgeos-0.5.5
 	o R-robustbase-0.93.7
 	o R-rstudioapi-0.13
-	o R-rvest-1.0.0
 	o R-sandwich-3.0.0
 	o R-scales-1.1.1
-	o R-shinyjs-2.0.0
 	o R-spatstat-2.1.0
 	o R-spatstat.data-2.1.0
 	o R-spatstat.utils-2.1.0
-	o R-spelling-2.2
 	o R-splancs-2.01.42
 	o R-stars-0.5.2
 	o R-statmod-1.4.35
@@ -477,7 +473,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o R-viridis-0.6.0
 	o R-viridisLite-0.4.0
 	o R-xmlparsedata-1.0.5
-	o R-yaml-2.2.1
 	o RE-flex-3.0.2
 	o SOGo-2.4.1
 	o SOGo-5.1.1
@@ -848,7 +843,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o gimp-docs-sv-2.10.0
 	o gimp-docs-zh_CN-2.10.0
 	o gindent-2.2.12
-	o git-2.33
 	o gitea-1.14.1
 	o gitolite-3.6.12
 	o gkrellm-2.3.5
@@ -896,7 +890,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o go-cli-2.3.0
 	o go-cobra-1.1.3
 	o go-diff-1.2.0
-	o go-dns-1.1.41
 	o go-errors-0.9.1
 	o go-ffuf-1.3.0
 	o go-fsnotify-1.4.9
@@ -908,10 +901,8 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o go-ldap-3.3.0
 	o go-logrus-1.8.1
 	o go-md2man-2.0.0
-	o go-minify-2.9.16
 	o go-mkcert-1.4.3
 	o go-org-1.5.0
-	o go-parse-2.5.15
 	o go-protobuf-1.5.2
 	o go-runewidth-0.0.12
 	o go-siphash-1.2.2
@@ -1782,7 +1773,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o py-MyHDL-0.11
 	o py-Routes-2.5.1
 	o py-Scientific-doc-2.5.5
-	o py-acora-2.3
 	o py-astroplan-0.8
 	o py-astroquery-0.4
 	o py-cares-3.1.1
@@ -1801,7 +1791,6 @@ For possible Perl packages updates, see http://www.NetBSD.org/~wiz/perl.html
 	o py-input-pad-1.4.2
 	o py-keybinder-0.3.2
 	o py-lazr.config-2.2.3
-	o py-lupa-1.9
 	o py-marisa-0.2.6
 	o py-markdown-3.2.2 [drops python-2.x support]
 	o py-mautrix-0.9.1

@@ -1,9 +1,10 @@
-# $NetBSD: Makefile,v 1.9 2021/06/06 01:36:13 mef Exp $
+# $NetBSD: Makefile,v 1.12 2021/08/24 22:04:32 khorben Exp $
 
 .include "version.mk"
 
 DISTNAME=	angr-${ANGR_VERSION}
 PKGNAME=	${PYPKGPREFIX}-${EGG_NAME}
+PKGREVISION=	3
 CATEGORIES=	devel
 MASTER_SITES=	${MASTER_SITE_GITHUB:=angr/}
 GITHUB_PROJECT=	angr
@@ -35,12 +36,16 @@ MAKE_FLAGS+=	LIBDIR=${LIBDIR:Q}
 LDFLAGS+=	${COMPILER_RPATH_FLAG}${PREFIX}/${PYSITELIB:Q}/pyvex/lib
 
 DEPENDS+=	${PYPKGPREFIX}-CppHeaderParser-[0-9]*:../../devel/py-CppHeaderParser
+DEPENDS+=	${PYPKGPREFIX}-ailment>=${ANGR_VERSION}:../../devel/py-ailment
 DEPENDS+=	${PYPKGPREFIX}-archinfo>=${ANGR_VERSION}:../../devel/py-archinfo
 DEPENDS+=	${PYPKGPREFIX}-cachetools-[0-9]*:../../devel/py-cachetools
 DEPENDS+=	${PYPKGPREFIX}-capstone>=4.0.2:../../devel/py-capstone
 DEPENDS+=	${PYPKGPREFIX}-cffi-[0-9]*:../../devel/py-cffi
 DEPENDS+=	${PYPKGPREFIX}-claripy>=${ANGR_VERSION}:../../math/py-claripy
 DEPENDS+=	${PYPKGPREFIX}-cle>=${ANGR_VERSION}:../../devel/py-cle
+DEPENDS+=	${PYPKGPREFIX}-cparser-[0-9]*:../../devel/py-cparser
+DEPENDS+=	${PYPKGPREFIX}-dpkt-[0-9]*:../../net/py-dpkt
+DEPENDS+=	${PYPKGPREFIX}-gitpython-[0-9]*:../../devel/py-gitpython
 DEPENDS+=	${PYPKGPREFIX}-itanium_demangler-[0-9]*:../../devel/py-itanium_demangler
 DEPENDS+=	${PYPKGPREFIX}-mulpyplexer-[0-9]*:../../devel/py-mulpyplexer
 DEPENDS+=	${PYPKGPREFIX}-networkx-[0-9]*:../../math/py-networkx
@@ -48,6 +53,8 @@ DEPENDS+=	${PYPKGPREFIX}-progressbar2-[0-9]*:../../devel/py-progressbar2
 DEPENDS+=	${PYPKGPREFIX}-protobuf-[0-9]*:../../devel/py-protobuf
 DEPENDS+=	${PYPKGPREFIX}-psutil-[0-9]*:../../sysutils/py-psutil
 DEPENDS+=	${PYPKGPREFIX}-pyvex>=${ANGR_VERSION}:../../devel/py-pyvex
+DEPENDS+=	${PYPKGPREFIX}-rpyc-[0-9]*:../../net/py-rpyc
+DEPENDS+=	${PYPKGPREFIX}-sortedcontainers-[0-9]*:../../devel/py-sortedcontainers
 DEPENDS+=	${PYPKGPREFIX}-unicorn-[0-9]*:../../emulators/py-unicorn
 
 PYTHON_VERSIONS_INCOMPATIBLE=	27

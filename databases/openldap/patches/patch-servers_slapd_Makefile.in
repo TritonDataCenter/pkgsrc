@@ -1,0 +1,38 @@
+$NetBSD: patch-servers_slapd_Makefile.in,v 1.1 2021/08/23 09:58:58 adam Exp $
+
+slapd must be installed unstripped: on some platorms (Darwin) tcp_wrappers'
+  variable called "allow_severity" must not be stripped away.
+
+--- servers/slapd/Makefile.in.orig	2021-07-27 17:44:47.000000000 +0000
++++ servers/slapd/Makefile.in
+@@ -76,6 +76,10 @@ XLIBS = $(SLAPD_STATIC_DEPENDS) $(SLAPD_
+ XXLIBS = $(SLAPD_LIBS) $(SECURITY_LIBS) $(LUTIL_LIBS)
+ XXXLIBS = $(LTHREAD_LIBS) $(SLAPI_LIBS)
+ 
++AC_CFLAGS += $(DL_CFLAGS)
++AC_LDFLAGS += $(DL_LDFLAGS)
++AC_LIBS += $(DL_LIBS)
++
+ BUILD_OPT = "--enable-slapd"
+ BUILD_SRV = @BUILD_SLAPD@
+ 
+@@ -375,7 +379,7 @@ install-local-srv: install-slapd install
+ install-slapd: FORCE
+ 	-$(MKDIR) $(DESTDIR)$(libexecdir)
+ 	-$(MKDIR) $(DESTDIR)$(localstatedir)/run
+-	$(LTINSTALL) $(INSTALLFLAGS) $(STRIP_OPTS) -m 755 \
++	$(LTINSTALL) $(INSTALLFLAGS) -m 755 \
+ 		slapd$(EXEEXT) $(DESTDIR)$(libexecdir)
+ 	@for i in $(SUBDIRS); do \
+ 	    if test -d $$i && test -f $$i/Makefile ; then \
+@@ -454,9 +458,7 @@ install-db-config: FORCE
+ 	@-$(MKDIR) $(DESTDIR)$(localstatedir) $(DESTDIR)$(sysconfdir)
+ 	@-$(INSTALL) -m 700 -d $(DESTDIR)$(localstatedir)/openldap-data
+ 	$(INSTALL) $(INSTALLFLAGS) -m 600 $(srcdir)/DB_CONFIG \
+-		$(DESTDIR)$(localstatedir)/openldap-data/DB_CONFIG.example
+-	$(INSTALL) $(INSTALLFLAGS) -m 600 $(srcdir)/DB_CONFIG \
+-		$(DESTDIR)$(sysconfdir)/DB_CONFIG.example
++		$(DESTDIR)$(sysconfdir)/DB_CONFIG
+ 
+ install-tools: FORCE
+ 	-$(MKDIR) $(DESTDIR)$(sbindir)
