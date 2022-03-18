@@ -16,6 +16,9 @@ USE_FEATURES+=		vsnprintf
 CONFIGURE_ENV+=		APP_MAN_SUFFIX=1
 CONFIGURE_ARGS+=	--with-bzip2
 
+CONFLICTS+=		mkfontdir-[0-9]*
+SUPERSEDES+=		mkfontdir-[0-9]*
+
 .include "../../devel/zlib/buildlink3.mk"
 .include "../../archivers/bzip2/buildlink3.mk"
 .include "../../graphics/freetype2/buildlink3.mk"
