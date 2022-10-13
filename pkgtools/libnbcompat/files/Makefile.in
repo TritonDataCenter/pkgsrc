@@ -24,6 +24,7 @@ LIB=		libnbcompat.a
 INCS=		nbcompat.h \
 		nbcompat/assert.h \
 		nbcompat/cdefs.h \
+		nbcompat/config.h \
 		nbcompat/ctype.h \
 		nbcompat/dirent.h \
 		nbcompat/endian.h \

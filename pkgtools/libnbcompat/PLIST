@@ -2,6 +2,7 @@
 include/nbcompat.h
 include/nbcompat/assert.h
 include/nbcompat/cdefs.h
+include/nbcompat/config.h
 include/nbcompat/ctype.h
 include/nbcompat/db.h
 include/nbcompat/dirent.h

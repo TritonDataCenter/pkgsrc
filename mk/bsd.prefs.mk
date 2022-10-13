@@ -1010,6 +1010,7 @@ _PKGSRC_USE_CTF=	no
 # explicitly requested them, or if they haven't but the compiler/platform is
 # known to support them.
 .if empty(PKGPATH:Mpkgtools/cwrappers) && \
+    empty(PKGPATH:Mpkgtools/libnbcompat) && \
     (${USE_CWRAPPERS:tl} == "yes" || \
     (${USE_CWRAPPERS:tl} == "auto" && \
      ${_OPSYS_SUPPORTS_CWRAPPERS:Uno} == "yes"))
@@ -1019,7 +1020,9 @@ _USE_CWRAPPERS=		no
 .endif
 
 # Use C-based tools to speed up pkgsrc infrastructure tasks.
-.if empty(PKGPATH:Mpkgtools/mktools) && \
+.if empty(PKGPATH:Mpkgtools/cwrappers) && \
+    empty(PKGPATH:Mpkgtools/libnbcompat) && \
+    empty(PKGPATH:Mpkgtools/mktools) && \
     (${PKGSRC_USE_MKTOOLS:tl} == "yes" || \
     (${PKGSRC_USE_MKTOOLS:tl} == "auto" && \
      ${_OPSYS_SUPPORTS_MKTOOLS:Uno} == "yes"))

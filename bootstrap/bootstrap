@@ -1481,6 +1481,12 @@ build_package_nopreserve() {
 }
 
 #
+# Build libnbcompat first, avoiding -DPKG_PRESERVE as it is only a build
+# dependency.
+#
+build_package_nopreserve "pkgtools/libnbcompat"
+
+#
 # Special packages that we don't want marked with BOOTSTRAP_PKG, but must be
 # built (if required) without -DPKG_PRESERVE set so that they can be deleted.
 #
