@@ -68,9 +68,6 @@ int	optind = 1;		/* index into parent argv vector */
 int	optopt = '?';		/* character checked for validity */
 char    *optarg;		/* argument associated with option */
 #endif
-#if !HAVE_DECL_OPTRESET
-int	optreset;		/* reset getopt */
-#endif
 
 #if 0
 #ifdef __weak_alias
@@ -191,11 +188,8 @@ getopt_internal(int nargc, char **nargv, const char *options)
 	if (optind == 0)
 		optind = 1;
 
-	if (optreset)
-		nonopt_start = nonopt_end = -1;
 start:
-	if (optreset || !*place) {		/* update scanning pointer */
-		optreset = 0;
+	if (!*place) {		/* update scanning pointer */
 		if (optind >= nargc) {          /* end of argument vector */
 			place = EMSG;
 			if (nonopt_end != -1) {
