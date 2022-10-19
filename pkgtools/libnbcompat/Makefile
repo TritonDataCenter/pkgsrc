@@ -19,6 +19,12 @@ MAKE_ENV+=		LIBMODE=${LIBMODE}
 # Enable by default for standalone builds
 CONFIGURE_ARGS+=	--enable-bsd-getopt --enable-db
 
+# Avoid any dependency cycles
+CHECK_PERMS_SKIP=	*
+CHECK_PORTABILITY_SKIP=	*
+PKGSRC_LOCKTYPE=	none
+IGNORE_CCACHE=		yes
+
 do-extract:
 	@${CP} -R ${FILESDIR} ${WRKSRC}
 
