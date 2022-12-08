@@ -304,6 +304,17 @@ fi
 
 ${sync_package} ${pkgfile} ${pkgname} "${categories}" || cleanup
 
+# Copy CTF output files if generated.
+wrkdir=$(run_make run_direct show-var VARNAME=WRKDIR)
+if [ -f ${wrkdir}/.ctfdata ]; then
+	mkdir -p ${packages}/ctfdata
+	cp ${wrkdir}/.ctfdata ${packages}/ctfdata/${pkgname}
+fi
+if [ -f ${wrkdir}/.ctferr ]; then
+	mkdir -p ${packages}/ctferr
+	cp ${wrkdir}/.ctferr ${packages}/ctferr/${pkgname}
+fi
+
 # Clean build area
 ${make} clean > ${logpkgdir}/clean.log 2>&1 || cleanup
 
