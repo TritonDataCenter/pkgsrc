@@ -83,6 +83,8 @@ else
 	mkdir -p ${loc}
 	sed -e 's/\#.*$//' -e 's/[ 	]*$//' -e '/^$/d' "${limited_list}" > ${loc}/missing
 
+	[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
+
 	while [ -s ${loc}/missing ]; do
 		sort -u ${loc}/missing > ${loc}/missing.s
 		echo "Scanning..."
@@ -91,9 +93,7 @@ else
 			${pscan} -v -l -M ${make} ${pkgsrc} ${loc}/pscan < ${loc}/missing.s
 			;;
 		[yY][eE][sS])
-			[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
 			${pscan} -v -l -I ${pscan_start_script} -m ${master_port_scan} -M ${make} ${pkgsrc} ${loc}/pscan < ${loc}/missing.s
-			[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 			;;
 		*)
 			echo "master_mode must be either yes or no."
@@ -110,6 +110,8 @@ else
 			mv ${loc}/presolve.new ${loc}/presolve
 		fi
 	done
+
+	[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 
 	if [ -s ${loc}/missing ]; then
 		echo "Unresolvable dependencies found, exiting:"
