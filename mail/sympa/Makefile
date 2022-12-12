@@ -96,7 +96,7 @@ RCD_SCRIPTS=		archived bounced bulk sympa task_manager
 .include "../../mk/bsd.options.mk"
 
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=	p5-DBD-mysql>=2.0407:../../databases/p5-DBD-mysql
+DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 .endif
 
 .if !empty(PKG_OPTIONS:Mpgsql)
