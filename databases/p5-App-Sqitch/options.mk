@@ -8,7 +8,7 @@ PKG_SUGGESTED_OPTIONS=	sqlite
 .include "../../mk/bsd.options.mk"
 
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=		p5-DBD-mysql>=4.018:../../databases/p5-DBD-mysql
+DEPENDS+=		p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 # MySQL::Config: '0'
 BUILD_PARAMS+=		--with mysql
 .endif

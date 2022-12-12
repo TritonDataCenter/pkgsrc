@@ -14,7 +14,7 @@ COMMENT=	Open source DMARC library, MTA filter implementation and tools
 LICENSE=	modified-bsd
 
 DEPENDS+=	p5-DBI-[0-9]*:../../databases/p5-DBI
-DEPENDS+=	p5-DBD-mysql-[0-9]*:../../databases/p5-DBD-mysql
+DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 DEPENDS+=	p5-Switch-[0-9]*:../../lang/p5-Switch
 DEPENDS+=	p5-HTTP-Message-[0-9]*:../../www/p5-HTTP-Message
 
