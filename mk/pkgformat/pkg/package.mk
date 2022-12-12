@@ -86,7 +86,26 @@ ${PKGFILE}: ${STAGE_PKGFILE}
 # of saving these files to PACKAGES directly in the "pkg-build" script, so
 # while there is code duplication, they aren't invoked twice.
 #
+CTFDATAFILE?=	${PACKAGES}/ctfdata/${PKGNAME}
+CTFERRFILE?=	${PACKAGES}/ctferr/${PKGNAME}
 PKGINFOFILE?=	${PACKAGES}/pkginfo/${PKGNAME}.pkginfo
+
+package-create: ${CTFDATAFILE}
+.OPTIONAL: ${WRKDIR}/.ctfdata
+${CTFDATAFILE}: ${WRKDIR}/.ctfdata
+	@${RUN}								\
+	${STEP_MSG} "Creating CTF data file ${.TARGET}";		\
+	${TEST} -d ${.TARGET:H} || ${MKDIR} ${.TARGET:H};		\
+	${CP} -f ${WRKDIR}/.ctfdata ${.TARGET}
+
+package-create: ${CTFERRFILE}
+.OPTIONAL: ${WRKDIR}/.ctferr
+${CTFERRFILE}: ${WRKDIR}/.ctferr
+	@${RUN}								\
+	${STEP_MSG} "Creating CTF error file ${.TARGET}";		\
+	${TEST} -d ${.TARGET:H} || ${MKDIR} ${.TARGET:H};		\
+	${CP} -f ${WRKDIR}/.ctferr ${.TARGET}
+
 package-create: ${PKGINFOFILE}
 ${PKGINFOFILE}: ${PKGFILE}
 	@${RUN}								\
