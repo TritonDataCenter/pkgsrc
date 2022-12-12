@@ -15,7 +15,7 @@ COMMENT=	Set of PHP scripts to administer PostgreSQL over the WWW
 WRKSRC=		${WRKDIR}/${DISTNAME}-mod
 
 DEPENDS+=	${PHP_PKG_PREFIX}-mbstring>=${PHP_BASE_VERS}:../../converters/php-mbstring
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=${PHP_BASE_VERS}:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 
 PHP_VERSIONS_INCOMPATIBLE=	56
 
