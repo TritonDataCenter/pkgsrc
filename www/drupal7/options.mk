@@ -14,7 +14,7 @@ PKG_SUGGESTED_OPTIONS=	mysql apache
 ### Use PostgreSQL for storing Drupal data
 ###
 .if !empty(PKG_OPTIONS:Mpgsql)
-DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql>=5.2.7:../../databases/php-pdo_pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql*-[0-9]*:../../databases/php-pdo_pgsql
 .elif !empty(PKG_OPTIONS:Mmysql)
 ###
 ### Use MySQL for storing Drupal data
