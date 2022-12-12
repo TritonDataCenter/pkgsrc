@@ -26,7 +26,7 @@ DEPENDS+=	${PHP_PKG_PREFIX}-gettext>=5.4.0:../../devel/php-gettext
 DEPENDS+=	${PHP_PKG_PREFIX}-ldap>=5.4.0:../../databases/php-ldap
 DEPENDS+=	${PHP_PKG_PREFIX}-mbstring>=5.4.0:../../converters/php-mbstring
 DEPENDS+=	${PHP_PKG_PREFIX}-mysqli>=5.4.0:../../databases/php-mysqli
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=5.4.0:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 DEPENDS+=	${PHP_PKG_PREFIX}-sockets>=5.4.0:../../net/php-sockets
 DEPENDS+=	${PHP_PKG_PREFIX}-sysvsem>=5.4.0:../../devel/php-sysvsem
 

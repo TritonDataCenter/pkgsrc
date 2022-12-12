@@ -13,7 +13,7 @@ HOMEPAGE=	https://github.com/phppgadmin/phppgadmin
 COMMENT=	Set of PHP scripts to administer PostgreSQL over the WWW
 
 DEPENDS+=	${PHP_PKG_PREFIX}-mbstring>=7.2.0:../../converters/php-mbstring
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=7.2.0:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 
 PHP_VERSIONS_INCOMPATIBLE=	56
 
