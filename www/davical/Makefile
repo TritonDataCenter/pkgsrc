@@ -34,8 +34,8 @@ PAXDIRS=	htdocs inc dba po scripts
 
 INSTALLATION_DIRS=	${DOCDIR} ${EGDIR}/config
 
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=${PHP_BASE_VERS}:../../databases/php-pgsql
-DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql>=${PHP_BASE_VERS}:../../databases/php-pdo_pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql*-[0-9]*:../../databases/php-pdo_pgsql
 DEPENDS+=	${PHP_PKG_PREFIX}-libawl>=0.56:../../devel/php-libawl
 DEPENDS+=	${PHP_PKG_PREFIX}-calendar>=${PHP_BASE_VERS}:../../time/php-calendar
 DEPENDS+=	${PHP_PKG_PREFIX}-curl>=${PHP_BASE_VERS}:../../www/php-curl
