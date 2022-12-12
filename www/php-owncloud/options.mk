@@ -21,6 +21,6 @@ DEPENDS+=	${PHP_PKG_PREFIX}-sqlite3>=5.4.0:../../databases/php-sqlite3
 # complained/failed that PDO was not present.
 DEPENDS+=	${PHP_PKG_PREFIX}-pdo_sqlite>=5.4.0:../../databases/php-pdo_sqlite
 .elif !empty(PKG_OPTIONS:Mpgsql)
-DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql>=5.4.0:../../databases/php-pdo_pgsql
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=5.4.0:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql*-[0-9]*:../../databases/php-pdo_pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 .endif
