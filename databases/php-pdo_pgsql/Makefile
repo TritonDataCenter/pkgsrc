@@ -1,6 +1,7 @@
 # $NetBSD: Makefile,v 1.20 2025/02/08 03:10:22 taca Exp $
 
 MODNAME=		pdo_pgsql
+PKGNAME=		${PHP_PKG_PREFIX}-${MODNAME}${PGSQL_VERSION}-${PHP_VERSION}
 PKGREVISION=		1
 CATEGORIES+=		databases
 COMMENT=		PHP extension for PHP Data Objects (PostgreSQL)
