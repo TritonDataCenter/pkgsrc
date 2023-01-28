@@ -83,7 +83,6 @@ ${PLIST.gprof}info/gprof.info
 ${PLIST.gld}info/ld.info
 info/ldint.info
 info/sframe-spec.info
-${PLIST.gld}lib/bfd-plugins/libdep.so
 lib/libbfd.la
 ${PLIST.ctf}lib/libctf-nobfd.la
 ${PLIST.ctf}lib/libctf.la
