@@ -36,3 +36,4 @@ __RCSID("$NetBSD: global.c,v 1.5 2009/02/02 12:35:01 joerg Exp $");
 Boolean Verbose = FALSE;
 Boolean Fake = FALSE;
 Boolean Force = FALSE;
+Boolean HideStdout = FALSE;
