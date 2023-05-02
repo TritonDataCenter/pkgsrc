@@ -443,6 +443,7 @@ char	*xasprintf(const char *, ...);
 extern Boolean Verbose;
 extern Boolean Fake;
 extern Boolean Force;
+extern Boolean HideStdout;
 extern const char *cert_chain_file;
 extern const char *certs_packages;
 extern const char *certs_pkg_vulnerabilities;
