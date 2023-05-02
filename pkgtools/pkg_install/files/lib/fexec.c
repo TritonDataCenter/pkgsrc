@@ -112,7 +112,8 @@ pfcexec(const char *path, const char *file, const char **argv)
 	int			status;
 
 #if FEXEC_USE_POSIX_SPAWN
-	int prevcwd;
+	int err, prevcwd;
+	posix_spawn_file_actions_t act;
 
 	if ((prevcwd = open(".", O_RDONLY|O_CLOEXEC|O_DIRECTORY)) < 0) {
 		warn("open prevcwd failed");
@@ -124,7 +125,23 @@ pfcexec(const char *path, const char *file, const char **argv)
 		return -1;
 	}
 
-	if (posix_spawn(&child, file, NULL, NULL, (char **)argv, environ) < 0) {
+	if ((err = posix_spawn_file_actions_init(&act)) != 0) {
+		errno = err;
+		warn("failed to init posix_spawn");
+		return -1;
+	}
+
+	if (HideStdout) {
+		err = posix_spawn_file_actions_addopen(&act, STDOUT_FILENO,
+		    "/dev/null", O_WRONLY, 0);
+		if (err != 0) {
+			errno = err;
+			warn("failed to add posix_spawn action");
+			return -1;
+		}
+	}
+
+	if (posix_spawn(&child, file, &act, NULL, (char **)argv, environ) < 0) {
 		warn("posix_spawn failed");
 		return -1;
 	}
@@ -136,11 +153,17 @@ pfcexec(const char *path, const char *file, const char **argv)
 
 	(void)close(prevcwd);
 #else
+	int devnull;
 	child = vfork();
 	switch (child) {
 	case 0:
+		devnull = open("/dev/null", O_WRONLY);
+
 		if ((path != NULL) && (chdir(path) < 0))
 			_exit(127);
+
+		if (HideStdout)
+			(void)dup2(devnull, STDOUT_FILENO);
 
 		(void)execvp(file, __UNCONST(argv));
 		_exit(127);

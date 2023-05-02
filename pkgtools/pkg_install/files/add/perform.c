@@ -1561,6 +1561,13 @@ pkg_do(const char *pkgpath, int mark_automatic, int top_level)
 
 	if (pkg->other_version != NULL) {
 		/*
+		 * If we're upgrading then close stdout to avoid repeating
+		 * install/deinstall messages which can be confusing (e.g.
+		 * telling users to remove config files that are still in use).
+		 */
+		HideStdout = TRUE;
+
+		/*
 		 * Replacing an existing package.
 		 * Write meta-data, get rid of the old version,
 		 * install/update dependencies and finally extract.
@@ -1618,7 +1625,7 @@ pkg_do(const char *pkgpath, int mark_automatic, int top_level)
 	if (Verbose)
 		printf("Package %s registered in %s\n", pkg->pkgname, pkg->install_logdir);
 
-	if (pkg->meta_data.meta_display != NULL)
+	if (pkg->meta_data.meta_display != NULL && !HideStdout)
 		fputs(pkg->meta_data.meta_display, stdout);
 
 	status = 0;
@@ -1665,6 +1672,7 @@ clean_memory:
 	free(pkg->pkgname);
 clean_find_archive:
 	free(pkg);
+	HideStdout = FALSE;
 	return status;
 }
 
