@@ -84,20 +84,15 @@ function check_pkg(DSO, lib,	pkg, found) {
 	}
 	if (pkg == "")
 		return 0
-	found=0
 	while ((getline < depends_file) > 0) {
 		if ($3 == pkg) {
-			found=1
-			if ($1 != "full")
-				continue
-			close(depends_file)
-			return 0
+			if ($1 == "full" || $1 == "implicit-full") {
+				close(depends_file)
+				return 0
+			}
 		}
 	}
-	if (found)
-		print DSO ": " lib ": " pkg " is not a runtime dependency"
-	# Not yet:
-	# print DSO ": " lib ": " pkg " is not a dependency"
+	print DSO ": " lib ": " pkg " is not a runtime dependency"
 	close(depends_file)
 }
 

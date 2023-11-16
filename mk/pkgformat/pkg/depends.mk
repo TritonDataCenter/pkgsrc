@@ -65,19 +65,21 @@ _LIST_DEPENDS_CMD=	\
 			" " \
 			" "${TOOL_DEPENDS:Q} \
 			" "${BUILD_DEPENDS:Q} \
-			" "${DEPENDS:Q}
+			" "${DEPENDS:Q} \
+			" "${IMPLICIT_BUILD_DEPENDS:Q} \
+			" "${IMPLICIT_DEPENDS:Q}
 
 _LIST_DEPENDS_CMD.bootstrap=	\
 	${PKGSRC_SETENV} AWK=${AWK:Q} PKG_ADMIN=${PKG_ADMIN:Q} \
 		PKGSRCDIR=${PKGSRCDIR:Q} PWD_CMD=${PWD_CMD:Q} SED=${SED:Q} \
 		${SH} ${PKGSRCDIR}/mk/pkgformat/pkg/list-dependencies \
-			" "${BOOTSTRAP_DEPENDS:Q} " " " " " " " "
+			" "${BOOTSTRAP_DEPENDS:Q} " " " " " " " " " " " "
 
 _LIST_DEPENDS_CMD.test=	\
 	${PKGSRC_SETENV} AWK=${AWK:Q} PKG_ADMIN=${PKG_ADMIN:Q} \
 		PKGSRCDIR=${PKGSRCDIR:Q} PWD_CMD=${PWD_CMD:Q} SED=${SED:Q} \
 		${SH} ${PKGSRCDIR}/mk/pkgformat/pkg/list-dependencies \
-			" " " "${TEST_DEPENDS:Q} " " " " " "
+			" " " "${TEST_DEPENDS:Q} " " " " " " " " " "
 
 _RESOLVE_DEPENDS_CMD=	\
 	${PKGSRC_SETENV} _PKG_DBDIR=${_PKG_DBDIR:Q} PKG_INFO=${PKG_INFO:Q} \
@@ -88,7 +90,9 @@ _RESOLVE_DEPENDS_CMD=	\
 			" " \
 			" "${TOOL_DEPENDS:Q} \
 			" "${BUILD_DEPENDS:Q} \
-			" "${DEPENDS:Q}
+			" "${DEPENDS:Q} \
+			" "${IMPLICIT_BUILD_DEPENDS:Q} \
+			" "${IMPLICIT_DEPENDS:Q}
 
 CROSSTARGETSETTINGS=	${CROSSVARS:@_v_@TARGET_${_v_}=${${_v_}}@}
 
@@ -103,6 +107,7 @@ CROSSTARGETSETTINGS=	${CROSSVARS:@_v_@TARGET_${_v_}=${${_v_}}@}
 #
 _DEPENDS_INSTALL_CMD=							\
 	case $$type in							\
+	implicit*)	continue;;					\
 	bootstrap)	Type=Bootstrap;;				\
 	tool)		Type=Tool;;					\
 	build)		Type=Build;;					\

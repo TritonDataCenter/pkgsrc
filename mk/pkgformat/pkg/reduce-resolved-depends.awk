@@ -65,6 +65,8 @@ BEGIN {
 		}
 		if ($1 != "full" &&
 		    $1 != "build" &&
+		    $1 != "implicit-full" &&
+		    $1 != "implicit-build" &&
 		    $1 != "tool" &&
 		    $1 != "bootstrap") {
 			print "ERROR: [" PROGNAME "] invalid dependency line " $0 | ERRCAT
@@ -82,6 +84,8 @@ BEGIN {
 		if (type[i] == "full" && checked_full[pkg[i]] != 1) {
 			checked_full[pkg[i]] = 1
 			checked_build[pkg[i]] = 1
+			checked_implicit_full[pkg[i]] = 1
+			checked_implicit_build[pkg[i]] = 1
 			checked_tool[pkg[i]] = 1
 			checked_bootstrap[pkg[i]] = 1
 			print_line[i] = 1
@@ -139,6 +143,18 @@ BEGIN {
 			close(cmd)
 			if (found == 0)
 				print_line[i] = 1
+		}
+	}
+
+	# Just pass through implicit-* for now.
+	for (i = 0; i < lines; ++i) {
+		if (type[i] == "implicit-build" && checked_implicit_build[pkg[i]] != 1) {
+			checked_implicit_build[pkg[i]] = 1
+			print_line[i] = 1
+		}
+		if (type[i] == "implicit-full" && checked_implicit_full[pkg[i]] != 1) {
+			checked_implicit_full[pkg[i]] = 1
+			print_line[i] = 1
 		}
 	}
 

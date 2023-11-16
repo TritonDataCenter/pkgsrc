@@ -226,9 +226,46 @@ _SYS_VARS.bl3+=		${v}.${p}
 .  endfor
 .endfor
 
-# By default, every package receives a full dependency.
+# Set BUILDLINK_DEFAULT_DEPMETHOD for each package.  Iterate through the tree,
+# and if a package has explicitly set BUILDLINK_DEPMETHOD then use it as the
+# default for its dependencies, otherwise default to "full".
+#
+# If a package was previously marked "build" but is later encountered inside a
+# "full" stack then "full" must take precedence.
+#
+_stack_:=	bottom
+.for _pkg_ in ${BUILDLINK_TREE}
+.  if !${_pkg_:M-*}
+     # Some packages erroneously have multiple values for BUILDLINK_DEPMETHOD,
+     # so resort to matching and "full" takes precedence over "build".
+.    if ${BUILDLINK_DEPMETHOD.${_pkg_}:U:Mfull}
+_stack_:=	full ${_stack_}
+.    elif ${BUILDLINK_DEPMETHOD.${_pkg_}:U:Mbuild}
+_stack_:=	build ${_stack_}
+.    elif ${_stack_} == "bottom"
+_stack_:=	full ${_stack_}
+.    else
+_stack_:=	${_stack_:[1]} ${_stack_}
+.    endif
+.  else
+.    if !defined(BUILDLINK_DEFAULT_DEPMETHOD.${_pkg_:S/^-//}) || \
+	(${BUILDLINK_DEFAULT_DEPMETHOD.${_pkg_:S/^-//}} == "build" && \
+	 ${_stack_:[1]} == full)
+BUILDLINK_DEFAULT_DEPMETHOD.${_pkg_:S/^-//}:=	${_stack_:[1]}
+.    endif
+_stack_:=	${_stack_:[2..-1]}
+.  endif
+.endfor
+.if ${_stack_} != "bottom"
+.  error "The above loop through BUILDLINK_TREE failed to balance"
+.endif
+
+# Now set BUILDLINK_DEPMETHOD for each package based on its default.  Note that
+# we can't do this in one loop above because we need to detect when
+# BUILDLINK_DEPMETHOD has been set by a package and not as part of the loop.
+#
 .for _pkg_ in ${_BLNK_PACKAGES}
-BUILDLINK_DEPMETHOD.${_pkg_}?=	full
+BUILDLINK_DEPMETHOD.${_pkg_}?=	${BUILDLINK_DEFAULT_DEPMETHOD.${_pkg_}}
 .endfor
 
 # _BLNK_DEPENDS contains all of the elements of _BLNK_PACKAGES for which
@@ -253,10 +290,13 @@ _BLNK_DEPENDS+=	${_pkg_}
 # "build", and if any of that list is "full" then we use a full dependency
 # on <pkg>, otherwise we use a build dependency on <pkg>.
 #
-_BLNK_ADD_TO.DEPENDS=		# empty
-_BLNK_ADD_TO.BUILD_DEPENDS=	# empty
-_BLNK_ADD_TO.ABI_DEPENDS=	# empty
-_BLNK_ADD_TO.BUILD_ABI_DEPENDS=	# empty
+_BLNK_ADD_TO.DEPENDS=			# empty
+_BLNK_ADD_TO.BUILD_DEPENDS=		# empty
+_BLNK_ADD_TO.ABI_DEPENDS=		# empty
+_BLNK_ADD_TO.BUILD_ABI_DEPENDS=		# empty
+_BLNK_ADD_TO.IMPLICIT_DEPENDS=		# empty
+_BLNK_ADD_TO.IMPLICIT_BUILD_DEPENDS=	# empty
+
 .for _pkg_ in ${_BLNK_DEPENDS}
 .  if !empty(BUILDLINK_DEPMETHOD.${_pkg_}:Mfull)
 _BLNK_DEPMETHOD.${_pkg_}=	_BLNK_ADD_TO.DEPENDS
@@ -265,6 +305,23 @@ _BLNK_ABIMETHOD.${_pkg_}=	_BLNK_ADD_TO.ABI_DEPENDS
 _BLNK_DEPMETHOD.${_pkg_}=	_BLNK_ADD_TO.BUILD_DEPENDS
 _BLNK_ABIMETHOD.${_pkg_}=	_BLNK_ADD_TO.BUILD_ABI_DEPENDS
 .  endif
+.endfor
+
+.for _pkg_ in ${_BLNK_PACKAGES}
+.  if !${_BLNK_DEPENDS:M${_pkg_}} && \
+      !defined(IGNORE_PKG.${_pkg_}) && \
+      ${USE_BUILTIN.${_pkg_}:U:tl} == "no"
+.    if ${BUILDLINK_DEPMETHOD.${_pkg_}} == "full"
+_BLNK_DEPMETHOD.${_pkg_}=	_BLNK_ADD_TO.IMPLICIT_DEPENDS
+_BLNK_ABIMETHOD.${_pkg_}=	_BLNK_ADD_TO.IMPLICIT_ABI_DEPENDS
+.    elif ${BUILDLINK_DEPMETHOD.${_pkg_}} == "build"
+_BLNK_DEPMETHOD.${_pkg_}=	_BLNK_ADD_TO.IMPLICIT_BUILD_DEPENDS
+_BLNK_ABIMETHOD.${_pkg_}=	_BLNK_ADD_TO.IMPLICIT_BUILD_ABI_DEPENDS
+.    endif
+.  endif
+.endfor
+
+.for _pkg_ in ${_BLNK_PACKAGES:O:u}
 .  if defined(BUILDLINK_API_DEPENDS.${_pkg_}) && \
       defined(BUILDLINK_PKGSRCDIR.${_pkg_})
 .    for _depend_ in ${BUILDLINK_API_DEPENDS.${_pkg_}}
@@ -282,11 +339,12 @@ ${_BLNK_ABIMETHOD.${_pkg_}}+=	${_abi_}:${BUILDLINK_PKGSRCDIR.${_pkg_}}
 .    endfor
 .  endif
 .endfor
-.for _depmethod_ in DEPENDS BUILD_DEPENDS ABI_DEPENDS BUILD_ABI_DEPENDS
+
+.for _depmethod_ in DEPENDS BUILD_DEPENDS ABI_DEPENDS BUILD_ABI_DEPENDS IMPLICIT_DEPENDS IMPLICIT_BUILD_DEPENDS
 .  if !empty(_BLNK_ADD_TO.${_depmethod_})
 ${_depmethod_}+=	${_BLNK_ADD_TO.${_depmethod_}}
 .  endif
-.endfor	# _BLNK_DEPENDS
+.endfor
 
 ###
 ### BEGIN: after the barrier
