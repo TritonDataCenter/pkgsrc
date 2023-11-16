@@ -16,6 +16,7 @@
 #		build		= BOOTSTRAP_DEPENDS
 #				+ TOOL_DEPENDS
 #				+ BUILD_DEPENDS
+#				+ INDIRECT_BUILD_DEPENDS
 #		install		= DEPENDS
 #		package		XXX: same as install?
 #
@@ -25,7 +26,8 @@
 # Keywords: depends dependencies
 DEPENDS_TYPE?=  all
 .if !empty(DEPENDS_TYPE:Mbuild) || !empty(DEPENDS_TYPE:Mall)
-_ALL_DEPENDS+=	${BOOTSTRAP_DEPENDS} ${BUILD_DEPENDS} ${TOOL_DEPENDS}
+_ALL_DEPENDS+=	${BOOTSTRAP_DEPENDS} ${TOOL_DEPENDS}
+_ALL_DEPENDS+=	${BUILD_DEPENDS} ${INDIRECT_BUILD_DEPENDS}
 .  if !empty(PKGSRC_RUN_TEST:M[yY][eE][sS])
 _ALL_DEPENDS+=	${TEST_DEPENDS}
 .  endif
