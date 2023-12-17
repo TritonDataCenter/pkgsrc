@@ -48,6 +48,22 @@ CFLAGS.SunOS+=		-D_FILE_OFFSET_BITS=64
 
 DEPENDS+=		pkg_install>=20200701:../../pkgtools/pkg_install
 
+#
+# Ensure all libraries from pkgsrc are linked statically to avoid any potential
+# issues during upgrades.  This means we also need to add libraries that are
+# indirect dependents of the shared libraries we remove.
+#
+LIBS.Darwin+=	-lbz2 -liconv -llzma -lz
+LIBS.SunOS+=	-lbz2 -llzma -lm -lnsl -lz
+
+.for dep in libarchive sqlite3 libfetch openssl
+BUILDLINK_DEPMETHOD.${dep}=	build
+.endfor
+
+pre-configure:
+	${RM} -f ${BUILDLINK_DIR}/lib/*.dylib
+	${RM} -f ${BUILDLINK_DIR}/lib/*.so*
+
 .include "options.mk"
 
 USE_TOOLS+=	autoconf automake
