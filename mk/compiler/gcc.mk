@@ -446,6 +446,7 @@ _IS_BUILTIN_GCC=	NO
 # Distill the GCC_REQD list into a single _GCC_REQD value that is the
 # highest version of GCC required.
 #
+.if !defined(_GCC_REQD)
 _GCC_STRICTEST_REQD?=	none
 .for _version_ in ${GCC_REQD}
 .  for _pkg_ in gcc-${_version_}
@@ -468,6 +469,7 @@ _GCC_STRICTEST_REQD=	${_version_}
 .  endfor
 .endfor
 _GCC_REQD=	${_GCC_STRICTEST_REQD}
+.endif
 
 # Determine which GCC version is required by examining _GCC_REQD.
 _NEED_GCC6?=	no
