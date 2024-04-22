@@ -1021,7 +1021,7 @@ _NEED_NEWER_GCC!=	\
 PKG_FAIL_REASON+=	"Unable to satisfy dependency: ${_GCC_DEPENDS}"
 .endif
 
-.if !empty(_USE_PKGSRC_GCC:M[yY][eE][sS])
+.if !empty(_USE_PKGSRC_GCC:M[yY][eE][sS]) && !defined(_GCC_PREFIX)
 #
 # Ensure that the correct rpath is passed to the linker if we need to
 # link against gcc shared libs.
@@ -1063,9 +1063,8 @@ _GCC_LDFLAGS=	# empty
 .  for _dir_ in ${_GCC_LIBDIRS:N*not_found*}
 _GCC_LDFLAGS+=	-L${_dir_} ${COMPILER_RPATH_FLAG}${_dir_}
 .  endfor
-.endif
-
 LDFLAGS+=	${_GCC_LDFLAGS}
+.endif
 
 # Point the variables that specify the compiler to the installed
 # GCC executables.
