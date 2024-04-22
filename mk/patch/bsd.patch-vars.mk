@@ -27,17 +27,17 @@
 
 PATCHFILES?=	# none
 
-pkgsrc_patches=	${:!echo ${PATCHDIR}/patch-* ${PATCHDIR}/emul-*-patch-*!:N*\*}
 .if !empty(LOCALPATCHES)
 local_patches=	${:!echo ${LOCALPATCHES}/${PKGPATH}/*!:N*/CVS:N*/\*}
 .endif
 
-.if !empty(PATCHFILES) || !empty(pkgsrc_patches) || !empty(local_patches)
+# Optimise away check for patch-*, requires using version control that cleans
+# up empty directories.
+.if !empty(PATCHFILES) || exists(${PATCHDIR}) || !empty(local_patches)
 USE_TOOLS+=	patch
-.endif
-.if (!empty(PATCHFILES) || !empty(pkgsrc_patches)) \
-  && empty(TOOLS_PLATFORM.mktool)
+.  if empty(TOOLS_PLATFORM.mktool)
 USE_TOOLS+=	digest:bootstrap
+.  endif
 .endif
 
 # These tools are used to output the contents of the distribution patches
