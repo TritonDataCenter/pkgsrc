@@ -145,8 +145,10 @@ MYSQL_VERSION=	${MYSQL_VERSION_REQD}
 MYSQL_VERSION=	${MYSQL_VERSION_DEFAULT}
 .else
 .  for ver in ${MYSQL_VERSIONS_ACCEPTED}
-.    if ${MYSQL_INSTALLED_CMD.${ver}:sh} == "yes"
-MYSQL_VERSION?=	${ver}
+.    if !defined(MYSQL_VERSION)
+.      if ${MYSQL_INSTALLED_CMD.${ver}:sh} == "yes"
+MYSQL_VERSION=	${ver}
+.      endif
 .    endif
 .  endfor
 .endif
