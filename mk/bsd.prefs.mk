@@ -87,6 +87,10 @@ UNAME=/run/current-system/sw/bin/uname
 UNAME=echo Unknown
 .endif
 
+# Prior to running our first external command, load an optional per-OS cached
+# variables file that precomputes any expensive variables.
+.sinclude "platform/vars.${.MAKE.OS}.mk"
+
 .if !defined(NATIVE_OPSYS)
 NATIVE_OPSYS:=		${:!${UNAME} -s!:S/-//g:S/\///g:C/^CYGWIN_.*$/Cygwin/}
 MAKEFLAGS+=		NATIVE_OPSYS=${NATIVE_OPSYS:Q}
