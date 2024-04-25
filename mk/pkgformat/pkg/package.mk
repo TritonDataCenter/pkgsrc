@@ -125,18 +125,16 @@ tarup-pkg:
 ### Otherwise it is identical to calling package.
 ###
 
-.PHONY: package-install real-package-install su-real-package-install
+.PHONY: package-install real-package-install
+.PHONY: stage-package-install su-real-package-install
 .if defined(_PKGSRC_BARRIER)
+.  if ${_KEEP_BIN_PKGS} == "no"
+package-install: stage-package-create real-package-install
+.  else
 package-install: package real-package-install
+.  endif
 .else
 package-install: barrier
-.endif
-
-.PHONY: stage-package-install
-.if defined(_PKGSRC_BARRIER)
-stage-package-install: stage-package-create real-package-install
-.else
-stage-package-install: barrier
 .endif
 
 .if !empty(USE_CROSS_COMPILE:M[yY][eE][sS])
