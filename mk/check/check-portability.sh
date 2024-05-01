@@ -94,7 +94,7 @@ find ./* -type f -print 2>/dev/null \
 			firstline=`sed 1q < "$fname"`
 			;;
 
-		*)	read firstline < "$fname" || continue
+		*)	read -n 128 firstline < "$fname" || continue
 			;;
 		esac
 
