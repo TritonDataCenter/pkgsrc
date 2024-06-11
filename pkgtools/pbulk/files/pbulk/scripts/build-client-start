@@ -31,7 +31,7 @@ for client in ${build_clients}; do
 	if [ -z "$path" ]; then
 		if [ -n "${chroot_create}" -a "${chroot_dir}" ]; then
 			ssh $port $client "for dir in ${chroot_dir}-build*; do
-				PBULK_CONF=${PBULK_CONF} chroot \${dir} @SH@ -c \"${pbuild} -c ${master_port_build} -b ${pbuild_script}\" &
+				env -i PBULK_CONF=${PBULK_CONF} chroot \${dir} ${pbuild} -c ${master_port_build} -b ${pbuild_script} &
 			done" &
 		else
 			ssh $port $client "${pbuild} -c ${master_port_build} -b ${pbuild_script}" &
