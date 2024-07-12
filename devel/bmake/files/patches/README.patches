@@ -1,0 +1,29 @@
+## How to update bmake
+
+pkgsrc has a few minor differences compared to upstream bmake, so it is
+critical that they are preserved when updating.
+
+The general approach is:
+
+  * Ensure the files/patches/ directory contains all of the current set of
+    pkgsrc patches, with one file per logical change.
+
+  * Fetch the updated version from https://www.crufty.net/ftp/pub/sjg/
+
+  * Unpack over the top of files/ ("tar --strip-components 1 ...")
+
+  * Re-apply manual patches, ensuring to update patch files afterwards with
+    any changes.
+
+The most important part is to then test thoroughly across as wide a range of
+operating systems as possible, especially older ones that may expose
+portability issues.
+
+The "test" target should run cleanly with all tests passing, and ideally a
+full bulk build on at least one non-NetBSD platform.
+
+## Known issues
+
+Currently the test suite does not run cleanly on macOS.  This appears to be
+due to using mksh as the primary shell, and does not appear to affect general
+behaviour, instead being limited to output differences.

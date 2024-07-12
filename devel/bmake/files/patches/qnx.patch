@@ -1,0 +1,37 @@
+commit 50cec6ea6503748e9f304ce1d60936162ae862fa
+Author: js <js@pkgsrc.org>
+Date:   Tue Aug 25 21:43:33 2020 +0000
+
+    devel/bmake: Fix compiling on QNX 6.5
+
+diff --git a/devel/bmake/files/meta.c b/devel/bmake/files/meta.c
+index 84f928785c19..ea032cc84b84 100644
+--- a/devel/bmake/files/meta.c
++++ b/devel/bmake/files/meta.c
+@@ -46,6 +46,10 @@ char * dirname(char *);
+ #include <err.h>
+ #endif
+ 
++#ifdef HAVE_SYS_SELECT_H
++#include <sys/select.h>
++#endif
++
+ #include "make.h"
+ #include "dir.h"
+ #include "job.h"
+diff --git a/devel/bmake/files/util.c b/devel/bmake/files/util.c
+index f660c21a228a..0800b0c69d8c 100644
+--- a/devel/bmake/files/util.c
++++ b/devel/bmake/files/util.c
+@@ -351,7 +351,11 @@ bmake_signal(int s, SignalProc a)
+ 
+ 	sa.sa_handler = a;
+ 	sigemptyset(&sa.sa_mask);
++#ifdef SA_RESTART
+ 	sa.sa_flags = SA_RESTART;
++#else
++	sa.sa_flags = 0;
++#endif
+ 
+ 	if (sigaction(s, &sa, &osa) == -1)
+ 		return SIG_ERR;

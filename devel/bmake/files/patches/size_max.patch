@@ -1,0 +1,28 @@
+commit 8ff65ed3ee8322e5eb9cfcacbb371510c752d8c8
+Author: tnn <tnn@pkgsrc.org>
+Date:   Sun Apr 3 19:18:00 2022 +0000
+
+    bmake: provide last-resort SIZE_MAX fallback for pre-<stdint.h> systems
+    
+    Not committed in src/usr.bin/make because the code has diverged and
+    this patch doesn't look to be needed there.
+    It is OK to undo this change when pkgsrc imports a newer bmake.
+
+diff --git a/devel/bmake/files/make.h b/devel/bmake/files/make.h
+index 0023da6b2167..84da0c76b059 100644
+--- a/devel/bmake/files/make.h
++++ b/devel/bmake/files/make.h
+@@ -92,6 +92,13 @@
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <stdarg.h>
++#ifdef HAVE_STDINT_H
++#include <stdint.h>
++#else
++#ifndef SIZE_MAX
++#define SIZE_MAX 0xffffffffUL
++#endif
++#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #ifdef HAVE_STRING_H
