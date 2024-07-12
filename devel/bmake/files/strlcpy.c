@@ -1,4 +1,4 @@
-/*	$NetBSD: strlcpy.c,v 1.4 2020/05/24 21:10:17 nia Exp $	*/
+/*	$NetBSD: strlcpy.c,v 1.3 2007/06/04 18:19:27 christos Exp $	*/
 /*	$OpenBSD: strlcpy.c,v 1.7 2003/04/12 21:56:39 millert Exp $	*/
 
 /*
@@ -17,9 +17,8 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include "make.h"
+
 #ifndef HAVE_STRLCPY
 
 #include <sys/cdefs.h>

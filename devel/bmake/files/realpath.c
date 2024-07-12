@@ -1,5 +1,5 @@
-/* $Id: realpath.c,v 1.4 2020/05/24 21:10:17 nia Exp $ */
-/* from: $NetBSD: realpath.c,v 1.4 2020/05/24 21:10:17 nia Exp $	*/
+/* $Id: realpath.c,v 1.3 2013/01/25 17:06:09 sjg Exp $ */
+/* from: $NetBSD: getcwd.c,v 1.53 2012/06/21 23:29:23 enami Exp $	*/
 
 /*
  * Copyright (c) 1989, 1991, 1993, 1995

@@ -1,4 +1,4 @@
-/*	$NetBSD: cdefs.h,v 1.6 2020/05/24 11:09:44 nia Exp $	*/
+/*	$NetBSD: cdefs.h,v 1.18 1997/06/18 19:09:50 christos Exp $	*/
 
 /*
  * Copyright (c) 1991, 1993

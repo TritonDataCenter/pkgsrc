@@ -1,4 +1,4 @@
-/*	$NetBSD: stresep.c,v 1.4 2020/05/24 21:10:17 nia Exp $	*/
+/*	$NetBSD: stresep.c,v 1.4 2017/08/23 10:27:41 christos Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
