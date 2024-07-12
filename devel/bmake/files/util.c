@@ -351,7 +351,11 @@ bmake_signal(int s, SignalProc a)
 
 	sa.sa_handler = a;
 	sigemptyset(&sa.sa_mask);
+#ifdef SA_RESTART
 	sa.sa_flags = SA_RESTART;
+#else
+	sa.sa_flags = 0;
+#endif
 
 	if (sigaction(s, &sa, &osa) == -1)
 		return SIG_ERR;

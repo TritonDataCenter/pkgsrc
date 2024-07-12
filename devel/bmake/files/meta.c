@@ -46,6 +46,10 @@ char * dirname(char *);
 #include <err.h>
 #endif
 
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+
 #include "make.h"
 #include "dir.h"
 #include "job.h"
