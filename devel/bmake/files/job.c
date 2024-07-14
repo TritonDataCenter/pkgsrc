@@ -2156,7 +2156,7 @@ InitShellNameAndPath(void)
 	}
 #endif
 #ifdef DEFSHELL_PATH
-	shellPath = DEFSHELL_PATH;
+	shellPath = bmake_strdup(DEFSHELL_PATH);
 #else
 	shellPath = str_concat3(_PATH_DEFSHELLDIR, "/", shellName);
 #endif

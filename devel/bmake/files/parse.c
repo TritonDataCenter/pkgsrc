@@ -105,17 +105,6 @@
 #include <stdint.h>
 #endif
 
-#ifdef HAVE_MMAP
-#include <sys/mman.h>
-
-#ifndef MAP_COPY
-#define MAP_COPY MAP_PRIVATE
-#endif
-#ifndef MAP_FILE
-#define MAP_FILE 0
-#endif
-#endif
-
 #include "dir.h"
 #include "job.h"
 #include "pathnames.h"

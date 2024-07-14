@@ -138,6 +138,10 @@
 #include "job.h"
 #include "metachar.h"
 
+#ifndef SIZE_MAX
+#define SIZE_MAX 0xffffffffUL
+#endif
+
 /*	"@(#)var.c	8.3 (Berkeley) 3/19/94" */
 MAKE_RCSID("$NetBSD: var.c,v 1.1135 2024/07/09 17:07:23 rillig Exp $");
 
@@ -3336,7 +3340,7 @@ bad_modifier:
 	return AMR_BAD;
 }
 
-#if __STDC__ >= 199901L || defined(HAVE_LONG_LONG_INT)
+#if __STDC_VERSION__ >= 199901L || defined(HAVE_LONG_LONG_INT)
 # define NUM_TYPE long long
 # define PARSE_NUM_TYPE strtoll
 #else

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.222 2024/07/07 16:34:32 sjg Exp $
+# $Id: Makefile,v 1.224 2024/07/13 05:27:35 sjg Exp $
 #
 # $NetBSD: Makefile,v 1.350 2024/07/07 09:37:00 rillig Exp $
 #
@@ -466,8 +466,23 @@ _shell := ${.SHELL:tA:T}
 .if ${_shell} == "dash" 
 # dash fails -x output
 BROKEN_TESTS+= opt-debug-x-trace
-.elif ${_shell} == "ksh"
-BROKEN_TESTS+= sh-flags
+.elif ${_shell:N*ksh*} == ""
+BROKEN_TESTS+= \
+	deptgt-silent-jobs \
+	job-flags \
+	job-output-long-lines \
+	opt-debug-x-trace \
+	sh-flags \
+	var-op-shell \
+
+.if ${_shell:Nmksh} == ""
+# more broken that pdksh
+BROKEN_TESTS+= \
+	opt-jobs-no-action \
+	sh-errctl \
+	sh-leading-hyphen \
+
+.endif
 .endif
 
 .if ${UTC_1:Uno} == ""
@@ -834,8 +849,10 @@ _SED_CMDS+=	-e '/EGREP=/d'
 .if ${.MAKE.OS:N*BSD} != ""
 _SED_CMDS+=	-e 's,\(Error code\) 255,\1 1,'
 .endif
-.if ${.SHELL:T} == "ksh"
+.if ${_shell:N*ksh*} == ""
 _SED_CMDS+=	-e '/^set [+-]v/d'
+SED_CMDS.opt-debug-jobs+= -e 's,Command: ksh -v,Command: <shell>,'
+SED_CMDS.opt-debug-jobs+= -e 's,Command: <shell> -v,Command: <shell>,'
 .endif
 
 .rawout.out:

@@ -1,3 +1,22 @@
+2024-07-13  Simon J Gerraty  <sjg@beast.crufty.net>
+
+	* cleanup redundant differences from NetBSD make
+	o parse.c: no longer uses mmap
+	o var.c: check __STDC_VERSION__ not __STDC__
+
+2024-07-12  Simon J Gerraty  <sjg@beast.crufty.net>
+
+	* Apply some patches from NetBSD pkgsrc to reduce divergence
+	o meta.c: requires sys/select.h if available
+	o var.c: ensure SIZE_MAX has a value
+	o util.c: ensure SA_RESTART is defined
+
+	* configure.in: use *ksh* rather than just *ksh to match
+	ksh shell specification.
+
+	* unit-tests/Makefile: expand BROKEN_TESTS for ksh and
+	mksh in particular
+
 2024-07-11  Simon J Gerraty  <sjg@beast.crufty.net>
 
 	* VERSION (_MAKE_VERSION): 20240711

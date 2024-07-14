@@ -92,13 +92,6 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdarg.h>
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#else
-#ifndef SIZE_MAX
-#define SIZE_MAX 0xffffffffUL
-#endif
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H

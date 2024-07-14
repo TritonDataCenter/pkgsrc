@@ -3,7 +3,7 @@
 /*
  * Missing stuff from OS's
  *
- *	$Id: util.c,v 1.52 2024/01/04 00:27:30 sjg Exp $
+ *	$Id: util.c,v 1.53 2024/07/12 18:37:25 sjg Exp $
  */
 
 #include <sys/param.h>
@@ -343,6 +343,10 @@ getcwd(path, sz)
 #include "sigact.h"
 #endif
 
+#ifndef SA_RESTART
+# define SA_RESTART 0
+#endif
+
 /* force posix signals */
 SignalProc
 bmake_signal(int s, SignalProc a)
@@ -351,11 +355,7 @@ bmake_signal(int s, SignalProc a)
 
 	sa.sa_handler = a;
 	sigemptyset(&sa.sa_mask);
-#ifdef SA_RESTART
 	sa.sa_flags = SA_RESTART;
-#else
-	sa.sa_flags = 0;
-#endif
 
 	if (sigaction(s, &sa, &osa) == -1)
 		return SIG_ERR;
