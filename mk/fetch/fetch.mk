@@ -134,7 +134,10 @@ post-fetch:
 .endif
 
 .for _file_ in ${_ALLFILES}
-.  if empty(PKG_RESUME_TRANSFERS:M[yY][eE][sS]) && \
+.  if ${FETCH_USING} == "mktool" && !empty(TOOLS_PLATFORM.mktool)
+${DISTDIR}/${_file_}:
+	@${DO_NADA}
+.  elif empty(PKG_RESUME_TRANSFERS:M[yY][eE][sS]) && \
       exists(${DISTDIR}/${_file_})
 ${DISTDIR}/${_file_}:
 	@${DO_NADA}
