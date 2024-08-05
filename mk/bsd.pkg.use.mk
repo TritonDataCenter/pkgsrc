@@ -113,7 +113,9 @@ MAKE_ENV+=		LIBTOOL="${LIBTOOL} ${LIBTOOL_FLAGS}"
 
 # PKGSRC_USE_MKTOOLS.  Cyclic dependencies prevent us from using mktools
 # when building cwrappers, so use the shell tools in that instance.
-.if ${_PKGSRC_USE_MKTOOLS} == "yes" && empty(PKGPATH:Mpkgtools/cwrappers)
+.if !empty(TOOLS_PLATFORM.mktool)
+PKG_MKSYMLINKS?=	${TOOLS_PLATFORM.mktool} symlinks
+.elif ${_PKGSRC_USE_MKTOOLS} == "yes" && empty(PKGPATH:Mpkgtools/cwrappers)
 TOOL_DEPENDS+=		mktools-[0-9]*:../../pkgtools/mktools
 PKG_MKSYMLINKS?=	${TOOLBASE}/libexec/mktools/mk-buildlink-symlinks
 .endif

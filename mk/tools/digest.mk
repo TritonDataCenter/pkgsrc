@@ -43,7 +43,9 @@
 DIGEST_REQD?=		20211023
 
 .if !defined(TOOLS_IGNORE.digest) && !empty(USE_TOOLS:C/:.*//:Mdigest)
-.  if ${PKGPATH} == pkgtools/digest
+.  if !empty(TOOLS_PLATFORM.mktool)
+DIGEST?=		${TOOLS_PLATFORM.mktool} digest
+.  elif ${PKGPATH} == pkgtools/digest
 MAKEFLAGS+=		TOOLS_IGNORE.digest=
 .  else
 .    if defined(TOOLS_PLATFORM.digest) && !empty(TOOLS_PLATFORM.digest)

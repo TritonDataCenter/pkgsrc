@@ -42,6 +42,13 @@ CHECK_PORTABILITY_SKIP?=	${REPLACE_BASH}
 .if ${CHECK_PORTABILITY:tl} == yes && ${CHECK_PORTABILITY_SKIP} != "*"
 pre-configure-checks-hook: _check-portability
 .endif
+
+.if !empty(TOOLS_PLATFORM.mktool)
+CHECK_PORTABILITY_PROGRAM=	${TOOLS_PLATFORM.mktool} check-portability
+.else
+CHECK_PORTABILITY_PROGRAM=	${SH} ${PKGSRCDIR}/mk/check/check-portability.sh
+.endif
+
 .PHONY: _check-portability
 _check-portability:
 	${RUN}								\
@@ -53,5 +60,6 @@ _check-portability:
 		PREFIX=${PREFIX}					\
 		PATCHDIR=${PATCHDIR}					\
 		CHECK_PORTABILITY_EXPERIMENTAL=${CHECK_PORTABILITY_EXPERIMENTAL:Uno} \
+		CHECK_PORTABILITY_SKIP=${CHECK_PORTABILITY_SKIP:Q}	\
 		LC_ALL=C \
-		${SH} ${PKGSRCDIR}/mk/check/check-portability.sh
+		${CHECK_PORTABILITY_PROGRAM}

@@ -106,7 +106,8 @@ NO_SKIP=		# defined
 _BOOTSTRAP_VERBOSE=	# defined
 .endif
 
-.if !empty(_CKSUMFILES) && defined(FAILOVER_FETCH)
+.if !empty(_CKSUMFILES) && defined(FAILOVER_FETCH) \
+  && empty(TOOLS_PLATFORM.mktool)
 USE_TOOLS+=	digest:bootstrap
 .endif
 

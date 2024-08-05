@@ -25,11 +25,14 @@ _PATCH_DIGEST_ALGORITHMS?=	SHA1
 #
 _COOKIE.checksum=	${_COOKIE.extract}
 
+.if !empty(TOOLS_PLATFORM.mktool)
+_CHECKSUM_CMD=	${TOOLS_PLATFORM.mktool} checksum
+.else
 _CHECKSUM_CMD=								\
 	${PKGSRC_SETENV}						\
 	    DIGEST=${TOOLS_DIGEST:Q} SED=${TOOLS_CMDLINE_SED:Q}		\
 	    ${AWK} -f ${PKGSRCDIR}/mk/checksum/checksum.awk --
-
+.endif
 
 .if defined(NO_CHECKSUM) || empty(_CKSUMFILES)
 checksum checksum-phase:
@@ -50,9 +53,13 @@ checksum checksum-phase:
 	fi
 .endif
 
+.if !empty(TOOLS_PLATFORM.mktool)
+_DISTINFO_CMD=	${TOOLS_PLATFORM.mktool} distinfo
+.else
 _DISTINFO_CMD=	${PKGSRC_SETENV} DIGEST=${TOOLS_DIGEST:Q} SED=${TOOLS_SED:Q} \
 			TEST=${TOOLS_TEST:Q} WC=${TOOLS_WC:Q}	\
 		${AWK} -f ${PKGSRCDIR}/mk/checksum/distinfo.awk --
+.endif
 
 .if exists(${DISTDIR})
 _DISTINFO_ARGS_COMMON+=	-d ${DISTDIR}

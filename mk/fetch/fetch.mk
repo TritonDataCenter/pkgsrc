@@ -94,7 +94,15 @@ fetch: ${_FETCH_TARGETS}
 .if !target(do-fetch)
 .  if !empty(_ALLFILES)
 do-fetch: ${_ALLFILES:S/^/${DISTDIR}\//}
+.    if ${FETCH_USING} == "mktool" && !empty(TOOLS_PLATFORM.mktool)
+	@{ ${_ALLFILES:@file@						\
+		unsorted_sites="${SITES.${file:T}}";			\
+		sites="${_ORDERED_SITES} ${_MASTER_SITE_BACKUP}";	\
+		echo ${file} ${DISTDIR} $$sites;			\
+	@} } | ${TOOLS_PLATFORM.mktool} fetch -I - ${_MKTOOL_FETCH_ARGS}
+.    else
 	@${DO_NADA}
+.    endif
 .  else
 do-fetch:
 	@${DO_NADA}
@@ -112,7 +120,10 @@ post-fetch:
 .endif
 
 .for _file_ in ${_ALLFILES}
-.  if empty(PKG_RESUME_TRANSFERS:M[yY][eE][sS]) && \
+.  if ${FETCH_USING} == "mktool" && !empty(TOOLS_PLATFORM.mktool)
+${DISTDIR}/${_file_}:
+	@${DO_NADA}
+.  elif empty(PKG_RESUME_TRANSFERS:M[yY][eE][sS]) && \
       exists(${DISTDIR}/${_file_})
 ${DISTDIR}/${_file_}:
 	@${DO_NADA}
@@ -299,10 +310,13 @@ _FETCH_CMD=	${PKGSRC_SETENV} CHECKSUM=${_CHECKSUM_CMD:Q}	\
 		WC=${TOOLS_WC:Q}				\
 		${SH} ${PKGSRCDIR}/mk/fetch/fetch
 
+_MKTOOL_FETCH_ARGS=	-d ${DISTDIR}
+
 _FETCH_ARGS+=	${PKG_VERBOSE:D-v}
 .if exists(${DISTINFO_FILE}) && !make(distinfo) && !make(makesum) \
     && !make(makedistinfo) && !make(mdi)
 _FETCH_ARGS+=	${FAILOVER_FETCH:D-c} -f ${DISTINFO_FILE:tA:Q}
+_MKTOOL_FETCH_ARGS+=	-f ${DISTINFO_FILE:tA:Q}
 .endif
 .if !empty(PKG_RESUME_TRANSFERS:M[yY][eE][sS])
 _FETCH_ARGS+=	-r
