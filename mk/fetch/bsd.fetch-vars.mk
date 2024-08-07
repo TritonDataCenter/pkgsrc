@@ -117,6 +117,16 @@ _FETCH_TOOLS.wget=		wget
 _FETCH_TOOLS.curl=		curl
 _FETCH_TOOLS.manual=		false
 
+# If a package has a number of distfiles that may overflow ARG_MAX then
+# use temporary files, otherwise use pipes.
+#
+.if ${USE_TMPFILES:Uno} == yes
+_FETCHFILES_INPUT_cmd=	${MKTEMP} /tmp/fetchfiles.XXXXXXXX
+USE_TOOLS+=		mktemp:bootstrap
+.else
+_FETCHFILES_INPUT=	/dev/stdin
+.endif
+
 .if !empty(_ALLFILES)
 USE_TOOLS+=	${_FETCH_TOOLS.${FETCH_USING}:C/$/:bootstrap/}
 BOOTSTRAP_DEPENDS+=	${_FETCH_DEPENDS.${FETCH_USING}}

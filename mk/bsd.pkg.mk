@@ -53,7 +53,19 @@ _DEF_VARS.pkgname=	PKGBASE PKGVERSION PKGNAME_NOREV PKGNAME PKGVERSION_NOREV
 PKG_FAIL_REASON+=	"Circular dependency detected"
 .endif
 
-####
+# Some packages are now hitting ARG_MAX limits as they contain thousands of
+# distfiles.  Versions of bmake prior to 20240711 cannot handle this, and so
+# temporary input files are used for various targets when the limit exceeds
+# ARG_MAX and an older version of bmake is detected.
+#
+# USE_TMPFILES is checked in various bsd.*-vars.mk so needs to be set early.
+#
+.if defined(ARGMAX_REQ) && ${MAKE_VERSION:U0} < 20240711
+ARGMAX_cmd=	getconf ARG_MAX || ${ECHO} 0
+.  if ${ARGMAX_cmd:sh} < ${ARGMAX_REQ:U0}
+USE_TMPFILES=	yes
+.  endif
+.endif
 
 ############################################################################
 # Allow various phases to define the default variables
