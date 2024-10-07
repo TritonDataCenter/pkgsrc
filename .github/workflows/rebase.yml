@@ -1,0 +1,139 @@
+name: Rebase branches against NetBSD
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      illumos:
+        description: 'Rebase release/trunk branch'
+        type: boolean
+        default: false
+      macos:
+        description: 'Rebase release/macos branch'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  features:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - feature/macos/trunk
+          - feature/miscfix/trunk
+          - feature/pbulk/trunk
+          - feature/pbulkmulti/trunk
+          - feature/performance/trunk
+          - trunk
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch NetBSD/pkgsrc.git
+        run: |
+          git remote add netbsd https://github.com/NetBSD/pkgsrc.git
+          git fetch netbsd
+
+      - name: Rebase ${{ matrix.branch }}
+        run: |
+          git checkout ${{ matrix.branch }}
+          git rebase --committer-date-is-author-date netbsd/trunk
+
+      - name: Push ${{ matrix.branch }}
+        run: |
+          git push --force origin ${{ matrix.branch }}
+
+  illumos:
+    needs: features
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.illumos }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Rebase release/trunk
+        run: |
+          git checkout release/trunk
+          git submodule update --init --recursive
+          git submodule foreach '
+              git fetch --all
+              main=$(git remote show origin | awk "/HEAD branch/ {print \$NF}")
+              git checkout $main
+              git pull
+          '
+          git reset --hard origin/feature/miscfix/trunk
+          for feature in pbulk pbulkmulti performance; do
+              git merge --no-edit origin/feature/${feature}/trunk
+          done
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-extra.git extra
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-joyent.git joyent
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-wip.git wip
+          git add .gitmodules
+          git commit -m "Add submodules."
+          if [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse origin/release/trunk^{tree})" ]; then
+              echo "No upstream changes, skipping push."
+              exit 0
+          fi
+          git push --force origin release/trunk
+
+  macos:
+    needs: features
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Rebase release/macos
+        run: |
+          git checkout release/macos
+          git submodule update --init --recursive
+          git submodule foreach '
+              git fetch --all
+              main=$(git remote show origin | awk "/HEAD branch/ {print \$NF}")
+              git checkout $main
+              git pull
+          '
+          git reset --hard origin/feature/macos/trunk
+          git merge --no-edit origin/feature/performance/trunk
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-extra.git extra
+          git add .gitmodules
+          git commit -m "Add submodules."
+          if [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse origin/release/macos^{tree})" ]; then
+              echo "No upstream changes, skipping push."
+              exit 0
+          fi
+          git push --force origin release/macos
