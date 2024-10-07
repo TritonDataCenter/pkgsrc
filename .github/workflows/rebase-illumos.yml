@@ -1,0 +1,35 @@
+name: Rebase illumos branch
+on:
+  workflow_dispatch:
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Rebase release/trunk
+        run: |
+          git checkout release/trunk
+          git submodule update --init --recursive
+          git submodule foreach '
+            git fetch --all
+            main=$(git remote show origin | awk "/HEAD branch/ {print \$NF}")
+            git checkout $main
+            git pull
+          '
+          git reset --hard origin/feature/miscfix/trunk
+          for feature in pbulk pbulkmulti performance; do
+            git merge --no-edit origin/feature/${feature}/trunk
+          done
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-extra.git extra
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-joyent.git joyent
+          git submodule add https://github.com/TritonDataCenter/pkgsrc-wip.git wip
+          git add .gitmodules
+          git commit -m "Add submodules."
+          git push --force origin release/trunk
