@@ -1,0 +1,46 @@
+name: Rebase branches against NetBSD
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - feature/macos/trunk
+          - feature/miscfix/trunk
+          - feature/mktool/trunk
+          - feature/pbulk/trunk
+          - feature/pbulkmulti/trunk
+          - feature/performance/trunk
+          - trunk
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch NetBSD/pkgsrc.git
+        run: |
+          git remote add netbsd https://github.com/NetBSD/pkgsrc.git
+          git fetch netbsd
+
+      - name: Rebase ${{ matrix.branch }}
+        run: |
+          git checkout ${{ matrix.branch }}
+          git rebase netbsd/trunk
+
+      - name: Push ${{ matrix.branch }}
+        run: |
+          git push --force origin ${{ matrix.branch }}
