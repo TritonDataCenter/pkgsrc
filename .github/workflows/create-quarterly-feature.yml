@@ -1,0 +1,46 @@
+name: Create quarterly feature branches
+
+on:
+  workflow_dispatch:
+    inputs:
+      quarter:
+        description: 'Quarterly branch (e.g. 2025Q4)'
+        required: true
+
+jobs:
+  create-features:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        feature:
+          - macos
+          - miscfix
+          - pbulk
+          - pbulkmulti
+          - performance
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch NetBSD/pkgsrc.git
+        run: |
+          git remote add netbsd https://github.com/NetBSD/pkgsrc.git
+          git fetch netbsd
+
+      - name: Create feature/${{ matrix.feature }}/${{ inputs.quarter }}
+        run: |
+          git checkout -B feature/${{ matrix.feature }}/${{ inputs.quarter }} origin/feature/${{ matrix.feature }}/trunk
+          git rebase --committer-date-is-author-date --onto netbsd/pkgsrc-${{ inputs.quarter }} netbsd/trunk
+
+      - name: Push feature/${{ matrix.feature }}/${{ inputs.quarter }}
+        run: |
+          git push --force origin feature/${{ matrix.feature }}/${{ inputs.quarter }}
