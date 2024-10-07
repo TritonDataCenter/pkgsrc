@@ -1,0 +1,222 @@
+name: Rebase branches against NetBSD
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      quarter:
+        description: 'Quarter to initialize (e.g. 2026Q4); leave empty for trunk'
+        type: string
+        default: ''
+      illumos:
+        description: 'Rebase release/trunk branch'
+        type: boolean
+        default: false
+      macos:
+        description: 'Rebase release/macos branch'
+        type: boolean
+        default: false
+      refresh_submodules:
+        description: 'Refresh submodule default branches in selected release jobs'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  QUARTER: ${{ inputs.quarter }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.quarter || 'trunk' }}
+  cancel-in-progress: true
+
+jobs:
+  features:
+    name: ${{ matrix.branch || 'trunk feature branches' }}
+    if: ${{ !inputs.quarter }}
+    runs-on: &feature_runner
+      group: triton
+      labels: [self-hosted, APP]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - feature/macos/trunk
+          - feature/miscfix/trunk
+          - feature/pbulk/trunk
+          - feature/pbulkmulti/trunk
+          - feature/performance/trunk
+          - trunk
+
+    env: &feature_env
+      BRANCH: ${{ matrix.branch }}
+
+    steps: &feature_steps
+      - uses: actions/checkout@v7
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Configure github-actions bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch NetBSD/pkgsrc.git
+        run: |
+          git fetch https://github.com/NetBSD/pkgsrc.git '+refs/heads/*:refs/remotes/netbsd/*'
+
+      - name: Rebase and push ${{ matrix.branch }}
+        if: ${{ !startsWith(matrix.branch, 'feature/backports/') }}
+        run: |
+          if [ -n "$QUARTER" ]; then
+              SOURCE="${BRANCH%/$QUARTER}/trunk"
+              git checkout -B "$BRANCH" "origin/$SOURCE"
+              git rebase --committer-date-is-author-date --onto "netbsd/pkgsrc-$QUARTER" netbsd/trunk
+          else
+              git checkout "$BRANCH"
+              git rebase --committer-date-is-author-date netbsd/trunk
+          fi
+          git push --force origin "$BRANCH"
+
+      - name: Create ${{ matrix.branch }} if absent
+        if: ${{ startsWith(matrix.branch, 'feature/backports/') }}
+        run: |
+          if ! git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
+              git push origin "netbsd/pkgsrc-$QUARTER:refs/heads/$BRANCH"
+          fi
+
+  quarterly_features:
+    name: ${{ matrix.branch || 'quarterly feature branches' }}
+    if: ${{ inputs.quarter }}
+    runs-on: *feature_runner
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+          - feature/macos/${{ inputs.quarter }}
+          - feature/miscfix/${{ inputs.quarter }}
+          - feature/pbulk/${{ inputs.quarter }}
+          - feature/pbulkmulti/${{ inputs.quarter }}
+          - feature/performance/${{ inputs.quarter }}
+          - feature/backports/${{ inputs.quarter }}
+
+    env: *feature_env
+    steps: *feature_steps
+
+  releases:
+    name: ${{ matrix.branch || 'trunk release branch' }}
+    needs: features
+    if: ${{ !inputs.quarter }}
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - input: illumos
+            branch: release/trunk
+            base: feature/miscfix/trunk
+            features:
+              - feature/pbulk/trunk
+              - feature/pbulkmulti/trunk
+              - feature/performance/trunk
+            submodules: |-
+              extra https://github.com/TritonDataCenter/pkgsrc-extra.git
+              joyent https://github.com/TritonDataCenter/pkgsrc-joyent.git
+              wip https://github.com/TritonDataCenter/pkgsrc-wip.git
+          - input: macos
+            branch: release/macos
+            base: feature/macos/trunk
+            features:
+              - feature/performance/trunk
+            submodules: |-
+              extra https://github.com/TritonDataCenter/pkgsrc-extra.git
+
+    env: &release_env
+      RELEASE_BRANCH: >-
+        ${{
+        (github.event_name != 'workflow_dispatch' || inputs[matrix.input])
+        && matrix.branch || ''
+        }}
+
+    steps: &release_steps
+      - uses: actions/checkout@v7
+        if: ${{ env.RELEASE_BRANCH }}
+        with:
+          clean: true
+          fetch-depth: 0
+          submodules: true
+
+      - name: Rebase ${{ matrix.branch }}
+        if: ${{ env.RELEASE_BRANCH }}
+        env:
+          BASE_FEATURE: ${{ matrix.base }}
+          MERGE_FEATURES: ${{ join(matrix.features, ' ') }}
+          RELEASE_SUBMODULES: ${{ matrix.submodules }}
+          REFRESH_SUBMODULES: ${{ inputs.refresh_submodules }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$RELEASE_BRANCH" "origin/$BASE_FEATURE"
+          for feature in $MERGE_FEATURES; do
+              git merge --no-edit "origin/${feature}"
+          done
+          while read -r module_path module_url module_branch; do
+              git submodule add --force "$module_url" "$module_path"
+              if [ -n "$module_branch" ]; then
+                  git config -f .gitmodules "submodule.$module_path.branch" "$module_branch"
+              fi
+          done <<EOF
+          $RELEASE_SUBMODULES
+          EOF
+          if [ "$REFRESH_SUBMODULES" = "true" ]; then
+              git submodule foreach '
+                  git fetch origin
+                  git remote set-head origin --auto
+              '
+          fi
+          git submodule update --init --remote --checkout
+          git add -u
+          git commit -m "Add submodules."
+          if [ -z "$QUARTER" ]; then
+              new_tree=$(git rev-parse HEAD^{tree})
+              release_tree=$(git rev-parse "origin/${RELEASE_BRANCH}^{tree}")
+              if [ "$new_tree" = "$release_tree" ]; then
+                  echo "No upstream changes, skipping push."
+                  exit 0
+              fi
+          fi
+          git push --force origin "$RELEASE_BRANCH"
+
+  quarterly_release:
+    name: ${{ matrix.branch || 'quarterly release branch' }}
+    needs: quarterly_features
+    if: ${{ inputs.quarter && inputs.illumos }}
+    runs-on: *feature_runner
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - input: illumos
+            branch: release/${{ inputs.quarter }}
+            base: feature/miscfix/${{ inputs.quarter }}
+            features:
+              - feature/pbulk/${{ inputs.quarter }}
+              - feature/pbulkmulti/${{ inputs.quarter }}
+              - feature/performance/${{ inputs.quarter }}
+              - feature/backports/${{ inputs.quarter }}
+            submodules: |-
+              extra https://github.com/TritonDataCenter/pkgsrc-extra.git ${{ inputs.quarter }}
+              joyent https://github.com/TritonDataCenter/pkgsrc-joyent.git ${{ inputs.quarter }}
+              wip https://github.com/TritonDataCenter/pkgsrc-wip.git ${{ inputs.quarter }}
+
+    env: *release_env
+    steps: *release_steps
