@@ -117,11 +117,13 @@ _FETCH_TOOLS.wget=		wget
 _FETCH_TOOLS.curl=		curl
 _FETCH_TOOLS.manual=		false
 
-# If a package has a number of distfiles that may overflow ARG_MAX then
-# use temporary files, otherwise use pipes.
+# If a package has a number of distfiles that may overflow ARG_MAX then use
+# temporary files, otherwise use pipes.  The temporary files need to live in
+# a known directory and cannot use WRKDIR for example because it is not
+# guaranteed to exist when the target is called.
 #
 .if ${USE_TMPFILES:Uno} == yes
-_FETCHFILES_INPUT_cmd=	${MKTEMP} /tmp/fetchfiles.XXXXXXXX
+_FETCHFILES_INPUT_cmd=	${MKTEMP} ${TMPDIR:U/tmp:Q}/pkgsrc.fetchfiles.XXXXXXXX
 USE_TOOLS+=		mktemp:bootstrap
 .else
 _FETCHFILES_INPUT=	/dev/stdin
