@@ -27,7 +27,7 @@ USE_TOOLS+=	digest:bootstrap
 # a known directory and cannot use WRKDIR for example because it is not
 # guaranteed to exist when the target is called.
 #
-.if ${USE_TMPFILES:Uno} == yes
+.if ${USE_TMPFILES} == yes
 _CKSUMFILES_INPUT_cmd=	${MKTEMP} ${TMPDIR:U/tmp:Q}/pkgsrc.cksumfiles.XXXXXXXX
 USE_TOOLS+=		mktemp:bootstrap
 .else

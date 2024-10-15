@@ -39,7 +39,7 @@ checksum checksum-phase:
 	@${DO_NADA}
 .else
 checksum checksum-phase:
-.  if ${USE_TMPFILES:Uno} == yes
+.  if ${USE_TMPFILES} == yes
 	${_CKSUMFILES_INPUT::=${_CKSUMFILES_INPUT_cmd:sh}}
 .    for file in ${_CKSUMFILES}
 	@${ECHO} ${file} >> ${_CKSUMFILES_INPUT}
@@ -100,7 +100,7 @@ _DISTINFO_ARGS_PATCHSUM+=	${PATCHDIR}/patch-*
 _DISTINFO_ARGS_PATCHSUM+=	${PATCHDIR}/emul-*-patch-*
 
 distinfo:
-.  if ${USE_TMPFILES:Uno} == yes
+.  if ${USE_TMPFILES} == yes
 	${_CKSUMFILES_INPUT::=${_CKSUMFILES_INPUT_cmd:sh}}
 .    for file in ${_CKSUMFILES}
 	@${ECHO} ${file} >> ${_CKSUMFILES_INPUT}
@@ -133,7 +133,7 @@ distinfo:
 .  endif
 
 makesum:
-.  if ${USE_TMPFILES:Uno} == yes
+.  if ${USE_TMPFILES} == yes
 	${_CKSUMFILES_INPUT::=${_CKSUMFILES_INPUT_cmd:sh}}
 .    for file in ${_CKSUMFILES}
 	@${ECHO} ${file} >> ${_CKSUMFILES_INPUT}

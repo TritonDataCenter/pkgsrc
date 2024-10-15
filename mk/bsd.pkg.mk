@@ -60,6 +60,7 @@ PKG_FAIL_REASON+=	"Circular dependency detected"
 #
 # USE_TMPFILES is checked in various bsd.*-vars.mk so needs to be set early.
 #
+USE_TMPFILES=	no
 .if defined(ARGMAX_REQ) && ${MAKE_VERSION:U0} < 20240711
 ARGMAX_cmd=	getconf ARG_MAX || ${ECHO} 0
 .  if ${ARGMAX_cmd:sh} < ${ARGMAX_REQ:U0}

@@ -95,7 +95,7 @@ fetch: ${_FETCH_TARGETS}
 .  if !empty(_ALLFILES)
 do-fetch: ${_ALLFILES:S/^/${DISTDIR}\//}
 .    if ${FETCH_USING} == "mktool" && !empty(TOOLS_PLATFORM.mktool)
-.      if ${USE_TMPFILES:Uno} == yes
+.      if ${USE_TMPFILES} == yes
 	${_FETCHFILES_INPUT::=${_FETCHFILES_INPUT_cmd:sh}}
 .        for file in ${_ALLFILES}
 	${RUN}								\
