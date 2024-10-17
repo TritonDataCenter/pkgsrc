@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.101 2024/04/11 18:47:42 wiz Exp $
+# $NetBSD: Makefile,v 1.105 2024/10/15 12:15:55 bacon Exp $
 #
 
 COMMENT=	Software for the biological sciences
@@ -9,9 +9,11 @@ SUBDIR+=	arka
 SUBDIR+=	atac-seq
 SUBDIR+=	azara
 SUBDIR+=	balance-tui
+SUBDIR+=	bcf-score
 SUBDIR+=	bcftools
 SUBDIR+=	beagle
 SUBDIR+=	bedtools
+SUBDIR+=	bio-mocha
 SUBDIR+=	biolibc
 SUBDIR+=	biolibc-tools
 SUBDIR+=	bioperl
@@ -40,6 +42,7 @@ SUBDIR+=	gffread
 SUBDIR+=	glimmer
 SUBDIR+=	gp
 SUBDIR+=	gromacs
+SUBDIR+=	haplohseq
 SUBDIR+=	hisat2
 SUBDIR+=	hmmer
 SUBDIR+=	htslib
@@ -48,6 +51,7 @@ SUBDIR+=	kallisto
 SUBDIR+=	libpll
 SUBDIR+=	lucy
 SUBDIR+=	maeparser
+SUBDIR+=	mca-calling
 SUBDIR+=	microsynteny-tools
 SUBDIR+=	miniasm
 SUBDIR+=	minimap2

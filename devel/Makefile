@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.4347 2024/10/10 06:36:13 wiz Exp $
+# $NetBSD: Makefile,v 1.4350 2024/10/14 07:49:35 wiz Exp $
 #
 
 COMMENT=	Development utilities
@@ -2494,7 +2494,6 @@ SUBDIR+=	py-canonicaljson
 SUBDIR+=	py-canvasapi
 SUBDIR+=	py-capstone
 SUBDIR+=	py-capturer
-SUBDIR+=	py-case
 SUBDIR+=	py-cattrs
 SUBDIR+=	py-cbor2
 SUBDIR+=	py-cddl
@@ -2764,9 +2763,7 @@ SUBDIR+=	py-newt
 SUBDIR+=	py-nihtest
 SUBDIR+=	py-ninja
 SUBDIR+=	py-nose
-SUBDIR+=	py-nose-exclude
 SUBDIR+=	py-nose2
-SUBDIR+=	py-nosexcover
 SUBDIR+=	py-ode
 SUBDIR+=	py-olefile
 SUBDIR+=	py-open-vcdiff
