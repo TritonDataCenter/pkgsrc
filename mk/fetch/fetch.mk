@@ -1,4 +1,4 @@
-# $NetBSD: fetch.mk,v 1.76 2024/02/21 10:53:28 jperkin Exp $
+# $NetBSD: fetch.mk,v 1.78 2024/10/14 08:02:40 jperkin Exp $
 
 .if empty(INTERACTIVE_STAGE:Mfetch) && empty(FETCH_MESSAGE:U)
 _MASTER_SITE_BACKUP=	${MASTER_SITE_BACKUP:=${DIST_SUBDIR}${DIST_SUBDIR:D/}}
@@ -131,7 +131,11 @@ ${DISTDIR}/${_file_}:
 .    if empty(IGNORE_INTERACTIVE_FETCH:Uno:M[yY][eE][sS])
 ${DISTDIR}/${_file_}: fetch-check-interactive
 .    endif
+.    if ${FETCH_USING} == "mktool" && !empty(TOOLS_PLATFORM.mktool)
+${DISTDIR}/${_file_}: error-check
+.    else
 ${DISTDIR}/${_file_}: do-fetch-file error-check
+.    endif
 .  endif
 .endfor
 
@@ -289,6 +293,7 @@ _FETCH_CMD.curl=		${PKGSRC_SETENV} \
 				${TOOLS_PATH.curl}
 
 _FETCH_CMD.manual=		${TOOLS_PATH.false}
+_FETCH_CMD.mktool=		${TOOLS_PATH.false}
 
 _FETCH_CMD.custom=		${FETCH_CMD}
 _FETCH_BEFORE_ARGS.custom=	${FETCH_BEFORE_ARGS}

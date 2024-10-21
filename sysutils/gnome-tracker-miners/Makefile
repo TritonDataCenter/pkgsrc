@@ -1,8 +1,8 @@
-# $NetBSD: Makefile,v 1.41 2024/05/29 16:34:25 adam Exp $
+# $NetBSD: Makefile,v 1.43 2024/10/15 16:15:36 adam Exp $
 
 DISTNAME=	tracker-miners-3.0.1
 PKGNAME=	gnome-${DISTNAME}
-PKGREVISION=	34
+PKGREVISION=	35
 CATEGORIES=	sysutils gnome
 MASTER_SITES=	${MASTER_SITE_GNOME:=sources/tracker-miners/3.0/}
 EXTRACT_SUFX=	.tar.xz
@@ -17,6 +17,8 @@ TOOL_DEPENDS+=	asciidoc>=10.1.4:../../textproc/asciidoc
 USE_TOOLS+=	pkg-config xgettext gdbus-codegen
 
 LDFLAGS+=	${COMPILER_RPATH_FLAG}${PREFIX}/lib/tracker-miners-3.0
+
+CFLAGS.SunOS+=	-D__EXTENSIONS__ # TIOCGWINSZ
 
 MESON_ARGS+=	-Dnetwork_manager=disabled
 MESON_ARGS+=	-Dminer_rss=false

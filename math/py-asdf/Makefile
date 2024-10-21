@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.20 2024/08/06 08:01:52 adam Exp $
+# $NetBSD: Makefile,v 1.22 2024/10/14 14:02:28 adam Exp $
 
-DISTNAME=	asdf-3.4.0
+DISTNAME=	asdf-3.5.0
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
 CATEGORIES=	math python
 MASTER_SITES=	${MASTER_SITE_PYPI:=a/asdf/}
@@ -27,8 +27,6 @@ TEST_DEPENDS+=	${PYPKGPREFIX}-psutil-[0-9]*:../../sysutils/py-psutil
 TEST_DEPENDS+=	${PYPKGPREFIX}-test-remotedata-[0-9]*:../../net/py-test-remotedata
 
 USE_LANGUAGES=	# none
-
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38
 
 .include "../../lang/python/pyversion.mk"
 .if ${PYTHON_VERSION} < 311

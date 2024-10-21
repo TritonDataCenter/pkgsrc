@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.1815 2024/09/12 09:18:24 wiz Exp $
+# $NetBSD: Makefile,v 1.1818 2024/10/17 08:45:38 wiz Exp $
 #
 
 COMMENT=	Packages related to the World Wide Web
@@ -119,8 +119,6 @@ SUBDIR+=	ffproxy
 SUBDIR+=	firefox
 SUBDIR+=	firefox-esr
 SUBDIR+=	firefox-l10n
-SUBDIR+=	firefox102
-SUBDIR+=	firefox102-l10n
 SUBDIR+=	firefox115
 SUBDIR+=	firefox115-l10n
 SUBDIR+=	firefox128
@@ -887,7 +885,6 @@ SUBDIR+=	py-pystache
 SUBDIR+=	py-python-mimeparse
 SUBDIR+=	py-python-multipart
 SUBDIR+=	py-python3-digest
-SUBDIR+=	py-raven
 SUBDIR+=	py-rcssmin
 SUBDIR+=	py-recaptcha
 SUBDIR+=	py-requests-wsgi-adapter

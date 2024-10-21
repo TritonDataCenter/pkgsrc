@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.1485 2024/09/18 07:47:39 adam Exp $
+# $NetBSD: Makefile,v 1.1487 2024/10/20 09:46:18 leot Exp $
 #
 
 COMMENT=	Text processing utilities (does not include desktop publishing)
@@ -486,6 +486,7 @@ SUBDIR+=	kapidox
 SUBDIR+=	kbanner
 SUBDIR+=	kcodecs
 SUBDIR+=	kcompletion
+SUBDIR+=	kepubify
 SUBDIR+=	kf6-kcodecs
 SUBDIR+=	kf6-kcompletion
 SUBDIR+=	kf6-ktexttemplate
@@ -1018,7 +1019,6 @@ SUBDIR+=	py-acora
 SUBDIR+=	py-alabaster
 SUBDIR+=	py-antlr4
 SUBDIR+=	py-anyascii
-SUBDIR+=	py-anyjson
 SUBDIR+=	py-astropy-sphinx-theme
 SUBDIR+=	py-babelfish
 SUBDIR+=	py-biplist

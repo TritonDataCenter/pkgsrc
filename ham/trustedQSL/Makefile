@@ -1,7 +1,7 @@
-# $NetBSD: Makefile,v 1.78 2024/08/18 19:17:19 gdt Exp $
+# $NetBSD: Makefile,v 1.80 2024/10/20 14:04:06 wiz Exp $
 
-DISTNAME=		tqsl-2.6.5
-PKGREVISION=		13
+DISTNAME=		tqsl-2.7.3
+PKGREVISION=		1
 CATEGORIES=		ham
 MASTER_SITES=		http://www.arrl.org/files/file/LoTW%20Instructions/
 
@@ -17,6 +17,7 @@ USE_TOOLS+=		perl gmake cmake
 # \todo tqsl is not documented to require c++11, but uses c++11 constructs
 # \todo tqsl does not add --std=c++11
 USE_LANGUAGES+=		c c++11
+#SE_CXX_FEATURES+=	c++11
 USE_LIBTOOL=		yes
 
 CHECK_PORTABILITY_SKIP+=	osx_createdmg.sh
@@ -38,6 +39,7 @@ post-install:
 	)
 
 # \todo Perhaps change to lmdb, and (unlikely) consider an option.
+.include "../../devel/cmake/build.mk"
 .include "../../databases/db5/buildlink3.mk"
 #.include "../../databases/lmdb/buildlink3.mk"
 

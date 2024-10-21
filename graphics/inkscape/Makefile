@@ -1,7 +1,7 @@
-# $NetBSD: Makefile,v 1.290 2024/10/04 03:49:26 ryoon Exp $
+# $NetBSD: Makefile,v 1.293 2024/10/20 14:03:59 wiz Exp $
 
 DISTNAME=	inkscape-1.3.2
-PKGREVISION=	5
+PKGREVISION=	7
 CATEGORIES=	graphics
 MASTER_SITES=	https://media.inkscape.org/dl/resources/file/
 EXTRACT_SUFX=	.tar.xz
@@ -48,8 +48,6 @@ USE_TOOLS+=		msgfmt msgmerge perl pkg-config
 REPLACE_PERL+=		man/fix-roff-punct
 
 UNLIMIT_RESOURCES=	datasize
-
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38
 
 SUBST_CLASSES+=		pypath
 SUBST_STAGE.pypath=	pre-configure

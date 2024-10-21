@@ -1,7 +1,7 @@
-# $NetBSD: Makefile,v 1.57 2024/07/20 12:49:53 adam Exp $
+# $NetBSD: Makefile,v 1.59 2024/10/20 14:03:31 wiz Exp $
 
 DISTNAME=	accerciser-3.38.0
-PKGREVISION=	13
+PKGREVISION=	14
 CATEGORIES=	devel gnome
 MASTER_SITES=	${MASTER_SITE_GNOME:=sources/accerciser/${PKGVERSION_NOREV:R}/}
 EXTRACT_SUFX=	.tar.xz
@@ -36,7 +36,7 @@ DEPENDS+=	${PYPKGPREFIX}-ipython>=1.2.1:../../devel/py-ipython
 DEPENDS+=	${PYPKGPREFIX}-Xlib-[0-9]*:../../x11/py-Xlib
 
 # dependencies to keep package's configure script happy:
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38 39
+PYTHON_VERSIONS_INCOMPATIBLE=	39
 
 .include "../../x11/gtk3/buildlink3.mk"
 .include "../../devel/at-spi2-core/buildlink3.mk"

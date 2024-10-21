@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.1058 2024/07/26 22:15:49 wiz Exp $
+# $NetBSD: Makefile,v 1.1060 2024/10/16 03:14:43 markd Exp $
 #
 
 COMMENT=	Graphics tools and libraries
@@ -81,6 +81,7 @@ SUBDIR+=	camediaplay
 SUBDIR+=	camlimages
 SUBDIR+=	cdlabelgen
 SUBDIR+=	cglm
+SUBDIR+=	chafa
 SUBDIR+=	charls
 SUBDIR+=	cheese
 SUBDIR+=	cinepaint
@@ -806,6 +807,7 @@ SUBDIR+=	tex-splines
 SUBDIR+=	tex-splines-doc
 SUBDIR+=	tex-suanpan
 SUBDIR+=	tex-suanpan-doc
+SUBDIR+=	tex-svg
 SUBDIR+=	tex-tex-ps
 SUBDIR+=	tex-tex-ps-doc
 SUBDIR+=	tex-texdraw

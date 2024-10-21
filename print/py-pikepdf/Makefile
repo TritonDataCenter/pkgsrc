@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.8 2024/09/04 13:10:06 adam Exp $
+# $NetBSD: Makefile,v 1.10 2024/10/14 06:45:56 wiz Exp $
 
-DISTNAME=	pikepdf-9.2.1
+DISTNAME=	pikepdf-9.3.0
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
 CATEGORIES=	print python
 MASTER_SITES=	${MASTER_SITE_PYPI:=p/pikepdf/}

@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.147 2024/08/25 06:19:09 wiz Exp $
+# $NetBSD: Makefile,v 1.149 2024/10/20 14:04:27 wiz Exp $
 
-PKGNAME=		pan-0.159
+PKGNAME=		pan-0.160
 PKGREVISION=		1
 CATEGORIES=		news
 TAG=			${PKGNAME_NOREV:S/pan-/v/} # e.g. v0.151

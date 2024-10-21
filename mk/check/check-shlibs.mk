@@ -1,4 +1,4 @@
-# $NetBSD: check-shlibs.mk,v 1.35 2022/11/23 11:55:43 jperkin Exp $
+# $NetBSD: check-shlibs.mk,v 1.36 2024/10/11 10:22:01 jperkin Exp $
 #
 # This file verifies that all libraries used by the package can be found
 # at run-time.

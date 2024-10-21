@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.47 2024/09/30 17:11:47 adam Exp $
+# $NetBSD: Makefile,v 1.49 2024/10/14 06:45:55 wiz Exp $
 
-DISTNAME=	yt_dlp-2024.9.27
+DISTNAME=	yt_dlp-2024.10.7
 PKGNAME=	${DISTNAME:S/_/-/}
 CATEGORIES=	net
 MASTER_SITES=	${MASTER_SITE_PYPI:=y/yt-dlp/}
@@ -15,8 +15,6 @@ LICENSE=	unlicense
 TOOL_DEPENDS+=	${PYPKGPREFIX}-hatchling-[0-9]*:../../devel/py-hatchling
 
 USE_LANGUAGES=	# none
-
-PYTHON_VERSIONS_INCOMPATIBLE=	38
 
 SUBST_CLASSES+=		paths
 SUBST_STAGE.paths=	pre-configure

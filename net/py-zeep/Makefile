@@ -1,8 +1,7 @@
-# $NetBSD: Makefile,v 1.16 2024/08/10 07:43:46 wiz Exp $
+# $NetBSD: Makefile,v 1.19 2024/10/17 10:33:56 adam Exp $
 
-DISTNAME=	zeep-4.2.1
+DISTNAME=	zeep-4.3.1
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
-PKGREVISION=	1
 CATEGORIES=	net python
 MASTER_SITES=	${MASTER_SITE_PYPI:=z/zeep/}
 
@@ -30,8 +29,6 @@ TEST_DEPENDS+=	${PYPKGPREFIX}-test-cov>=2.8.1:../../devel/py-test-cov
 TEST_DEPENDS+=	${PYPKGPREFIX}-test-httpx-[0-9]*:../../www/py-test-httpx
 
 USE_LANGUAGES=	# none
-
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38
 
 # 471 passed, 18 skipped, 32 warnings
 

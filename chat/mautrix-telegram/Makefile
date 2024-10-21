@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.20 2024/08/10 06:26:23 wiz Exp $
+# $NetBSD: Makefile,v 1.22 2024/10/16 16:40:54 jperkin Exp $
 
 DISTNAME=	telegram-0.11.3
 PKGNAME=	mautrix-${DISTNAME}
@@ -28,11 +28,9 @@ DEPENDS+=	${PYPKGPREFIX}-mako>=1<2:../../devel/py-mako
 # webp_convert and qr_login
 DEPENDS+=	${PYPKGPREFIX}-Pillow>=4:../../graphics/py-Pillow
 # qr_login
-DEPENDS+=	${PYPKGPREFIX}-qrcode>=6<8:../../graphics/py-qrcode
+DEPENDS+=	${PYPKGPREFIX}-qrcode>=6<9:../../graphics/py-qrcode
 
 USE_LANGUAGES=	# none
-
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38 # py-mautrix
 
 INSTALLATION_DIRS+=	share/mautrix-telegram
 

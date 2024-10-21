@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.18 2024/08/10 07:54:16 adam Exp $
+# $NetBSD: Makefile,v 1.20 2024/10/20 16:25:30 wiz Exp $
 
 DISTNAME=	dupeguru-src-4.0.4_RC
 PKGNAME=	${DISTNAME:S/-src//:S/_RC/rc1/}
@@ -13,7 +13,7 @@ HOMEPAGE=	https://dupeguru.voltaicideas.net/
 COMMENT=	Find duplicate files
 LICENSE=	gnu-gpl-v3
 
-TOOL_DEPENDS+=	${PYPKGPREFIX}-polib>=1.0.4:../../devel/py-polib
+TOOL_DEPENDS+=	${PYPKGPREFIX}-setuptools>=0:../../devel/py-setuptools
 TOOL_DEPENDS+=	${PYPKGPREFIX}-sphinx>=7.0.0:../../textproc/py-sphinx
 DEPENDS+=	${PYPKGPREFIX}-qt5-[0-9]*:../../x11/py-qt5
 DEPENDS+=	${PYPKGPREFIX}-hsaudiotag3k-[0-9]*:../../audio/py-hsaudiotag3k
@@ -23,7 +23,9 @@ WRKSRC=			${WRKDIR}
 USE_LANGUAGES=		c
 USE_TOOLS=		gmake pax
 
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38 39 # py-sphinx
+PYTHON_VERSIONS_INCOMPATIBLE=	39 # py-sphinx
+# ModuleNotFoundError: No module named 'imp'
+PYTHON_VERSIONS_INCOMPATIBLE+=	312 313
 REPLACE_PYTHON+=		run.py
 
 MAKE_ENV+=	PYRCC5=pyrcc5-${PYVERSSUFFIX}

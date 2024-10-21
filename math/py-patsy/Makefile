@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.14 2024/01/04 22:07:20 adam Exp $
+# $NetBSD: Makefile,v 1.16 2024/10/17 20:52:51 wiz Exp $
 
 DISTNAME=	patsy-0.5.6
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
@@ -13,11 +13,12 @@ LICENSE=	2-clause-bsd
 TOOL_DEPENDS+=	${PYPKGPREFIX}-setuptools-[0-9]*:../../devel/py-setuptools
 TOOL_DEPENDS+=	${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
 DEPENDS+=	${PYPKGPREFIX}-six-[0-9]*:../../lang/py-six
-TEST_DEPENDS+=	${PYPKGPREFIX}-nose-[0-9]*:../../devel/py-nose
+TEST_DEPENDS+=	${PYPKGPREFIX}-scipy-[0-9]*:../../math/py-scipy
 
 USE_LANGUAGES=	# none
 
-PYTHON_VERSIONS_INCOMPATIBLE=	27 38
+# as of 0.5.6
+# 6 failed, 142 passed
 
 .include "../../lang/python/wheel.mk"
 .include "../../math/py-numpy/buildlink3.mk"

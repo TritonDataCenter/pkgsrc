@@ -1,6 +1,7 @@
-# $NetBSD: Makefile,v 1.7 2024/08/25 06:19:18 wiz Exp $
+# $NetBSD: Makefile,v 1.9 2024/10/18 18:41:09 nros Exp $
 
 DISTNAME=	libwebsockets-4.3.3
+PKGREVISION=	1
 CATEGORIES=	www
 MASTER_SITES=	${MASTER_SITE_GITHUB:=warmcat/}
 GITHUB_TAG=	v${PKGVERSION_NOREV}
@@ -24,6 +25,8 @@ CMAKE_CONFIGURE_ARGS+=	-DLWS_WITHOUT_TEST_SERVER=ON
 CMAKE_CONFIGURE_ARGS+=	-DLWS_WITHOUT_TEST_SERVER_EXTPOLL=ON
 CMAKE_CONFIGURE_ARGS+=	-DLWS_WITHOUT_TEST_PING=ON
 CMAKE_CONFIGURE_ARGS+=	-DLWS_WITHOUT_TEST_CLIENT=ON
+# installs files into home directory
+CMAKE_CONFIGURE_ARGS+=	-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON
 
 PKGCONFIG_OVERRIDE_STAGE=	pre-install
 PKGCONFIG_OVERRIDE+=		libwebsockets.pc
@@ -33,5 +36,4 @@ PKGCONFIG_OVERRIDE+=		libwebsockets_static.pc
 .include "../../devel/libuv/buildlink3.mk"
 .include "../../security/openssl/buildlink3.mk"
 .include "../../mk/dlopen.buildlink3.mk"
-BUILDLINK_TRANSFORM+=	opt:-ldl:${BUILDLINK_LDADD.dl:Q}
 .include "../../mk/bsd.pkg.mk"

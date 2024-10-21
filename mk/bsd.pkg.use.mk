@@ -1,4 +1,4 @@
-#	$NetBSD: bsd.pkg.use.mk,v 1.75 2024/04/12 19:54:44 riastradh Exp $
+#	$NetBSD: bsd.pkg.use.mk,v 1.76 2024/10/11 12:18:07 jperkin Exp $
 #
 # Turn USE_* macros into proper depedency logic.  Included near the top of
 # bsd.pkg.mk, after bsd.prefs.mk.

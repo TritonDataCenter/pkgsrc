@@ -1,4 +1,4 @@
-# $NetBSD: digest.mk,v 1.6 2023/06/27 10:27:21 riastradh Exp $
+# $NetBSD: digest.mk,v 1.7 2024/10/11 12:53:14 jperkin Exp $
 #
 # Copyright (c) 2006 The NetBSD Foundation, Inc.
 # All rights reserved.

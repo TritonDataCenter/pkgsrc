@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# $NetBSD: reduce-resolved-depends.awk,v 1.2 2013/05/09 23:37:26 riastradh Exp $
+# $NetBSD: reduce-resolved-depends.awk,v 1.3 2024/10/11 08:24:48 jperkin Exp $
 #
 # Copyright (c) 2012 The NetBSD Foundation, Inc.
 # All rights reserved.

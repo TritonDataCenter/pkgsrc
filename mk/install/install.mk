@@ -1,4 +1,4 @@
-# $NetBSD: install.mk,v 1.85 2023/10/04 11:39:59 jperkin Exp $
+# $NetBSD: install.mk,v 1.86 2024/10/11 12:39:30 jperkin Exp $
 #
 # This file provides the code for the "install" phase.
 #

@@ -1,4 +1,4 @@
-# $NetBSD: check-portability.mk,v 1.21 2024/04/11 11:44:34 joerg Exp $
+# $NetBSD: check-portability.mk,v 1.22 2024/10/11 10:13:13 jperkin Exp $
 #
 # This file checks that the extracted shell programs don't contain
 # bashisms or other constructs that only work on some platforms.

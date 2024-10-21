@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.33 2024/07/29 07:29:59 pin Exp $
+# $NetBSD: Makefile,v 1.35 2024/10/18 21:11:10 pin Exp $
 
-DISTNAME=	starship-1.20.1
+DISTNAME=	starship-1.21.1
 CATEGORIES=	shells
 MASTER_SITES=	${MASTER_SITE_GITHUB:=starship/}
 GITHUB_TAG=	v${PKGVERSION_NOREV}
@@ -18,7 +18,7 @@ ONLY_FOR_PLATFORM=	Darwin-*-* DragonFly-*-* FreeBSD-*-* Linux-*-* NetBSD-*-*
 
 .include "cargo-depends.mk"
 
-RUST_REQ=	1.74.0
+RUST_REQ=	1.80.1
 USE_LANGUAGES=	c c++
 USE_TOOLS+=	pkg-config
 

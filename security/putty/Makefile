@@ -1,6 +1,7 @@
-# $NetBSD: Makefile,v 1.84 2024/04/15 21:55:23 wiz Exp $
+# $NetBSD: Makefile,v 1.86 2024/10/20 14:04:30 wiz Exp $
 
 DISTNAME=	putty-0.81
+PKGREVISION=	1
 CATEGORIES=	security
 MASTER_SITES=	http://the.earth.li/~sgtatham/putty/${PKGVERSION_NOREV}/
 
@@ -13,7 +14,7 @@ USE_CMAKE=	yes
 USE_TOOLS+=	perl pkg-config
 
 # error: 'for' loop initial declarations are only allowed in C99 mode
-FORCE_C_STD=	c99
+FORCE_C_STD=	gnu99
 
 #INSTALLATION_DIRS=	bin ${PKGMANDIR}/man1
 

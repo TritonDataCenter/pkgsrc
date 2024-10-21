@@ -1,6 +1,6 @@
-# $NetBSD: Makefile,v 1.19 2024/08/24 06:55:32 adam Exp $
+# $NetBSD: Makefile,v 1.21 2024/10/17 18:54:31 adam Exp $
 
-DISTNAME=	ngtcp2-1.7.0
+DISTNAME=	ngtcp2-1.8.1
 CATEGORIES=	net
 MASTER_SITES=	${MASTER_SITE_GITHUB:=ngtcp2/}
 GITHUB_RELEASE=	v${PKGVERSION_NOREV}

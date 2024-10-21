@@ -1,4 +1,4 @@
-# $NetBSD: buildlink3.mk,v 1.30 2023/10/21 17:10:42 gdt Exp $
+# $NetBSD: buildlink3.mk,v 1.32 2024/10/08 21:13:13 wiz Exp $
 
 BUILDLINK_TREE+=	simage
 

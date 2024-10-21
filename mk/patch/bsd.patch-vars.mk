@@ -1,4 +1,4 @@
-# $NetBSD: bsd.patch-vars.mk,v 1.7 2008/06/09 14:47:03 sketch Exp $
+# $NetBSD: bsd.patch-vars.mk,v 1.8 2024/10/11 12:53:13 jperkin Exp $
 #
 # This Makefile fragment is included separately by bsd.pkg.mk and
 # defines some variables which must be defined earlier than where
