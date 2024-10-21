@@ -1,8 +1,7 @@
-# $NetBSD: Makefile,v 1.40 2024/10/10 06:37:26 wiz Exp $
+# $NetBSD: Makefile,v 1.42 2024/10/19 16:19:41 adam Exp $
 
-DISTNAME=	yarl-1.14.0
+DISTNAME=	yarl-1.15.5
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
-PKGREVISION=	1
 CATEGORIES=	www python
 MASTER_SITES=	${MASTER_SITE_PYPI:=y/yarl/}
 
@@ -15,8 +14,8 @@ TOOL_DEPENDS+=	${PYPKGPREFIX}-expandvars-[0-9]*:../../misc/py-expandvars
 TOOL_DEPENDS+=	${PYPKGPREFIX}-setuptools>=47:../../devel/py-setuptools
 TOOL_DEPENDS+=	${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
 DEPENDS+=	${PYPKGPREFIX}-idna>=2.0:../../www/py-idna
-DEPENDS+=	${PYPKGPREFIX}-propcache>=0:../../devel/py-propcache
 DEPENDS+=	${PYPKGPREFIX}-multidict>=4.0:../../databases/py-multidict
+DEPENDS+=	${PYPKGPREFIX}-propcache>=0.2.0:../../devel/py-propcache
 TEST_DEPENDS+=	${PYPKGPREFIX}-covdefaults-[0-9]*:../../devel/py-covdefaults
 TEST_DEPENDS+=	${PYPKGPREFIX}-hypothesis-[0-9]*:../../devel/py-hypothesis
 TEST_DEPENDS+=	${PYPKGPREFIX}-test-cov>=2.3.1:../../devel/py-test-cov

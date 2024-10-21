@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.4350 2024/10/14 07:49:35 wiz Exp $
+# $NetBSD: Makefile,v 1.4355 2024/10/20 14:03:31 wiz Exp $
 #
 
 COMMENT=	Development utilities
@@ -68,7 +68,9 @@ SUBDIR+=	R-pkgKitten
 SUBDIR+=	R-pkgbuild
 SUBDIR+=	R-pkgcache
 SUBDIR+=	R-pkgconfig
+SUBDIR+=	R-pkgdepends
 SUBDIR+=	R-pkgload
+SUBDIR+=	R-pkgsearch
 SUBDIR+=	R-plogr
 SUBDIR+=	R-prettycode
 SUBDIR+=	R-proto
@@ -157,10 +159,8 @@ SUBDIR+=	asm2html
 SUBDIR+=	asmfmt
 SUBDIR+=	ast-grep
 SUBDIR+=	astyle
-SUBDIR+=	at-spi2-atk
 SUBDIR+=	at-spi2-core
 SUBDIR+=	atf
-SUBDIR+=	atk
 SUBDIR+=	atkmm
 SUBDIR+=	atkmm2.36
 SUBDIR+=	autoconf
@@ -2467,7 +2467,6 @@ SUBDIR+=	py-binaryornot
 SUBDIR+=	py-bitarray
 SUBDIR+=	py-bitstring
 SUBDIR+=	py-blessed
-SUBDIR+=	py-blessings
 SUBDIR+=	py-blinker
 SUBDIR+=	py-boltons
 SUBDIR+=	py-boolean.py
@@ -2575,7 +2574,6 @@ SUBDIR+=	py-editorconfig-core
 SUBDIR+=	py-empty-files
 SUBDIR+=	py-entrypoints
 SUBDIR+=	py-enum34
-SUBDIR+=	py-exam
 SUBDIR+=	py-exceptiongroup
 SUBDIR+=	py-execnet
 SUBDIR+=	py-expiringdict

@@ -1,4 +1,4 @@
-# $NetBSD: Makefile.common,v 1.156 2024/10/15 16:07:00 adam Exp $
+# $NetBSD: Makefile.common,v 1.159 2024/10/20 20:01:34 nia Exp $
 #
 # used by print/poppler/Makefile
 # used by print/poppler-cpp/Makefile
@@ -20,29 +20,21 @@ LICENSE=	gnu-gpl-v2
 DISTINFO_FILE=	${.CURDIR}/../../print/poppler/distinfo
 PATCHDIR=	${.CURDIR}/../../print/poppler/patches
 
-USE_CXX_FEATURES=	c++17
+USE_CXX_FEATURES=	c++20
 USE_LANGUAGES=		c c++
 USE_TOOLS+=		pkg-config gsed
-GCC_REQD+=		8 # std::optional
 
 CMAKE_CONFIGURE_ARGS+=	-DENABLE_GPGME=OFF
 CMAKE_CONFIGURE_ARGS+=	-DENABLE_NSS3=OFF
-
-.include "../../mk/bsd.prefs.mk"
-
-# This package will link against libstdc++.so from the pkgsrc GCC when the
-# base OS GCC doesn't meet the minimum requirement. Thus we do this so the
-# appropriate gcc-libs package will be captured as a dependency, otherwise
-# binary packages will be broken.
-.if ${OPSYS} == "NetBSD" && ${OPSYS_VERSION} < 090000
-USE_PKGSRC_GCC=		yes
-USE_PKGSRC_GCC_RUNTIME=	yes
-.endif
 
 .include "../../mk/compiler.mk"
 .if !empty(PKGSRC_COMPILER:Mclang)
 BUILDLINK_TRANSFORM+=   rm:-fno-check-new
 .endif
+
+# poppler's build infrastructure and our split packages
+# do not work with ninja
+CMAKE_GENERATOR=	make
 
 .include "../../devel/boost-headers/buildlink3.mk"
 .include "../../devel/cmake/build.mk"
