@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.9 2024/10/15 01:32:59 thorpej Exp $
+# $NetBSD: Makefile,v 1.11 2024/10/22 05:31:32 thorpej Exp $
 
 # XXX Yosys changed their release tag format in 0.45 to just a bare
 # XXX number, sigh.

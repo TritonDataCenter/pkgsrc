@@ -1,8 +1,7 @@
-# $NetBSD: Makefile,v 1.17 2024/09/16 07:20:16 adam Exp $
+# $NetBSD: Makefile,v 1.19 2024/10/22 08:05:21 wiz Exp $
 
-DISTNAME=	pillow_heif-0.18.0
+DISTNAME=	pillow_heif-0.20.0
 PKGNAME=	${PYPKGPREFIX}-${DISTNAME}
-PKGREVISION=	1
 CATEGORIES=	graphics
 MASTER_SITES=	${MASTER_SITE_PYPI:=p/pillow_heif/}
 
@@ -15,9 +14,9 @@ TOOL_DEPENDS+=	${PYPKGPREFIX}-setuptools>=67.8:../../devel/py-setuptools
 TOOL_DEPENDS+=	${PYPKGPREFIX}-wheel-[0-9]*:../../devel/py-wheel
 DEPENDS+=	${PYPKGPREFIX}-Pillow>=10.1.0:../../graphics/py-Pillow
 
-PYTHON_VERSIONS_INCOMPATIBLE=	27
-
 # 608 passed, 12 skipped, 69 warnings
+# as of 0.20.0
+# tests/metadata_etc_test.py Fatal Python error: Segmentation fault
 
 .include "../../lang/python/wheel.mk"
 BUILDLINK_API_DEPENDS.libheif+=	libheif>=1.17.6

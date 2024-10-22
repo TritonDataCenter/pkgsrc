@@ -1,4 +1,4 @@
-@comment $NetBSD: PLIST,v 1.28 2023/11/07 22:05:01 wiz Exp $
+@comment $NetBSD: PLIST,v 1.30 2024/10/22 08:12:04 jperkin Exp $
 bin/info
 bin/install-info
 bin/makeinfo
