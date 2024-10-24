@@ -1,4 +1,4 @@
-# $NetBSD: Makefile,v 1.31 2024/02/09 09:31:45 adam Exp $
+# $NetBSD: Makefile,v 1.33 2024/10/22 09:52:29 adam Exp $
 
 .include "../../devel/glib2/Makefile.common"
 
@@ -16,15 +16,15 @@ SUBST_STAGE.autovars=	pre-configure
 SUBST_MESSAGE.autovars=	autoconf meson.build
 SUBST_FILES.autovars=	meson.build config.py.in gdbus-codegen.in
 SUBST_VARS.autovars=	PKGVERSION PYTHONBIN
-SUBST_SED.autovars=	-e 's,@VERSION@,${PKGVERSION:Q},'
-SUBST_SED.autovars+=	-e 's,@MAJOR_VERSION@,${PKGVERSION:R:R:Q},'
-SUBST_SED.autovars+=	-e 's,@MINOR_VERSION@,${PKGVERSION:R:E:Q},'
+SUBST_SED.autovars=	-e 's,@VERSION@,${PKGVERSION},'
+SUBST_SED.autovars+=	-e 's,@MAJOR_VERSION@,${PKGVERSION:R:R},'
+SUBST_SED.autovars+=	-e 's,@MINOR_VERSION@,${PKGVERSION:R:E},'
 SUBST_SED.autovars+=	-e 's,@PYTHON@,${PYTHONBIN:Q},'
 SUBST_SED.autovars+=	-e 's,@DATADIR@,${PREFIX}/share,'
 
 REPLACE_PYTHON+=	gdbus-codegen.in
 
 .include "../../devel/meson/build.mk"
-.include "../../lang/python/batteries-included.mk"
 .include "../../lang/python/application.mk"
+.include "../../lang/python/batteries-included.mk"
 .include "../../mk/bsd.pkg.mk"
