@@ -1,4 +1,4 @@
-# $NetBSD: options.mk,v 1.1 2024/08/09 16:20:54 ryoon Exp $
+# $NetBSD: options.mk,v 1.1 2024/10/24 15:27:16 ryoon Exp $
 
 PKG_OPTIONS_VAR=	PKG_OPTIONS.php-nextcloud
 
