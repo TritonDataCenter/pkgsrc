@@ -31,6 +31,7 @@ SHA1 (patch-lib_megaco_src_flex_Makefile.in) = 06eb5a76cc2e5adb4294c7db6919bb7c0
 SHA1 (patch-lib_megaco_src_flex_megaco__flex__scanner__drv.flex.src) = de57f4a94cdce3782592b4767a731b3693ba0224
 SHA1 (patch-lib_odbc_c__src_Makefile.in) = c34dd513e693839a8cf8cceac4655def300e7da4
 SHA1 (patch-lib_odbc_c__src_odbcserver.c) = 59960575f8ea8f6e65b2ad1f89632d48d40e2cfd
+SHA1 (patch-lib_public__key_src_pubkey__os__cacerts.erl) = f6cd872fe75e6bb33ecb0307cd4bb7ff8a1a4a16
 SHA1 (patch-lib_runtime__tools_c__src_Makefile.in) = 98d351192902d5f6d3bd506c6e382caa06642383
 SHA1 (patch-make_otp.mk.in) = 9d1e33ab3660b5cf0faa2b74129158b71aae408f
 SHA1 (patch-make_output.mk.in) = d7b3da58bfb471d52c41242e2a03d1598ce24e62

@@ -2,6 +2,7 @@
 
 DISTNAME=	erlang-${DIST_VERSION_MAJOR}.${DIST_VERSION_MINOR}${!empty(DIST_VERSION_PATCH):?.:}${DIST_VERSION_PATCH}
 PKGNAME=	${DISTNAME:S/OTP-/erlang-/}
+PKGREVISION=	1
 CATEGORIES=	lang
 MASTER_SITES=	${MASTER_SITE_GITHUB:=erlang/}
 GITHUB_PROJECT=	otp
@@ -75,6 +76,11 @@ SUBST_STAGE.target=	pre-configure
 SUBST_FILES.target=	make/target.mk
 SUBST_SED.target=	-e "s|=.*config.guess)|= ${MACHINE_GNU_PLATFORM}|"
 SUBST_MESSAGE.target=	Fixing target name.
+
+SUBST_CLASSES+=		vars
+SUBST_STAGE.vars=	pre-configure
+SUBST_FILES.vars=	lib/public_key/src/pubkey_os_cacerts.erl
+SUBST_VARS.vars=	SYSCONFBASE
 
 TEST_TARGET=		tests
 TEST_MAKE_FLAGS=	ERL_TOP=${WRKSRC}
