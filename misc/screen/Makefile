@@ -1,6 +1,7 @@
-# $NetBSD: Makefile,v 1.123 2023/09/06 16:00:15 vins Exp $
+# $NetBSD: Makefile,v 1.4 2025/05/12 15:58:00 wiz Exp $
 
 DISTNAME=	screen-4.9.1
+PKGREVISION=	2
 CATEGORIES=	misc shells
 MASTER_SITES=	${MASTER_SITE_GNU:=screen/}
 
@@ -17,8 +18,6 @@ EXTRACT_USING=	bsdtar
 #MAKE_JOBS_SAFE=	no
 
 .include "options.mk"
-
-NOT_FOR_PLATFORM=	Interix-*-* # user auth and username size fixes needed
 
 PLIST_SUBST+=		DISTNAME=${DISTNAME:Q}
 
@@ -59,9 +58,11 @@ post-install: screen-terminfo
 
 INSTALLATION_DIRS+=	share/examples/screen
 
-.if ${UNPRIVILEGED:U:tl} != yes
-SPECIAL_PERMS+=		bin/${DISTNAME} ${SETUID_ROOT_PERMS}
-.endif
+# possible security problems
+# https://security.opensuse.org/2025/05/12/screen-security-issues.html
+#.if ${UNPRIVILEGED:U:tl} != yes
+#SPECIAL_PERMS+=		bin/${DISTNAME} ${SETUID_ROOT_PERMS}
+#.endif
 
 pre-configure:
 	cd ${WRKSRC} && autoreconf -i
