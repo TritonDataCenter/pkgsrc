@@ -55,7 +55,7 @@ REPLACE_PERL+=	tools/insertdata \
 
 .if (${RT_DB_TYPE} == "mysql")
 PKGNAME=	${DISTNAME:S/-/./g:S/./-mysql-/}
-DEPENDS+=	p5-DBD-mysql-[0-9]*:../../databases/p5-DBD-mysql
+DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 RT_DB_HOST?=	localhost
 RT_DB_PORT?=
 RT_DB_PATH?=	${PREFIX}/lib/mysql
