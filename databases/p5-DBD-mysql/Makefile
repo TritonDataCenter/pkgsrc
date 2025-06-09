@@ -1,8 +1,7 @@
 # $NetBSD: Makefile,v 1.89 2026/07/16 19:01:37 wiz Exp $
 
 DISTNAME=	DBD-mysql-5.013
-PKGNAME=	p5-${DISTNAME}
-PKGREVISION=	1
+PKGNAME=	p5-${DISTNAME:S/mysql/${MYSQL_PKG_PREFIX}/}
 CATEGORIES=	databases perl5
 MASTER_SITES=	${MASTER_SITE_PERL_CPAN:=DBD/}
 
@@ -10,6 +9,12 @@ MAINTAINER=	bad@NetBSD.org
 HOMEPAGE=	https://metacpan.org/release/DBD-mysql
 COMMENT=	Perl DBI/DBD driver for MySQL databases
 LICENSE=	${PERL5_LICENSE}
+
+# Ensure the default version is chosen by pbulk
+.include "../../mk/mysql.buildlink3.mk"
+.if "${MYSQL_PKG_PREFIX}" == "${MYSQL_VERSION_DEFAULT}"
+PKGREVISION!=	expr ${PKGREVISION:U0} + 1
+.endif
 
 DEPENDS+=	p5-Devel-CheckLib-[0-9]*:../../devel/p5-Devel-CheckLib
 TEST_DEPENDS+=	p5-Test-Deep-[0-9]*:../../devel/p5-Test-Deep
@@ -36,5 +41,4 @@ MYSQL_VERSIONS_ACCEPTED=	80
 
 .include "../../databases/p5-DBI/buildlink3.mk"
 .include "../../lang/perl5/module.mk"
-.include "../../mk/mysql.buildlink3.mk"
 .include "../../mk/bsd.pkg.mk"
