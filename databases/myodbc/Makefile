@@ -1,7 +1,7 @@
 # $NetBSD: Makefile,v 1.49 2025/11/03 07:28:13 jnemeth Exp $
 
 DISTNAME=	mysql-connector-odbc-8.0.43
-PKGNAME=	${DISTNAME:S/mysql-connector-odbc/myodbc/}
+PKGNAME=	${DISTNAME:S/mysql-connector-odbc/${MYSQL_PKG_PREFIX}-odbc/}
 CATEGORIES=	databases
 #MASTER_SITES=	${MASTER_SITE_MYSQL:=Connector-ODBC/5.3/}
 MASTER_SITES=	${MASTER_SITE_GITHUB:=mysql/}
@@ -18,7 +18,7 @@ LICENSE=	gnu-gpl-v2
 CMAKE_CONFIGURE_ARGS=	-Wno-dev
 CMAKE_CONFIGURE_ARGS+=	-DCMAKE_POLICY_VERSION_MINIMUM=3.5
 #CMAKE_CONFIGURE_ARGS+=	-DMYSQL_DIR=${BUILDLINK_PREFIX.mysql-client}
-CMAKE_CONFIGURE_ARGS+=	-DMYSQL_INCLUDE_DIR=${BUILDLINK_PREFIX.mysql-client}/include/mysql
+CMAKE_CONFIGURE_ARGS+=	-DMYSQL_INCLUDE_DIR=${BUILDLINK_PREFIX.mysql-client}/${BUILDLINK_INCDIRS.mysql-client}
 USE_LANGUAGES=		c c++
 
 INSTALLATION_DIRS=	share/doc/mysql-connector-odbc
