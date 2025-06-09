@@ -20,7 +20,7 @@ DEPENDS+=	p5-HTML-Mason>=1.36:../../www/p5-HTML-Mason
 
 # Backend database dependencies
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=	p5-DBD-mysql>=2.1018:../../databases/p5-DBD-mysql
+DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 RT_DB_TYPE=	mysql
 .elif !empty(PKG_OPTIONS:Mpgsql)
 DEPENDS+=	p5-DBD-postgresql>=1.43:../../databases/p5-DBD-postgresql
