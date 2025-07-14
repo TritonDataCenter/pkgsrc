@@ -1,10 +1,11 @@
-@comment $NetBSD: PLIST,v 1.23 2024/07/30 11:48:45 adam Exp $
+@comment $NetBSD: PLIST,v 1.25 2025/06/30 19:10:20 adam Exp $
 man/man1/git-add.1
 man/man1/git-am.1
 man/man1/git-annotate.1
 man/man1/git-apply.1
 man/man1/git-archimport.1
 man/man1/git-archive.1
+man/man1/git-backfill.1
 man/man1/git-bisect.1
 man/man1/git-blame.1
 man/man1/git-branch.1
@@ -40,6 +41,7 @@ man/man1/git-describe.1
 man/man1/git-diagnose.1
 man/man1/git-diff-files.1
 man/man1/git-diff-index.1
+man/man1/git-diff-pairs.1
 man/man1/git-diff-tree.1
 man/man1/git-diff.1
 man/man1/git-difftool.1
