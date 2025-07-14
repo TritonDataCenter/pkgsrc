@@ -1,8 +1,8 @@
-$NetBSD: distinfo,v 1.246 2024/12/11 13:44:31 adam Exp $
+$NetBSD: distinfo,v 1.252 2025/06/30 13:14:28 adam Exp $
 
-BLAKE2s (cmake-3.31.1.tar.gz) = 2a21d02ed90e5e1d28d635e4c523332b74b4440c887e7b28f4e7b0edbf1536c8
-SHA512 (cmake-3.31.1.tar.gz) = 9c4664792b32b1fa76aa66c5211e8a0a1fed380eb48ff605adb516d056ae3ab94859cf4103d86b83e220baba3ec5b763b454b6866d6bd606fc558fa3da75b146
-Size (cmake-3.31.1.tar.gz) = 11704421 bytes
+BLAKE2s (cmake-3.31.8.tar.gz) = e94a260ebd6450a2d2a8e0947323f73a0d5c9ea8cdfae353aad13c1fa37faba3
+SHA512 (cmake-3.31.8.tar.gz) = 07dbb5af1d449760ef92a921e43c0a0a091989ac51ce3f8b7607bf617b8b56e47c675486d3c620c04f1105b7dfa3852b926915e0888ff46ea473cd01e572f461
+Size (cmake-3.31.8.tar.gz) = 11713806 bytes
 SHA1 (patch-Auxiliary_CMakeLists.txt) = 7a26ef79be53b9d0370029e83f203440aa0be2a4
 SHA1 (patch-CMakeLists.txt) = 0fb79458828a021a96e350bc4cf12875914f868b
 SHA1 (patch-Modules_Compiler_GNU.cmake) = e06fc41fd7a49ca9f8edaabb95d4ab1cde784112
