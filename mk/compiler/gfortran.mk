@@ -53,7 +53,8 @@ POSSIBLE_GFORTRAN_VERSION?=	${CC_VERSION:S/gcc-//:C/.[0-9].[0-9]$//}
 # While 10 would likely be ok,  match aarch64 so that the same compiler
 # is used for all Darwin.
 .if ${MACHINE_PLATFORM:MDarwin-*-*}
-POSSIBLE_GFORTRAN_VERSION=	12
+POSSIBLE_GFORTRAN_VERSION=	14
+GFORTRAN_VERSION=		14
 .endif
 
 # pkgsrc gcc9 is missing NetBSD patches for aarch64, so if 9 is
@@ -79,6 +80,7 @@ GFORTRAN_VERSION?=		10
 .endif
 
 .if !empty(PKGPATH:Mlang/gcc${GFORTRAN_VERSION}) || !empty(PKGPATH:Mdevel/patch) || \
+    !empty(PKGPATH:Mextra/gcc*) || \
     !empty(PKGPATH:Mdevel/libtool-base)
 IGNORE_GFORTRAN=	yes
 MAKEFLAGS+=		IGNORE_GFORTRAN=yes
@@ -127,8 +129,8 @@ PREPEND_PATH+=	${_GFORTRAN_DIR}/bin
 .  endif
 
 # Add the dependency on gfortran.
-BUILDLINK_DEPMETHOD.gcc${GFORTRAN_VERSION}=	full
-.  include "../../lang/gcc${GFORTRAN_VERSION}/buildlink3.mk"
+#BUILDLINK_DEPMETHOD.gcc${GFORTRAN_VERSION}=	full
+.  include "../../extra/gcc${GFORTRAN_VERSION}-macos-libs/buildlink3.mk"
 
 .  if defined(GFORTRAN_DIR) && !empty(GFORTRAN_DIR)
 PKGSRC_MAKE_ENV+=	GFORTRAN_DIR=${GFORTRAN_DIR:Q}
