@@ -130,6 +130,7 @@ PREPEND_PATH+=	${_GFORTRAN_DIR}/bin
 
 # Add the dependency on gfortran.
 #BUILDLINK_DEPMETHOD.gcc${GFORTRAN_VERSION}=	full
+.  include "../../extra/gcc${GFORTRAN_VERSION}-macos/buildlink3.mk"
 .  include "../../extra/gcc${GFORTRAN_VERSION}-macos-libs/buildlink3.mk"
 
 .  if defined(GFORTRAN_DIR) && !empty(GFORTRAN_DIR)
