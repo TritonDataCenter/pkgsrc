@@ -47,6 +47,7 @@ MYSQL_VERSIONS_ALL=		80
 MYSQL_VERSIONS_ALL+=		${MARIADB_VERSIONS_ALL}
 MYSQL_VERSIONS_ALL+=		percona80 percona57 percona56
 MYSQL_VERSIONS_ALL+=		percona80-cluster percona57-cluster
+MYSQL_VERSIONS_ALL+=		percona84 percona84-cluster
 
 MYSQL_PKGBASE.80=		mysql-client-8.0.*
 MYSQL_PKGSRCDIR.80=		../../databases/mysql80-client
@@ -64,6 +65,10 @@ MYSQL_PKGBASE.mariadb1011=	mariadb-client-10.11.*
 MYSQL_PKGSRCDIR.mariadb1011=	../../databases/mariadb1011-client
 MYSQL_PKG_PREFIX.mariadb1011=	mariadb1011
 
+MYSQL_PKGBASE.percona84=	percona-client-8.4.*
+MYSQL_PKGSRCDIR.percona84=	../../joyent/percona84-client
+MYSQL_PKG_PREFIX.percona84=	percona84
+
 MYSQL_PKGBASE.percona80=	percona-client-8.0.*
 MYSQL_PKGSRCDIR.percona80=	../../joyent/percona80-client
 MYSQL_PKG_PREFIX.percona80=	percona80
@@ -75,6 +80,10 @@ MYSQL_PKG_PREFIX.percona57=	percona57
 MYSQL_PKGBASE.percona56=	percona-client-5.6.*
 MYSQL_PKGSRCDIR.percona56=	../../joyent/percona56-client
 MYSQL_PKG_PREFIX.percona56=	percona56
+
+MYSQL_PKGBASE.percona84-cluster=	percona-cluster-8.4.*
+MYSQL_PKGSRCDIR.percona84-cluster=	../../joyent/percona84-cluster
+MYSQL_PKG_PREFIX.percona84-cluster=	percona84-cluster
 
 MYSQL_PKGBASE.percona80-cluster=	percona-cluster-8.0.*
 MYSQL_PKGSRCDIR.percona80-cluster=	../../joyent/percona80-cluster
@@ -104,6 +113,7 @@ _SYS_VARS.mysql+=		MYSQL_PKG_PREFIX.${ver}
 MYSQL_VERSION_DEFAULT?=		mariadb1011
 MYSQL_VERSIONS_ACCEPTED?=	80 mariadb114 mariadb1011 mariadb106 mariadb105 \
 				percona80 percona57 percona56 \
+				percona84 percona84-cluster \
 				percona80-cluster percona57-cluster
 
 #
