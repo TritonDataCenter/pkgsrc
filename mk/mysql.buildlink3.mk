@@ -48,7 +48,6 @@ MYSQL_VERSIONS_ALL=		80
 MYSQL_VERSIONS_ALL+=		${MARIADB_VERSIONS_ALL}
 MYSQL_VERSIONS_ALL+=		percona84 percona84-cluster
 MYSQL_VERSIONS_ALL+=		percona80 percona80-cluster
-MYSQL_VERSIONS_ALL+=		percona57 percona57-cluster
 
 MYSQL_PKGBASE.80=		mysql-client-8.0.*
 MYSQL_PKGSRCDIR.80=		../../databases/mysql80-client
@@ -82,10 +81,6 @@ MYSQL_PKGBASE.percona80=	percona-client-8.0.*
 MYSQL_PKGSRCDIR.percona80=	../../joyent/percona80-client
 MYSQL_PKG_PREFIX.percona80=	percona80
 
-MYSQL_PKGBASE.percona57=	percona-client-5.7.*
-MYSQL_PKGSRCDIR.percona57=	../../joyent/percona57-client
-MYSQL_PKG_PREFIX.percona57=	percona57
-
 MYSQL_PKGBASE.percona84-cluster=	percona-cluster-8.4.*
 MYSQL_PKGSRCDIR.percona84-cluster=	../../joyent/percona84-cluster
 MYSQL_PKG_PREFIX.percona84-cluster=	percona84-cluster
@@ -93,10 +88,6 @@ MYSQL_PKG_PREFIX.percona84-cluster=	percona84-cluster
 MYSQL_PKGBASE.percona80-cluster=	percona-cluster-8.0.*
 MYSQL_PKGSRCDIR.percona80-cluster=	../../joyent/percona80-cluster
 MYSQL_PKG_PREFIX.percona80-cluster=	percona80-cluster
-
-MYSQL_PKGBASE.percona57-cluster=	percona-cluster-5.7.*
-MYSQL_PKGSRCDIR.percona57-cluster=	../../joyent/percona57-cluster
-MYSQL_PKG_PREFIX.percona57-cluster=	percona57-cluster
 
 .for ver in ${MYSQL_VERSIONS_ALL}
 MYSQL_OK.${ver}=		no
@@ -115,8 +106,7 @@ MYSQL_VERSION_DEFAULT?=		mariadb114
 MYSQL_VERSIONS_ACCEPTED?=	80 mariadb118 mariadb114 mariadb1011 \
 				mariadb106 mariadb105 \
 				percona84 percona84-cluster \
-				percona80 percona80-cluster \
-				percona57 percona57-cluster
+				percona80 percona80-cluster
 
 #
 # Previous versions of this file used shouty caps in the version names.  We
