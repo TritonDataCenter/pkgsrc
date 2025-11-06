@@ -15,7 +15,6 @@ LICENSE=	modified-bsd
 
 DEPENDS+=	p5-JSON-[0-9]*:../../converters/p5-JSON
 DEPENDS+=	p5-DBI-[0-9]*:../../databases/p5-DBI
-DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 DEPENDS+=	p5-Switch-[0-9]*:../../lang/p5-Switch
 DEPENDS+=	p5-HTTP-Message-[0-9]*:../../www/p5-HTTP-Message
 
@@ -69,6 +68,7 @@ post-install:
 		${WRKSRC}/opendmarc/opendmarc.conf.sample \
 		> ${DESTDIR}${EGDIR}/opendmarc.conf.sample
 
+.include "../../databases/p5-DBD-mysql/dependency.mk"
 .include "../../security/openssl/buildlink3.mk"
 .include "../../mail/libmilter/buildlink3.mk"
 .include "../../mail/libspf2/buildlink3.mk"
