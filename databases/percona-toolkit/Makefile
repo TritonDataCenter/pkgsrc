@@ -35,10 +35,10 @@ SUBST_FILES.sh+=	blib/script/pt-summary
 SUBST_SED.sh+=		-e 's|^\#!.*|\#!${TOOLS_PATH.sh}|'
 SUBST_NOOP_OK.sh=	yes
 
-DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 #DEPENDS+=	{perl>=5.7.3,p5-Time-HiRes-[0-9]*}:../../time/p5-Time-HiRes
 
 PERL5_PACKLIST=	auto/percona-toolkit/.packlist
 
+.include "../../databases/p5-DBD-mysql/dependency.mk"
 .include "../../lang/perl5/module.mk"
 .include "../../mk/bsd.pkg.mk"
