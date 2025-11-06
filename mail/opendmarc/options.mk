@@ -11,7 +11,7 @@ PKG_SUGGESTED_OPTIONS=		mariadb
 ### Backend database support
 ###
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=		p5-DBD-mysql-[0-9]*:../../databases/p5-DBD-mysql
+DEPENDS+=		p5-DBD-{mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 CONFIGURE_ARGS+=	--with-sql-backend=mysql
 .elif !empty(PKG_OPTIONS:Mmariadb)
 DEPENDS+=		p5-DBD-MariaDB-[0-9]*:../../databases/p5-DBD-MariaDB
