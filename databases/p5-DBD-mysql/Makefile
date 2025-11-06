@@ -37,7 +37,7 @@ MAKE_PARAMS+=		--nocatchstderr
 # ${MYSQL_VERSIONS_ALL} because that includes MariaDB, exposing that
 # some think MariaDB should be considered a mysql version, and some
 # think not.
-#MYSQL_VERSIONS_ACCEPTED=	80
+MYSQL_VERSIONS_ACCEPTED:=	${MYSQL_VERSIONS_ACCEPTED:Nmariadb*}
 
 .include "../../databases/p5-DBI/buildlink3.mk"
 .include "../../lang/perl5/module.mk"
