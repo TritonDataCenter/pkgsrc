@@ -13,11 +13,11 @@ LICENSE=	gnu-gpl-v2
 
 DEPENDS+=	p5-Term-ReadKey>=2.10:../../devel/p5-Term-ReadKey
 DEPENDS+=	p5-DBI>=1.13:../../databases/p5-DBI
-DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
 
 PERL5_PACKLIST=	auto/innotop/.packlist
 REPLACE_PERL=	innotop
 NO_BUILD=	YES
 
+.include "../../databases/p5-DBD-mysql/dependency.mk"
 .include "../../lang/perl5/module.mk"
 .include "../../mk/bsd.pkg.mk"

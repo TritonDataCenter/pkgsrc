@@ -19,7 +19,7 @@ PKG_SUGGESTED_OPTIONS=	sqlite
 ### Use mysql or postgresql backend
 ###
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=	p5-DBD-{mariadb,mysql,percona}*-[0-9]*:../../databases/p5-DBD-mysql
+.  include "../../databases/p5-DBD-mysql/dependency.mk"
 DBDRIVER=	mysql
 .elif !empty(PKG_OPTIONS:Msqlite)
 DEPENDS+=	p5-DBD-SQLite>=1.54:../../databases/p5-DBD-SQLite
