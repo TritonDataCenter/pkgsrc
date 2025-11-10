@@ -8,7 +8,7 @@ _COMPILER_LD_FLAG=	-Wl,
 _LINKER_RPATH_FLAG=	-R
 _COMPILER_RPATH_FLAG=	${_COMPILER_LD_FLAG}${_LINKER_RPATH_FLAG}
 
-_CTF_CFLAGS=		-gdwarf-2
+_CTF_CFLAGS=		-gdwarf-4 -gstrict-dwarf
 
 # Newer compiler versions default to -fno-common, which causes lots of
 # problems when compiling older code. Force -fno-common off until we're
