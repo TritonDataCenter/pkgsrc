@@ -1187,8 +1187,18 @@ read_sig_subpackets(pgpv_t *pgp, pgpv_sigpkt_t *sigpkt, uint8_t *p, size_t pktle
 			sigpkt->sig.ifver = *p;
 			sigpkt->sig.issuer_fingerprint = &p[1];
 			break;
+		case SUBPKT_EMBEDDED_SIGNATURE:
+			/* Not currently used for verification */
+			break;
 		default:
-			printf("Ignoring unusual/reserved signature subpacket %d\n", subpkt.tag);
+			/*
+			 * RFC 4880 says ignore unknown experimental subpackets
+			 * unless the critical bit is set, this avoids spam with
+			 * GnuPG's subpacket 101.
+			 * */
+			if (subpkt.critical) {
+				printf("Unknown critical signature subpacket %d\n", subpkt.tag);
+			}
 			break;
 		}
 		subpkt.s.data = p;
@@ -1250,7 +1260,18 @@ read_sigpkt(pgpv_t *pgp, uint8_t mement, pgpv_sigpkt_t *sigpkt, uint8_t *p, size
 		p += sigpkt->subslen;
 		sigpkt->sig.hashlen = (unsigned)(p - base);
 		sigpkt->unhashlen = get_16(p);
-		p += sizeof(sigpkt->unhashlen) + sigpkt->unhashlen;
+		p += sizeof(sigpkt->unhashlen);
+		/* parse unhashed subpackets to extract issuer keyid */
+		if (sigpkt->unhashlen > 0) {
+			uint16_t saved_subslen = sigpkt->subslen;
+			sigpkt->subslen = sigpkt->unhashlen;
+			if (!read_sig_subpackets(pgp, sigpkt, p, pktlen)) {
+				printf("read_sigpkt: can't read unhashed subpackets, v4\n");
+				return 0;
+			}
+			sigpkt->subslen = saved_subslen;
+			p += sigpkt->unhashlen;
+		}
 		sigpkt->sig.hash2 = p;
 		if (!read_signature_mpis(sigpkt, sigpkt->sig.mpi = p + 2, pktlen)) {
 			printf("read_sigpkt: can't read sigs, v4\n");
@@ -1621,7 +1642,6 @@ recog_userid(pgpv_t *pgp, pgpv_signed_userid_t *userid)
 
 	memset(userid, 0x0, sizeof(*userid));
 	if (!pkt_is(pgp, USERID_PKT)) {
-		printf("recog_userid: not %d\n", USERID_PKT);
 		return 0;
 	}
 	pkt = &ARRAY_ELEMENT(pgp->pkts, pgp->pkt);
@@ -1629,6 +1649,10 @@ recog_userid(pgpv_t *pgp, pgpv_signed_userid_t *userid)
 	userid->userid.data = pkt->s.data;
 	userid->userid.allocated = 0;
 	pgp->pkt += 1;
+	/* skip trust packets that GnuPG 2.x may insert after user ID */
+	while (pkt_is(pgp, TRUST_PKT)) {
+		pkt_accept(pgp, TRUST_PKT);
+	}
 	while (pkt_is(pgp, SIGNATURE_PKT)) {
 		if (!recog_signature(pgp, &signature)) {
 			printf("recog_userid: can't recognise signature/trust\n");
@@ -1659,6 +1683,10 @@ recog_userattr(pgpv_t *pgp, pgpv_signed_userattr_t *userattr)
 	}
 	userattr->userattr = ARRAY_ELEMENT(pgp->pkts, pgp->pkt).u.userattr;
 	pgp->pkt += 1;
+	/* skip trust packets that GnuPG 2.x may insert after user attribute */
+	while (pkt_is(pgp, TRUST_PKT)) {
+		pkt_accept(pgp, TRUST_PKT);
+	}
 	while (pkt_is(pgp, SIGNATURE_PKT)) {
 		if (!recog_signature(pgp, &signature)) {
 			printf("recog_userattr: can't recognise signature/trust\n");
@@ -2462,6 +2490,10 @@ recog_primary_key(pgpv_t *pgp, pgpv_primarykey_t *primary)
 	memset(primary, 0x0, sizeof(*primary));
 	read_pubkey(&primary->primary, pkt->s.data, pkt->s.size, 0);
 	pgp->pkt += 1;
+	/* skip trust packets that GnuPG 2.x may insert after primary key */
+	while (pkt_is(pgp, TRUST_PKT)) {
+		pkt_accept(pgp, TRUST_PKT);
+	}
 	if (pkt_sigtype_is(pgp, SIGTYPE_KEY_REVOCATION)) {
 		if (!recog_signature(pgp, &primary->revoc_self_sig)) {
 			printf("recog_primary_key: no signature/trust at PGPV_SIGTYPE_KEY_REVOCATION\n");
@@ -2479,6 +2511,10 @@ recog_primary_key(pgpv_t *pgp, pgpv_primarykey_t *primary)
 		}
 		ARRAY_APPEND(primary->signatures, ARRAY_COUNT(pgp->signatures));
 		ARRAY_APPEND(pgp->signatures, signature);
+	}
+	/* skip trust packets that GnuPG 2.x may insert after primary key */
+	while (pkt_is(pgp, TRUST_PKT)) {
+		pkt_accept(pgp, TRUST_PKT);
 	}
 	/* some keys out there have user ids where they shouldn't */
 	do {
@@ -2518,6 +2554,10 @@ recog_primary_key(pgpv_t *pgp, pgpv_primarykey_t *primary)
 			calc_keyid(&subkey.subkey, "sha1");
 			ARRAY_APPEND(primary->signed_subkeys, ARRAY_COUNT(pgp->signed_subkeys));
 			ARRAY_APPEND(pgp->signed_subkeys, subkey);
+		}
+		/* skip trust packets before checking for more user IDs */
+		while (pkt_is(pgp, TRUST_PKT)) {
+			pkt_accept(pgp, TRUST_PKT);
 		}
 	} while (pgp->pkt < ARRAY_COUNT(pgp->pkts) && pkt_is(pgp, USERID_PKT));
 	primary->fmtsize = estimate_primarykey_size(primary);
