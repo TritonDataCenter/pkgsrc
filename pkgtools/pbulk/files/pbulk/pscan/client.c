@@ -80,6 +80,30 @@ find_full_tree_client(int fd, const char *bmake_path)
 		if (cat_len == 0)
 			break;
 
+		/*
+		 * Check for SUBDIR including a '/', if so then it has been
+		 * passed via USER_ADDITIONAL_PKGS from the top-level Makefile,
+		 * and should be added as a package path directly.
+		 */
+		if (memchr(cat, '/', cat_len) != NULL) {
+			if (len_pkgs == allocated_pkgs) {
+				if (allocated_pkgs == 0) {
+					allocated_pkgs = 1024;
+					pkgs = xmalloc(sizeof(*pkgs) *
+							allocated_pkgs);
+				} else {
+					allocated_pkgs *= 2;
+					pkgs = xrealloc(pkgs,
+							sizeof(*pkgs) * allocated_pkgs);
+				}
+			}
+			pkgs[len_pkgs] = xasprintf("%.*s", (int)cat_len, cat);
+			len_pkgs_data += strlen(pkgs[len_pkgs]) + 1;
+			++len_pkgs;
+			cat += cat_len;
+			continue;
+		}
+
 		cat_path = xasprintf("%s/%.*s", pkgsrc_tree, (int)cat_len, cat);
 		buf_orig = buf = read_from_child(cat_path, bmake_path, extract_subdir);
 		free(cat_path);

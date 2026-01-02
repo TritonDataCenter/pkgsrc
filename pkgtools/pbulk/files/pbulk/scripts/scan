@@ -30,7 +30,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-. @PBULK_CONFIG@
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 set -e
 
@@ -69,7 +69,9 @@ if [ -z "${limited_list}" ]; then
 		${pscan} -v -M ${make} ${extra_pscan_args} ${pkgsrc} ${loc}/pscan 2>> ${loc}/pscan.stderr
 		;;
 	[yY][eE][sS])
+		[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
 		${pscan} -v -I ${pscan_start_script} -m ${master_port_scan} -M ${make} ${extra_pscan_args} ${pkgsrc} ${loc}/pscan 2>> ${loc}/pscan.stderr
+		[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 		;;
 	*)
 		echo "master_mode must be either yes or no."
@@ -85,6 +87,8 @@ else
 	initial=1
 	mkdir -p ${loc}
 	sed -e 's/\#.*$//' -e 's/[ 	]*$//' -e '/^$/d' "${limited_list}" > ${loc}/missing
+
+	[ -n "${chroot_dir}" ] && ${chroot_script} scan create ${chroot_dir}
 
 	while [ -s ${loc}/missing ]; do
 		sort -u ${loc}/missing > ${loc}/missing.s
@@ -111,6 +115,8 @@ else
 			mv ${loc}/presolve.new ${loc}/presolve
 		fi
 	done
+
+	[ -n "${chroot_dir}" ] && ${chroot_script} scan delete ${chroot_dir}
 
 	if [ -s ${loc}/missing ]; then
 		if [ "${strict_mode}" = "yes" ]; then
