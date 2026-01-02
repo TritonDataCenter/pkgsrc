@@ -1,0 +1,12 @@
+[submodule "extra"]
+	path = extra
+	url = https://github.com/TritonDataCenter/pkgsrc-extra.git
+	branch = 2025Q4
+[submodule "joyent"]
+	path = joyent
+	url = https://github.com/TritonDataCenter/pkgsrc-joyent.git
+	branch = 2025Q4
+[submodule "wip"]
+	path = wip
+	url = https://github.com/TritonDataCenter/pkgsrc-wip.git
+	branch = 2025Q4
