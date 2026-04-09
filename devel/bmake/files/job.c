@@ -142,6 +142,9 @@
 #endif
 #endif
 #include <signal.h>
+#ifdef BMAKE_POSIX_SPAWN
+#include <spawn.h>
+#endif
 #include <utime.h>
 #if defined(HAVE_SYS_SOCKET_H)
 # include <sys/socket.h>
@@ -1435,6 +1438,65 @@ JobExec(Job *job, char **argv)
 
 	Var_ReexportVars(job->node);
 
+#ifdef BMAKE_POSIX_SPAWN
+	/*
+	 * Use posix_spawn() to avoid fork() overhead when possible.
+	 * Cannot use it for submakes (need to pass token pipes) or
+	 * when USE_META needs child-side setup.
+	 */
+	if (!(job->node->type & (OP_MAKE | OP_SUBMAKE))
+#ifdef USE_META
+	    && !useMeta
+#endif
+	    ) {
+		posix_spawnattr_t attr;
+		posix_spawn_file_actions_t fa;
+		sigset_t emptymask;
+		int err;
+
+		posix_spawnattr_init(&attr);
+		posix_spawn_file_actions_init(&fa);
+
+		/* Reset caught signals to default in child */
+		posix_spawnattr_setsigdefault(&attr, &caught_signals);
+		/* Unblock all signals in child */
+		sigemptyset(&emptymask);
+		posix_spawnattr_setsigmask(&attr, &emptymask);
+		/* New process group */
+		posix_spawnattr_setpgroup(&attr, 0);
+		posix_spawnattr_setflags(&attr,
+		    POSIX_SPAWN_SETSIGDEF |
+		    POSIX_SPAWN_SETSIGMASK |
+		    POSIX_SPAWN_SETPGROUP);
+
+		/* Set up stdin from command file if not inline */
+		if (job->cmdBuf == NULL && job->cmdFILE != NULL) {
+			int cmdfd = fileno(job->cmdFILE);
+			(void)lseek(cmdfd, 0, SEEK_SET);
+			posix_spawn_file_actions_adddup2(&fa,
+			    cmdfd, STDIN_FILENO);
+		}
+
+		/* Route stdout and stderr through the output pipe */
+		posix_spawn_file_actions_adddup2(&fa,
+		    job->outPipe, STDOUT_FILENO);
+		posix_spawn_file_actions_adddup2(&fa,
+		    STDOUT_FILENO, STDERR_FILENO);
+
+		err = posix_spawn(&cpid, shellPath, &fa, &attr,
+		    argv, environ);
+
+		posix_spawn_file_actions_destroy(&fa);
+		posix_spawnattr_destroy(&attr);
+
+		if (err == 0) {
+			job->pid = cpid;
+			goto spawned;
+		}
+		/* fall through to vfork on failure */
+	}
+#endif /* BMAKE_POSIX_SPAWN */
+
 	cpid = vfork();
 	if (cpid == -1)
 		Punt("Cannot vfork: %s", strerror(errno));
@@ -1462,13 +1524,17 @@ JobExec(Job *job, char **argv)
 		 * and reset it to the beginning (again). Since the stream
 		 * was marked close-on-exec, we must clear that bit in the
 		 * new input.
+		 *
+		 * When using inline commands (-c), stdin is inherited.
 		 */
-		if (dup2(fileno(job->cmdFILE), STDIN_FILENO) == -1)
-			execDie("dup2", "job->cmdFILE");
-		if (fcntl(STDIN_FILENO, F_SETFD, 0) == -1)
-			execDie("fcntl clear close-on-exec", "stdin");
-		if (lseek(STDIN_FILENO, 0, SEEK_SET) == -1)
-			execDie("lseek to 0", "stdin");
+		if (job->cmdFILE != NULL) {
+			if (dup2(fileno(job->cmdFILE), STDIN_FILENO) == -1)
+				execDie("dup2", "job->cmdFILE");
+			if (fcntl(STDIN_FILENO, F_SETFD, 0) == -1)
+				execDie("fcntl clear close-on-exec", "stdin");
+			if (lseek(STDIN_FILENO, 0, SEEK_SET) == -1)
+				execDie("lseek to 0", "stdin");
+		}
 
 		if (job->node->type & (OP_MAKE | OP_SUBMAKE)) {
 			/* Pass job token pipe to submakes. */
@@ -1522,6 +1588,10 @@ JobExec(Job *job, char **argv)
 	/* Parent, continuing after the child exec */
 	job->pid = cpid;
 
+#ifdef BMAKE_POSIX_SPAWN
+ spawned:
+#endif
+
 	Trace_Log(JOBSTART, job);
 
 #ifdef USE_META
@@ -1542,6 +1612,10 @@ JobExec(Job *job, char **argv)
 			Punt("Cannot write shell script for '%s': %s",
 			    job->node->name, strerror(errno));
 		job->cmdFILE = NULL;
+	}
+	if (job->cmdBuf != NULL) {
+		free(job->cmdBuf);
+		job->cmdBuf = NULL;
 	}
 
 	/* Now that the job is actually running, add it to the table. */
@@ -1595,27 +1669,40 @@ JobMakeArgv(Job *job, char **argv)
 			argc++;
 		}
 	}
+
+	/* Use -c for inline commands instead of stdin from temp file */
+	if (job->cmdBuf != NULL) {
+		argv[argc++] = UNCONST("-c");
+		argv[argc++] = job->cmdBuf;
+	}
+
 	argv[argc] = NULL;
 }
 
 static void
 JobWriteShellCommands(Job *job, GNode *gn, bool *out_run)
 {
-	/*
-	 * tfile is the name of a file into which all shell commands
-	 * are put. It is removed before the child shell is executed,
-	 * unless DEBUG(SCRIPT) is set.
-	 */
 	char tfile[MAXPATHLEN];
-	int tfd;		/* File descriptor to the temp file */
+	int tfd;
 
+	job->cmdBuf = NULL;
+	job->cmdBufLen = 0;
+
+#ifdef HAVE_OPEN_MEMSTREAM
+	/*
+	 * Buffer commands in memory first.  If short enough, pass
+	 * them inline via "shell -c" to avoid temp file overhead.
+	 */
+	job->cmdFILE = open_memstream(&job->cmdBuf, &job->cmdBufLen);
+	if (job->cmdFILE == NULL)
+		Punt("Could not open_memstream");
+#else
 	tfd = Job_TempFile(TMPPAT, tfile, sizeof tfile);
-
 	job->cmdFILE = fdopen(tfd, "w+");
 	if (job->cmdFILE == NULL)
 		Punt("Could not fdopen %s", tfile);
-
 	(void)fcntl(fileno(job->cmdFILE), F_SETFD, FD_CLOEXEC);
+#endif
 
 #ifdef USE_META
 	if (useMeta) {
@@ -1626,6 +1713,31 @@ JobWriteShellCommands(Job *job, GNode *gn, bool *out_run)
 #endif
 
 	*out_run = JobWriteCommands(job);
+
+#ifdef HAVE_OPEN_MEMSTREAM
+	(void)fclose(job->cmdFILE);
+	job->cmdFILE = NULL;
+
+	/*
+	 * If the commands are too long for a -c argument, fall back
+	 * to the temp file approach.
+	 */
+	if (job->cmdBuf == NULL ||
+	    job->cmdBufLen > MAKE_CMDLEN_LIMIT) {
+		tfd = Job_TempFile(TMPPAT, tfile, sizeof tfile);
+		job->cmdFILE = fdopen(tfd, "w+");
+		if (job->cmdFILE == NULL)
+			Punt("Could not fdopen %s", tfile);
+		(void)fcntl(fileno(job->cmdFILE), F_SETFD, FD_CLOEXEC);
+		if (job->cmdBuf != NULL) {
+			(void)fwrite(job->cmdBuf, 1, job->cmdBufLen,
+			    job->cmdFILE);
+			free(job->cmdBuf);
+			job->cmdBuf = NULL;
+			job->cmdBufLen = 0;
+		}
+	}
+#endif
 }
 
 /*
@@ -1710,7 +1822,8 @@ JobStart(GNode *gn, bool special)
 		JobWriteShellCommands(job, gn, &run);
 		if (parseErrors != parseErrorsBefore)
 			run = false;
-		(void)fflush(job->cmdFILE);
+		if (job->cmdFILE != NULL)
+			(void)fflush(job->cmdFILE);
 	} else if (!GNode_ShouldExecute(gn)) {
 		/*
 		 * Just write all the commands to stdout in one fell swoop.
@@ -1735,6 +1848,10 @@ JobStart(GNode *gn, bool special)
 		if (job->cmdFILE != NULL && job->cmdFILE != stdout) {
 			(void)fclose(job->cmdFILE);
 			job->cmdFILE = NULL;
+		}
+		if (job->cmdBuf != NULL) {
+			free(job->cmdBuf);
+			job->cmdBuf = NULL;
 		}
 
 		/*
