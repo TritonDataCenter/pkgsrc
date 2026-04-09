@@ -46,6 +46,11 @@ CONFIGURE_ARGS+=	--with-defshell=/usr/bin/bash
 # Fix bmake not finding files (e.g. .include) on Illumos with 32 bit ABI
 CFLAGS.SunOS+=	-D_FILE_OFFSET_BITS=64
 
+CPPFLAGS.Darwin+=	-DBMAKE_POSIX_SPAWN -DHAVE_OPEN_MEMSTREAM
+CPPFLAGS.Darwin+=	-DMAKE_CMDLEN_LIMIT=32768
+CPPFLAGS.SunOS+=	-DBMAKE_POSIX_SPAWN -DHAVE_OPEN_MEMSTREAM
+CPPFLAGS.SunOS+=	-DMAKE_CMDLEN_LIMIT=32768
+
 do-extract:
 	${CP} -R ${FILESDIR} ${WRKSRC}
 
