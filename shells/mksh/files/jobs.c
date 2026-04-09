@@ -505,6 +505,98 @@ exchild(struct op *t, int flags,
 
 	vistree(p->command, sizeof(p->command), t);
 
+#ifdef MKSH_POSIX_SPAWN
+	/*
+	 * Use posix_spawn() for simple external commands to avoid
+	 * the overhead of fork() (address space duplication, etc).
+	 */
+	if (t->type == TEXEC &&
+	    close_fd < 0 &&
+	    !(flags & (XCOPROC | XBGND | XPIPEI | XPIPEO | XXCOM))
+#ifndef MKSH_UNEMPLOYED
+	    && !Flag(FMONITOR)
+#endif
+	    ) {
+		posix_spawnattr_t spa;
+		posix_spawn_file_actions_t sfa;
+		sigset_t sigdfl;
+		char **envp;
+		union mksh_ccphack cargs;
+		struct env *ep;
+		struct ioword **iowp;
+		Trap *tp_sig;
+		int si, sprc;
+		bool can_spawn = true;
+
+		/* cannot set signals to SIG_IGN via posix_spawn */
+		tp_sig = sigtraps;
+		si = ksh_NSIG + 1;
+		do {
+			if (tp_sig->flags & TF_EXEC_IGN) {
+				can_spawn = false;
+				break;
+			}
+			++tp_sig;
+		} while (--si);
+
+		/* check for IODUPSELF (needs FD_CLOEXEC clearing) */
+		if (can_spawn && t->left && t->left->ioact)
+			for (iowp = t->left->ioact; *iowp; iowp++)
+				if ((*iowp)->ioflag & IODUPSELF) {
+					can_spawn = false;
+					break;
+				}
+
+		if (can_spawn) {
+			envp = makenv();
+
+			posix_spawnattr_init(&spa);
+			posix_spawn_file_actions_init(&sfa);
+
+			posix_spawnattr_setflags(&spa,
+			    POSIX_SPAWN_SETSIGDEF |
+			    POSIX_SPAWN_SETSIGMASK);
+
+			/* restore signal mask to pre-SIGCHLD-block state */
+			posix_spawnattr_setsigmask(&spa, &omask);
+
+			/* collect signals to reset to SIG_DFL */
+			sigemptyset(&sigdfl);
+			tp_sig = sigtraps;
+			si = ksh_NSIG + 1;
+			do {
+				if (tp_sig->flags & TF_EXEC_DFL)
+					sigaddset(&sigdfl,
+					    (int)(tp_sig - sigtraps));
+				++tp_sig;
+			} while (--si);
+			posix_spawnattr_setsigdefault(&spa, &sigdfl);
+
+			/* close saved FDs in child */
+			for (ep = e; ep; ep = ep->oenv)
+				if (ep->savefd)
+					for (si = 0; si < NUFILE; si++)
+						if (ep->savefd[si] > 0)
+							posix_spawn_file_actions_addclose(&sfa,
+							    ep->savefd[si]);
+
+			cargs.ro = t->args;
+			sprc = posix_spawn(&cldpid, t->str,
+			    &sfa, &spa, cargs.rw, envp);
+
+			posix_spawn_file_actions_destroy(&sfa);
+			posix_spawnattr_destroy(&spa);
+
+			if (sprc == 0) {
+				rndset((unsigned long)cldpid);
+				p->pid = cldpid;
+				goto spawned;
+			}
+			/* fall through to fork on failure */
+		}
+	}
+#endif /* MKSH_POSIX_SPAWN */
+
 	/* create child process */
 	forksleep = 1;
 	while ((cldpid = fork()) < 0 && errno == EAGAIN && forksleep < 32) {
@@ -617,6 +709,9 @@ exchild(struct op *t, int flags,
 		/* NOTREACHED */
 	}
 
+#ifdef MKSH_POSIX_SPAWN
+ spawned:
+#endif
 	/* shell (parent) stuff */
 	if (!(flags & XPIPEO)) {
 		/* last process in a job */
