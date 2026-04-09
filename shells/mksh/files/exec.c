@@ -1281,8 +1281,7 @@ search_access(const char *fn, int mode)
 	struct stat sb;
 
 	if (stat(fn, &sb) < 0)
-		/* file does not exist */
-		return (ENOENT);
+		return (errno);
 	/* LINTED use of access */
 	if (access(fn, mode) < 0) {
 		/* file exists, but we can't access it */
