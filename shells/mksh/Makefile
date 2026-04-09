@@ -21,6 +21,8 @@ WRKSRC=			${WRKDIR}/mksh
 
 MAKE_ENV+=		USE_PRINTF_BUILTIN=1
 
+CPPFLAGS.Darwin+=	-DMKSH_POSIX_SPAWN
+
 INSTALLATION_DIRS=	bin ${PKGMANDIR}/man1 share/examples/mksh
 
 .include "../../mk/bsd.prefs.mk"
