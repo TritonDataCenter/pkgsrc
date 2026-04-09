@@ -106,6 +106,9 @@
 #include <ulimit.h>
 #endif
 #include <unistd.h>
+#ifdef MKSH_POSIX_SPAWN
+#include <spawn.h>
+#endif
 #if HAVE_VALUES_H
 #include <values.h>
 #endif
