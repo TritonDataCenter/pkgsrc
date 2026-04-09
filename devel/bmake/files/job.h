@@ -152,6 +152,10 @@ typedef struct Job {
 	/* This is where the shell commands go. */
 	FILE *cmdFILE;
 
+	/* Inline command buffer for short commands (avoids temp file). */
+	char *cmdBuf;
+	size_t cmdBufLen;
+
 	int exit_status;	/* from wait4() in signal handler */
 
 	JobStatus status;
