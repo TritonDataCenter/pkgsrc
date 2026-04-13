@@ -440,7 +440,9 @@ execute(struct op * volatile t,
 			union mksh_ccphack cargs;
 
 			cargs.ro = t->args;
-			execve(t->str, cargs.rw, up);
+			do {
+				execve(t->str, cargs.rw, up);
+			} while (errno == EINTR);
 			rv = errno;
 		}
 		if (rv == ENOEXEC)
@@ -1007,7 +1009,9 @@ scriptexec(struct op *tp, const char **ap)
 	*args.ro = sh;
 
 	cap.ro = ap;
-	execve(args.rw[0], args.rw, cap.rw);
+	do {
+		execve(args.rw[0], args.rw, cap.rw);
+	} while (errno == EINTR);
 
 	/* report both the program that was run and the bogus interpreter */
 	errorf(Tf_sD_sD_s, tp->str, sh, cstrerror(errno));
@@ -1280,15 +1284,17 @@ search_access(const char *fn, int mode)
 {
 	struct stat sb;
 
-	if (stat(fn, &sb) < 0)
+	while (stat(fn, &sb) < 0) {
+		if (errno == EINTR)
+			continue;
 		return (errno);
+	}
 	/* LINTED use of access */
-	if (access(fn, mode) < 0) {
+	while (access(fn, mode) < 0) {
 		/* file exists, but we can't access it */
-		int eno;
-
-		eno = errno;
-		return (eno ? eno : EACCES);
+		if (errno == EINTR)
+			continue;
+		return (errno ? errno : EACCES);
 	}
 #ifdef __OS2__
 	/* treat all files as executable on OS/2 */
