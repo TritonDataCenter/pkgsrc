@@ -581,8 +581,10 @@ exchild(struct op *t, int flags,
 							    ep->savefd[si]);
 
 			cargs.ro = t->args;
-			sprc = posix_spawn(&cldpid, t->str,
-			    &sfa, &spa, cargs.rw, envp);
+			do {
+				sprc = posix_spawn(&cldpid, t->str,
+				    &sfa, &spa, cargs.rw, envp);
+			} while (sprc == EINTR);
 
 			posix_spawn_file_actions_destroy(&sfa);
 			posix_spawnattr_destroy(&spa);
