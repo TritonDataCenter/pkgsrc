@@ -8,6 +8,11 @@
 # PKG_DEBUG_LEVEL
 #	(See mk/help/debug.help)
 #
+# ULIMIT_PRECMD
+#	Command that is prepended to all RUN commands.  Primarily useful for
+#	setting to e.g. "ulimit -S -t 3600" to ensure no build process uses
+#	over an hour of CPU time, and helps to avoids infinite loop hangs.
+#
 # System-provided variables:
 #
 # RUN
@@ -31,6 +36,7 @@ PKG_DEBUG_LEVEL?=	0
 _PKG_SILENT=		@
 _PKG_DEBUG=		# empty
 _PKG_DEBUG_SCRIPT=	${SH}
+ULIMIT_PRECMD?=		:
 
 .if ${PKG_DEBUG_LEVEL} > 0
 _PKG_SILENT=		# empty
@@ -41,7 +47,7 @@ _PKG_DEBUG=		: commands for target ${.TARGET:Q}; set -x;
 _PKG_DEBUG_SCRIPT=	${SH} -x
 .endif
 
-RUN=			${_PKG_SILENT}${_PKG_DEBUG} set -e;
+RUN=			${_PKG_SILENT}${_PKG_DEBUG} set -e; ${ULIMIT_PRECMD};
 
 .if make(help)
 .include "../help/help.mk"
