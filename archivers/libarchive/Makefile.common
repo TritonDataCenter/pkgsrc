@@ -21,5 +21,4 @@ CONFIGURE_ARGS+=	--without-mbedtls
 CONFIGURE_ARGS+=	--without-nettle
 CONFIGURE_ARGS+=	--without-openssl
 CONFIGURE_ARGS+=	--without-xml2
-CONFIGURE_ARGS+=	--without-zstd
 CONFIGURE_ARGS+=	--disable-maintainer-mode
