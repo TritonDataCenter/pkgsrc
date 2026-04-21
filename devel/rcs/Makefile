@@ -19,6 +19,10 @@ DEPENDS+=		ed-[0-9]*:../../editors/ed
 CONFIGURE_ENV+=		ac_cv_path_ED=${PREFIX:Q}/bin/ged
 .endif
 
+# Workaround broken configure script that fails in sandbox
+# XXX: figure out better fix for upstreaming
+CONFIGURE_ENV.Darwin+=	rcs_cv_mmap_signal=10
+
 .include "../../mk/bsd.prefs.mk"
 
 # the native diff/diff3 is not sufficient for rcs
