@@ -17,6 +17,7 @@ CHECK_BUILTIN.libarchive:=	no
 .if ${USE_BUILTIN.libarchive:U:tl} != yes
 .include "../../archivers/bzip2/buildlink3.mk"
 .include "../../archivers/xz/buildlink3.mk"
+.include "../../archivers/zstd/buildlink3.mk"
 .include "../../devel/zlib/buildlink3.mk"
 .endif
 .endif # LIBARCHIVE_BUILDLINK3_MK
