@@ -5,3 +5,4 @@ SHA512 (libtpms-0.10.0.tar.gz) = a728188c26447656f43298d1475ebccf0f074d9474780a7
 Size (libtpms-0.10.0.tar.gz) = 1397526 bytes
 SHA1 (patch-src_tpm2_RuntimeProfile.c) = d8d77a1a2d749c080abe1614e6383d18a98a3166
 SHA1 (patch-src_tpm2_TpmProfile__Common.h) = 2c269176127475b3c9897c6a2b636b8cfe08d49b
+SHA1 (patch-src_tpm__library.c) = 7ea106876b6a134572388bf803993e0b211f9376
