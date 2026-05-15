@@ -1,9 +1,9 @@
-# $NetBSD: options.mk,v 1.111 2024/11/26 20:11:19 osa Exp $
+# $NetBSD: options.mk,v 1.123 2026/03/04 05:56:31 adam Exp $
 
 CODELOAD_SITE_GITHUB=		https://codeload.github.com/
 
 PKG_OPTIONS_VAR=	PKG_OPTIONS.nginx
-PKG_SUPPORTED_OPTIONS=	nginx-array-var nginx-auth-request nginx-cache-purge nginx-dav nginx-debug
+PKG_SUPPORTED_OPTIONS=	nginx-array-var nginx-auth-request nginx-brotli nginx-cache-purge nginx-dav nginx-debug
 PKG_SUPPORTED_OPTIONS+=	nginx-dso nginx-echo nginx-encrypted-session nginx-flv nginx-form-input
 PKG_SUPPORTED_OPTIONS+=	nginx-geoip nginx-geoip2 nginx-gssapi nginx-gtools nginx-gzip nginx-headers-more nginx-http2
 PKG_SUPPORTED_OPTIONS+=	nginx-http3 nginx-image-filter nginx-luajit nginx-mail-proxy nginx-memcache
@@ -11,10 +11,10 @@ PKG_SUPPORTED_OPTIONS+=	nginx-naxsi nginx-njs nginx-njs-xml nginx-perl nginx-pus
 PKG_SUPPORTED_OPTIONS+=	nginx-secure-link nginx-set-misc nginx-slice nginx-ssl nginx-status
 PKG_SUPPORTED_OPTIONS+=	nginx-stream-ssl-preread nginx-sts nginx-sub nginx-upload nginx-uwsgi nginx-vts
 
-PKG_SUGGESTED_OPTIONS=	nginx-auth-request nginx-gzip nginx-http2 nginx-http3 nginx-memcache nginx-realip
-PKG_SUGGESTED_OPTIONS+=	nginx-slice nginx-status nginx-ssl nginx-uwsgi
+PKG_SUGGESTED_OPTIONS=	nginx-auth-request nginx-brotli nginx-gzip nginx-http2 nginx-http3 nginx-memcache
+PKG_SUGGESTED_OPTIONS+=	nginx-realip nginx-slice nginx-status nginx-ssl nginx-uwsgi
 
-PLIST_VARS+=		arrayvar cprg dav dso echo encses forminput geoip2
+PLIST_VARS+=		arrayvar brotli cprg dav dso echo encses forminput geoip2
 PLIST_VARS+=		gssapi headmore imagefilter lua mail naxsi nchan ndk njs
 PLIST_VARS+=		perl redis rtmp setmisc stream sts upload uwsgi vts
 
@@ -59,6 +59,7 @@ PKG_OPTIONS_LEGACY_OPTS+=	sub:nginx-sub
 PKG_OPTIONS_LEGACY_OPTS+=	upload:nginx-upload
 PKG_OPTIONS_LEGACY_OPTS+=	uwsgi:nginx-uwsgi
 PKG_OPTIONS_LEGACY_OPTS+=	vts:nginx-vts
+PKG_OPTIONS_LEGACY_OPTS+=	v2:http2
 
 .include "../../mk/bsd.options.mk"
 
@@ -73,7 +74,7 @@ _addextmod=		add-module
 
 # documentation says naxsi must be the first module
 .if !empty(PKG_OPTIONS:Mnginx-naxsi) || make(makesum) || make(mdi) || make(distclean)
-NAXSI_VERSION=			1.6
+NAXSI_VERSION=			1.7
 NAXSI_DISTFILE=			naxsi-${NAXSI_VERSION}-src-with-deps.tar.gz
 SITES.${NAXSI_DISTFILE}=	${MASTER_SITE_GITHUB:=wargio/naxsi/releases/download/${NAXSI_VERSION}/}
 DISTFILES+=			${NAXSI_DISTFILE}
@@ -95,6 +96,24 @@ SUBST_STAGE.fix-ssl=	pre-configure
 SUBST_FILES.fix-ssl=	auto/lib/openssl/conf
 SUBST_SED.fix-ssl=	-e 's,/usr/pkg,${BUILDLINK_PREFIX.openssl},g'
 SUBST_NOOP_OK.fix-ssl=	yes
+.endif
+
+.if !empty(PKG_OPTIONS:Mnginx-brotli) || make(makesum) || make(mdi) || make(distclean)
+.include "../../archivers/brotli/buildlink3.mk"
+BROTLI_GH_ACCOUNT=		google
+BROTLI_GH_PROJECT=		ngx_brotli
+BROTLI_VERSION=			a71f931
+BROTLI_DISTNAME=		${BROTLI_GH_PROJECT}-${BROTLI_VERSION}
+BROTLI_DISTFILE=		${BROTLI_GH_ACCOUNT}-${BROTLI_DISTNAME}_GH.tar.gz
+SITES.${BROTLI_DISTFILE}=	-${CODELOAD_SITE_GITHUB:=${BROTLI_GH_ACCOUNT}/${BROTLI_GH_PROJECT}/tar.gz/${BROTLI_VERSION}?dummy=${BROTLI_DISTFILE}}
+DISTFILES+=			${BROTLI_DISTFILE}
+DSO_EXTMODS+=			brotli
+SUBST_CLASSES+=			fix-brotli
+SUBST_STAGE.fix-brotli=		pre-configure
+SUBST_FILES.fix-brotli=		../${BROTLI_DISTNAME}/filter/config
+SUBST_SED.fix-brotli=		-e 's,%%PREFIX%%,${BUILDLINK_PREFIX.brotli},g'
+SUBST_NOOP_OK.fix-brotli=	yes
+PLIST.brotli=			yes
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-dav) || make(makesum) || make(mdi) || make(distclean)
@@ -180,7 +199,7 @@ PLIST.ndk=		yes
 .  endif
 .endfor
 .if defined(NEED_NDK) || make(makesum) || make(mdi) || make(distclean)
-NDK_VERSION=		0.3.3
+NDK_VERSION=		0.3.4
 NDK_DISTNAME=		ngx_devel_kit-${NDK_VERSION}
 NDK_DISTFILE=		${NDK_DISTNAME}.tar.gz
 SITES.${NDK_DISTFILE}=	-${MASTER_SITE_GITHUB:=vision5/ngx_devel_kit/archive/}v${NDK_VERSION}.tar.gz
@@ -188,12 +207,12 @@ DISTFILES+=		${NDK_DISTFILE}
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-luajit) || make(makesum) || make(mdi) || make(distclean)
-LUA_VERSION=		0.10.27
+LUA_VERSION=		0.10.29
 LUA_DISTNAME=		lua-nginx-module-${LUA_VERSION}
 LUA_DISTFILE=		${LUA_DISTNAME}.tar.gz
 SITES.${LUA_DISTFILE}=	-${MASTER_SITE_GITHUB:=openresty/lua-nginx-module/archive/}v${LUA_VERSION}.tar.gz
 DISTFILES+=		${LUA_DISTFILE}
-.include "../../devel/pcre/buildlink3.mk"
+.include "../../devel/pcre2/buildlink3.mk"
 BUILDLINK_API_DEPENDS.LuaJIT2+=	LuaJIT2>=2.1
 .include "../../lang/LuaJIT2/buildlink3.mk"
 DEPENDS+=		lua-resty-core>=0.1.27nb1:../../www/lua-resty-core
@@ -266,7 +285,7 @@ PLIST.forminput=		yes
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-headers-more) || make(makesum) || make(mdi) || make(distclean)
-HEADMORE_VERSION=		0.37
+HEADMORE_VERSION=		0.39
 HEADMORE_DISTNAME=		headers-more-nginx-module-${HEADMORE_VERSION}
 HEADMORE_DISTFILE=		${HEADMORE_DISTNAME}.tar.gz
 SITES.${HEADMORE_DISTFILE}=	-${MASTER_SITE_GITHUB:=openresty/headers-more-nginx-module/archive/}v${HEADMORE_VERSION}.tar.gz
@@ -284,7 +303,7 @@ CONFIGURE_ARGS+=	--without-http_uwsgi_module
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-push) || make(makesum) || make(mdi) || make(distclean)
-PUSH_VERSION=		1.3.6
+PUSH_VERSION=		1.3.7
 PUSH_DISTNAME=		nchan-${PUSH_VERSION}
 PUSH_DISTFILE=		${PUSH_DISTNAME}.tar.gz
 SITES.${PUSH_DISTFILE}=	-${MASTER_SITE_GITHUB:=slact/nchan/archive/}v${PUSH_VERSION}.tar.gz
@@ -330,7 +349,7 @@ CONFIGURE_ARGS+=	--with-http_auth_request_module
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-cache-purge) || make(makesum) || make(mdi) || make(distclean)
-CPRG_VERSION=		2.5.1
+CPRG_VERSION=		2.5.3
 CPRG_DISTNAME=		ngx_cache_purge-${CPRG_VERSION}
 CPRG_DISTFILE=		${CPRG_DISTNAME}.tar.gz
 SITES.${CPRG_DISTFILE}=	-${MASTER_SITE_GITHUB:=nginx-modules/ngx_cache_purge/archive/}${CPRG_VERSION}.tar.gz
@@ -360,7 +379,7 @@ PLIST.rtmp=		yes
 .endif
 
 .if !empty(PKG_OPTIONS:Mnginx-njs) || make(makesum) || make(mdi) || make(distclean)
-NJS_VERSION=		0.8.7
+NJS_VERSION=		0.9.1
 NJS_DISTNAME=		njs-${NJS_VERSION}
 NJS_DISTFILE=		${NJS_DISTNAME}.tar.gz
 SITES.${NJS_DISTFILE}=	-${MASTER_SITE_GITHUB:=nginx/njs/archive/}${NJS_VERSION}.tar.gz
@@ -390,7 +409,7 @@ PLIST.upload=			yes
 .if !empty(PKG_OPTIONS:Mnginx-gssapi) || make(makesum) || make(mdi) || make(distclean)
 GSSAPI_GH_ACCOUNT=		stnoonan
 GSSAPI_GH_PROJECT=		spnego-http-auth-nginx-module
-GSSAPI_VERSION=			3575542
+GSSAPI_VERSION=			c3dbfbd
 GSSAPI_DISTNAME=		${GSSAPI_GH_PROJECT}-${GSSAPI_VERSION}
 GSSAPI_DISTFILE=		${GSSAPI_GH_ACCOUNT}-${GSSAPI_DISTNAME}_GH.tar.gz
 SITES.${GSSAPI_DISTFILE}=	-${CODELOAD_SITE_GITHUB:=${GSSAPI_GH_ACCOUNT}/${GSSAPI_GH_PROJECT}/tar.gz/${GSSAPI_VERSION}?dummy=${GSSAPI_DISTFILE}}
@@ -414,7 +433,7 @@ PLIST.sts=		yes
 .if !empty(PKG_OPTIONS:Mnginx-vts) || make(makesum) || make(mdi) || make(distclean)
 VTS_GH_ACCOUNT=		vozlt
 VTS_GH_PROJECT=		nginx-module-vts
-VTS_VERSION=		bf64dbf
+VTS_VERSION=		bdb2699
 VTS_DISTNAME=		${VTS_GH_PROJECT}-${VTS_VERSION}
 VTS_DISTFILE=		${VTS_GH_ACCOUNT}-${VTS_DISTNAME}_GH.tar.gz
 SITES.${VTS_DISTFILE}=	-${CODELOAD_SITE_GITHUB:=${VTS_GH_ACCOUNT}/${VTS_GH_PROJECT}/tar.gz/${VTS_VERSION}?dummy=${VTS_DISTFILE}}
