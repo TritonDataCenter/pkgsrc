@@ -599,6 +599,7 @@ delete_package(Boolean ign_err, package_t *pkg, Boolean NoDeleteFiles,
 			} else {
 				int     restored = 0;	/* restored from preserve? */
 
+#ifdef PKG_DELETE_VERIFY_CHECKSUM
 				if (p->next && p->next->type == PLIST_COMMENT) {
 					if (strncmp(p->next->name, CHECKSUM_HEADER, ChecksumHeaderLen) == 0) {
 						char   *cp, buf[LegibleChecksumLen];
@@ -652,6 +653,7 @@ delete_package(Boolean ign_err, package_t *pkg, Boolean NoDeleteFiles,
 						}
 					}
 				}
+#endif
 				if (Verbose && !NoDeleteFiles)
 					printf("Delete file %s\n", tmp);
 				if (!Fake && !NoDeleteFiles) {
