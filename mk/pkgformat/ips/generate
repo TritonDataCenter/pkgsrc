@@ -1,0 +1,73 @@
+#!/bin/sh
+
+set -e
+
+vars=$1
+outdir=$2
+
+AWK=${AWK:-awk}
+PKGSEND=${PKGSEND:-pkgsend}
+PKGMOGRIFY=${PKGMOGRIFY:-pkgmogrify}
+PKGFMT=${PKGFMT:-pkgfmt}
+PKGREPO=${PKGREPO:-pkgrepo}
+IPS_SHAREDIR=${IPS_SHAREDIR:?}
+
+get() {
+	$AWK -v k="$1" '$1 == "SET" && $2 == k {
+		v = $0
+		sub(/^SET[ \t]+[^ \t]+[ \t]*/, "", v)
+		print v
+		exit
+	}' "$vars"
+}
+
+ipsrepo=$(get ipsrepo)
+case $ipsrepo in
+*://*)	repodir= ;;
+*)	repodir=$ipsrepo; ipsrepo=file://$ipsrepo ;;
+esac
+ipspublisher=$(get ipspublisher)
+pkgmandir=$(get pkgmandir)
+prefix=$(get prefix)
+destdir=$(get destdir)
+plist=$(get plist)
+
+gen=$outdir/manifest.gen
+meta=$outdir/manifest.meta
+drops=$outdir/drops.mog
+final=$outdir/manifest.p5m
+
+$PKGSEND generate "$destdir" > "$gen".raw
+$AWK -f "$IPS_SHAREDIR"/manifest.awk -v plist="$plist" -v prefix="$prefix" \
+    "$gen".raw > "$gen"
+
+$AWK -f "$IPS_SHAREDIR"/version.awk -f "$IPS_SHAREDIR"/actions.awk \
+    "$vars" > "$meta"
+
+: > "$drops"
+d=$prefix
+while :; do
+	d=`dirname "$d"`
+	case $d in
+	.|/)	break ;;
+	esac
+	echo "<transform dir path=$d\$ -> drop>" >> "$drops"
+done
+
+mogs="$IPS_SHAREDIR/global-transforms.mog $drops"
+if [ -n "$IPS_LOCAL_MOG" ] && [ -f "$IPS_LOCAL_MOG" ]; then
+	mogs="$mogs $IPS_LOCAL_MOG"
+fi
+
+$PKGMOGRIFY -D PREFIX="$prefix" -D PKGMANDIR="$pkgmandir" \
+    "$gen" "$meta" $mogs | $PKGFMT -u > "$final"
+
+if ! $PKGREPO info -s "$ipsrepo" > /dev/null 2>&1; then
+	if [ -n "$repodir" ]; then
+		mkdir -p "$repodir"
+	fi
+	$PKGREPO create -s "$ipsrepo"
+	$PKGREPO set -s "$ipsrepo" publisher/prefix="$ipspublisher"
+fi
+
+$PKGSEND publish -s "$ipsrepo" -d "$destdir" "$final"

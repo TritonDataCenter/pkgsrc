@@ -1,0 +1,15 @@
+<transform file dir -> default owner root>
+<transform file dir -> default group bin>
+<transform file -> default mode 0644>
+<transform dir -> default mode 0755>
+
+<transform file path=$(PREFIX)/lib/.*\.so(\.|$) -> default mode 0755>
+<transform file link path=$(PREFIX)/lib/.*\.la$ -> drop>
+<transform file path=.*\.pyo$ -> drop>
+
+<transform path=$(PREFIX)/$(PKGMANDIR)(/|$) -> default facet.doc.man true>
+<transform path=$(PREFIX)/share/doc(/|$) -> default facet.doc true>
+<transform path=$(PREFIX)/share/info(/|$) -> default facet.doc.info true>
+<transform path=$(PREFIX)/include(/|$) -> default facet.devel true>
+<transform file path=$(PREFIX)/lib/.+\.a$ -> default facet.devel true>
+<transform path=$(PREFIX)/lib/pkgconfig(/|$) -> default facet.devel true>
