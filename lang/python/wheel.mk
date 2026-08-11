@@ -60,6 +60,12 @@ PY_RENAME_BINARIES?=	# empty
 
 .include "../../mk/bsd.fast.prefs.mk"
 
+# XXX: py-scikit-build-core has its own embedded cmake calls which do not
+# specify jobs, and if ninja is available it defaults to that, and ninja
+# defaults to ncores+2 which can kill machines if multiple py-foo builds
+# are launched simultaneously.
+MAKE_ENV+=	CMAKE_BUILD_PARALLEL_LEVEL=${MAKE_JOBS:U1}
+
 .if !target(do-build)
 TOOL_DEPENDS+= ${PYPKGPREFIX}-build>=0:../../devel/py-build
 do-build:
