@@ -87,7 +87,6 @@ lib/libbfd.la
 ${PLIST.ctf}lib/libctf-nobfd.la
 ${PLIST.ctf}lib/libctf.la
 lib/libopcodes.la
-lib/libsframe.a
 lib/libsframe.la
 man/man1/gaddr2line.1
 man/man1/gar.1
@@ -107,6 +106,7 @@ man/man1/gstrings.1
 man/man1/gstrip.1
 man/man1/gwindmc.1
 man/man1/gwindres.1
+share/locale/ar/LC_MESSAGES/binutils.mo
 share/locale/bg/LC_MESSAGES/binutils.mo
 ${PLIST.gprof}share/locale/bg/LC_MESSAGES/gprof.mo
 ${PLIST.gld}share/locale/bg/LC_MESSAGES/ld.mo
@@ -116,6 +116,7 @@ share/locale/da/LC_MESSAGES/binutils.mo
 ${PLIST.gprof}share/locale/da/LC_MESSAGES/gprof.mo
 ${PLIST.gld}share/locale/da/LC_MESSAGES/ld.mo
 share/locale/da/LC_MESSAGES/opcodes.mo
+share/locale/de/LC_MESSAGES/binutils.mo
 ${PLIST.gprof}share/locale/de/LC_MESSAGES/gprof.mo
 ${PLIST.gld}share/locale/de/LC_MESSAGES/ld.mo
 share/locale/de/LC_MESSAGES/opcodes.mo
@@ -166,7 +167,12 @@ ${PLIST.gold}share/locale/ja/LC_MESSAGES/gold.mo
 ${PLIST.gprof}share/locale/ja/LC_MESSAGES/gprof.mo
 ${PLIST.gld}share/locale/ja/LC_MESSAGES/ld.mo
 share/locale/ka/LC_MESSAGES/bfd.mo
+share/locale/ka/LC_MESSAGES/binutils.mo
+${PLIST.gas}share/locale/ka/LC_MESSAGES/gas.mo
 ${PLIST.gprof}share/locale/ka/LC_MESSAGES/gprof.mo
+${PLIST.gld}share/locale/ka/LC_MESSAGES/ld.mo
+share/locale/ka/LC_MESSAGES/opcodes.mo
+share/locale/ms/LC_MESSAGES/bfd.mo
 ${PLIST.gprof}share/locale/ms/LC_MESSAGES/gprof.mo
 ${PLIST.gprof}share/locale/nl/LC_MESSAGES/gprof.mo
 share/locale/nl/LC_MESSAGES/opcodes.mo
@@ -177,8 +183,10 @@ ${PLIST.gld}share/locale/pt_BR/LC_MESSAGES/ld.mo
 share/locale/pt_BR/LC_MESSAGES/opcodes.mo
 share/locale/ro/LC_MESSAGES/bfd.mo
 share/locale/ro/LC_MESSAGES/binutils.mo
+${PLIST.gas}share/locale/ro/LC_MESSAGES/gas.mo
 ${PLIST.gold}share/locale/ro/LC_MESSAGES/gold.mo
 ${PLIST.gprof}share/locale/ro/LC_MESSAGES/gprof.mo
+${PLIST.gld}share/locale/ro/LC_MESSAGES/ld.mo
 share/locale/ro/LC_MESSAGES/opcodes.mo
 share/locale/ru/LC_MESSAGES/bfd.mo
 share/locale/ru/LC_MESSAGES/binutils.mo
