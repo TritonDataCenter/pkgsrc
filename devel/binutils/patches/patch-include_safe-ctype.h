@@ -1,5 +1,8 @@
 $NetBSD: patch-include_safe-ctype.h,v 1.3 2020/12/06 18:07:53 fcambus Exp $
 
+Added by joerg in 2015, it's unclear if this is still required, but at the
+same time it's probably harmless, so left until we're sure it can be removed.
+
 --- include/safe-ctype.h.orig	2020-07-24 09:12:20.000000000 +0000
 +++ include/safe-ctype.h
 @@ -120,6 +120,8 @@ extern const unsigned char  _sch_tolower
