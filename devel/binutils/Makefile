@@ -29,7 +29,8 @@ CONFIGURE_ARGS+=	--program-prefix=g
 CONFIGURE_ARGS+=	--with-lib-path=${COMPILER_LIB_DIRS:ts:}
 CONFIGURE_ARGS+=	--without-zlib
 
-MAKE_FLAGS+=	V=1
+MAKE_FLAGS+=	LEXLIB=	# Avoid unnecessary runtime dependency on libfl/libl
+MAKE_FLAGS+=	V=1	# Avoid ignored and confusing @echo errors
 
 PLIST_SRC=	${PKGDIR}/PLIST
 PLIST_SRC+=	${WRKDIR}/PLIST_DYNAMIC
