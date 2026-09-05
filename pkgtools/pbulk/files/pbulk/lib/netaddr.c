@@ -183,7 +183,7 @@ bind_and_listen(struct addrinfo *res, void (*cb)(int, void *))
 		close(s);
 		return 0;
 	}
-	if (listen(s, 5) == -1) {
+	if (listen(s, SOMAXCONN) == -1) {
 		close(s);
 		return 0;
 	}
