@@ -1,0 +1,9 @@
+[submodule "extra"]
+	path = extra
+	url = https://github.com/TritonDataCenter/pkgsrc-extra.git
+[submodule "joyent"]
+	path = joyent
+	url = https://github.com/TritonDataCenter/pkgsrc-joyent.git
+[submodule "wip"]
+	path = wip
+	url = https://github.com/TritonDataCenter/pkgsrc-wip.git
