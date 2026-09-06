@@ -13,7 +13,7 @@ BUILDLINK_DEPMETHOD.p5-DBI?=	full
 .endif
 
 .if !empty(PKG_OPTIONS:Mmysql)
-DEPENDS+=	p5-DBD-mysql>=4.004:../../databases/p5-DBD-mysql
+.  include "../../databases/p5-DBD-mysql/dependency.mk"
 BUILDLINK_DEPMETHOD.p5-DBI?=	full
 .endif
 

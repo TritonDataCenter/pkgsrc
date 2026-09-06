@@ -17,7 +17,7 @@ DEPENDS+=	${PHP_PKG_PREFIX}-ldap>=4.3.3:../../databases/php-ldap
 ### Use PostgreSQL for storing user details
 ###
 .if !empty(PKG_OPTIONS:Mpgsql)
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=4.3.3:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 .endif
 
 ###
