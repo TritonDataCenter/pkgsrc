@@ -39,9 +39,9 @@ DEPENDS+=	${PHP_PKG_PREFIX}-pdo>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php
 # DEPENDS+=	${PHP_PKG_PREFIX}-pdo_dblib>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pdo_dblib
 DEPENDS+=	${PHP_PKG_PREFIX}-pdo_mysql>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pdo_mysql
 DEPENDS+=	${PHP_PKG_PREFIX}-sqlite3>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-sqlite3
-DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pdo_pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql{17,16,15,14,13}>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pdo_pgsql
 DEPENDS+=	${PHP_PKG_PREFIX}-pdo_sqlite>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pdo_sqlite
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql{17,16,15,14,13}>=${PHP_VERSION}<${NEXT_VERS}:../../databases/php-pgsql
 DEPENDS+=	${PHP_PKG_PREFIX}-posix>=${PHP_VERSION}<${NEXT_VERS}:../../devel/php-posix
 DEPENDS+=	${PHP_PKG_PREFIX}-shmop>=${PHP_VERSION}<${NEXT_VERS}:../../devel/php-shmop
 DEPENDS+=	${PHP_PKG_PREFIX}-snmp>=${PHP_VERSION}<${NEXT_VERS}:../../net/php-snmp
