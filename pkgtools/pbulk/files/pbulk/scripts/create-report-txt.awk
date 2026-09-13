@@ -73,6 +73,8 @@ BEGIN {
 			pkgsrc_build_end_iso = substr($0, 15)
 		else if ($0 ~ "^BASE_URL=")
 			pkgsrc_base_url = substr($0, 10)
+		else if ($0 ~ "^DESCRIPTION=")
+			pkgsrc_description = substr($0, 13)
 	}
 	close(status_file)
 
@@ -128,6 +130,10 @@ BEGIN {
 	print "pkgsrc bulk build report" > txt_report
 	print "========================" > txt_report
 	print "" > txt_report
+	if (pkgsrc_description) {
+		print "Description: " pkgsrc_description > txt_report
+		print "" > txt_report
+	}
 	print pkgsrc_platform > txt_report
 	print "Compiler: " pkgsrc_compiler > txt_report
 	print "" > txt_report
@@ -136,7 +142,7 @@ BEGIN {
 	print "" > txt_report
 	report_base_url = pkgsrc_base_url "/" pkgsrc_build_start_dir
 	print "Full report: " report_base_url "/meta/report.html" > txt_report
-	print "Machine readable version: " report_base_url "/meta/report.bz2" > txt_report
+	print "Machine readable version: " report_base_url "/meta/report.xz" > txt_report
 	print "" > txt_report
 	all_pkgs = pkgs_done + pkgs_failed + pkgs_prefailed + pkgs_indirect_failed + pkgs_indirect_prefailed
 	printf "Total number of packages:          %5d\n", all_pkgs > txt_report
@@ -161,7 +167,7 @@ BEGIN {
 		print "" > txt_report
 		print "Package                               Breaks Maintainer" > txt_report
 		print "-------------------------------------------------------------------------" > txt_report
-		for (i = 0; i < 10 && sorted_top_count[i] != ""; ++i) {
+		for (i = 0; i < 25 && sorted_top_count[i] != ""; ++i) {
 			loc = top_count[sorted_top_count[i]]
 			printf "%- 37s % 6d %s\n", loc, broken_location[loc],
 			    maintainer[pkg_location[loc]] > txt_report
