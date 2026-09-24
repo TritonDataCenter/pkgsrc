@@ -23,7 +23,9 @@ concurrency:
 
 jobs:
   features:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
 
     strategy:
       fail-fast: false
@@ -37,6 +39,17 @@ jobs:
           - trunk
 
     steps:
+      # Self-hosted runners keep the workspace between jobs. Clear anything
+      # an earlier run (including a cancelled or conflicted one) left behind
+      # that would break the git steps below.
+      - name: Reset workspace left by previous runs
+        run: |
+          [ -d .git ] || exit 0
+          git rebase --abort 2>/dev/null || true
+          git merge --abort 2>/dev/null || true
+          git remote remove netbsd 2>/dev/null || true
+          rm -rf .git/modules extra joyent wip
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -63,9 +76,22 @@ jobs:
   illumos:
     needs: features
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.illumos }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
 
     steps:
+      # Self-hosted runners keep the workspace between jobs. Clear anything
+      # an earlier run (including a cancelled or conflicted one) left behind
+      # that would break the git steps below.
+      - name: Reset workspace left by previous runs
+        run: |
+          [ -d .git ] || exit 0
+          git rebase --abort 2>/dev/null || true
+          git merge --abort 2>/dev/null || true
+          git remote remove netbsd 2>/dev/null || true
+          rm -rf .git/modules extra joyent wip
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -104,9 +130,22 @@ jobs:
   macos:
     needs: features
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
 
     steps:
+      # Self-hosted runners keep the workspace between jobs. Clear anything
+      # an earlier run (including a cancelled or conflicted one) left behind
+      # that would break the git steps below.
+      - name: Reset workspace left by previous runs
+        run: |
+          [ -d .git ] || exit 0
+          git rebase --abort 2>/dev/null || true
+          git merge --abort 2>/dev/null || true
+          git remote remove netbsd 2>/dev/null || true
+          rm -rf .git/modules extra joyent wip
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
