@@ -17,5 +17,5 @@ DEPENDS+=	${PHP_PKG_PREFIX}-pdo_mysql>=5.2.0:../../databases/php-pdo_mysql
 .elif !empty(PKG_OPTIONS:Msqlite3)
 DEPENDS+=	${PHP_PKG_PREFIX}-pdo_sqlite>=5.4.0:../../databases/php-pdo_sqlite
 .elif !empty(PKG_OPTIONS:Mpgsql)
-DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql>=5.4.0:../../databases/php-pdo_pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pdo_pgsql*-[0-9]*:../../databases/php-pdo_pgsql
 .endif
