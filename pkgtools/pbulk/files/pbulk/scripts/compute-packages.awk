@@ -43,6 +43,7 @@ function mark_restricted(PKG, dep, depend_list) {
 
 BEGIN {
 	meta_dir = ARGV[1]
+	pkg_sufx = ARGV[2]
 	success_file = meta_dir "/success"
 	presolve_file = meta_dir "/presolve"
 
@@ -52,14 +53,11 @@ BEGIN {
 			pkgs[cur] = cur
 		}
 
-		if ($0 ~ "^CATEGORIES=")
-			categories[cur] = substr($0, 12)
-
 		if ($0 ~ "^BUILD_STATUS=")
 			status[cur] = substr($0, 14)
 
 		if ($0 ~ "^NO_BIN_ON_FTP=.")
-			initial_restricted[cur] = 1
+			restricted[cur] = 1
 
 		if ($0 ~ "^DEPENDS=")
 			depends[cur] = substr($0, 9)
@@ -81,17 +79,7 @@ BEGIN {
 		# skip restricted packages
 		if (pkg in restricted)
 			continue;
-		# build category/file list
-		split(categories[pkg], cats, "[ \t]+")
-		cats[0] = "All"
-		for (cat_idx in cats) {
-			cat = cats[cat_idx]
-			if (!(cat in printed_cats)) {
-				print "+ " cat "/"
-				printed_cats[cat] = cat
-			}
-			print "+ " cat "/" pkg ".tgz"
-		}
+		print "+ All/" pkg pkg_sufx
 	}
 	close(success_file)
 }
