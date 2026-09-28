@@ -65,11 +65,14 @@ jobs:
   illumos:
     needs: features
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.illumos }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
 
     steps:
       - uses: actions/checkout@v7
         with:
+          clean: true
           fetch-depth: 0
           submodules: true
 
@@ -106,11 +109,14 @@ jobs:
   macos:
     needs: features
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.macos }}
-    runs-on: ubuntu-latest
+    runs-on:
+      group: triton
+      labels: [self-hosted, APP]
 
     steps:
       - uses: actions/checkout@v7
         with:
+          clean: true
           fetch-depth: 0
           submodules: true
 
