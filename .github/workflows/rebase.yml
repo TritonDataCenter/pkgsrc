@@ -51,8 +51,7 @@ jobs:
 
       - name: Fetch NetBSD/pkgsrc.git
         run: |
-          git remote add netbsd https://github.com/NetBSD/pkgsrc.git
-          git fetch netbsd
+          git fetch https://github.com/NetBSD/pkgsrc.git '+refs/heads/*:refs/remotes/netbsd/*'
 
       - name: Rebase ${{ matrix.branch }}
         run: |
