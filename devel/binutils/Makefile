@@ -104,6 +104,8 @@ post-install:
 	              ${DESTDIR}${PREFIX}/${PKGGNUDIR}${PKGMANDIR}/man1/${f}.1; \
 	fi
 .endfor
+	# Avoid dependency on libgcc. XXX: should be an option.
+	${RM} -f ${DESTDIR}${PREFIX}/lib/bfd-plugins/libdep.so
 
 .include "../../mk/dlopen.buildlink3.mk"
 .include "../../mk/bsd.pkg.mk"
