@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   features:
-    name: ${{ matrix.branch }}
+    name: ${{ matrix.branch || 'trunk feature branches' }}
     if: ${{ !inputs.quarter }}
     runs-on: &feature_runner
       group: triton
@@ -90,7 +90,7 @@ jobs:
           fi
 
   quarterly_features:
-    name: ${{ matrix.branch }}
+    name: ${{ matrix.branch || 'quarterly feature branches' }}
     if: ${{ inputs.quarter }}
     runs-on: *feature_runner
 
@@ -109,9 +109,9 @@ jobs:
     steps: *feature_steps
 
   releases:
-    name: ${{ matrix.branch }}
-    needs: [features, quarterly_features]
-    if: ${{ !cancelled() && !failure() }}
+    name: ${{ matrix.branch || 'trunk release branch' }}
+    needs: features
+    if: ${{ !inputs.quarter }}
     runs-on:
       group: triton
       labels: [self-hosted, APP]
@@ -120,8 +120,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: trunk
-            input: illumos
+          - input: illumos
             branch: release/trunk
             base: feature/miscfix/trunk
             features:
@@ -132,37 +131,22 @@ jobs:
               extra https://github.com/TritonDataCenter/pkgsrc-extra.git
               joyent https://github.com/TritonDataCenter/pkgsrc-joyent.git
               wip https://github.com/TritonDataCenter/pkgsrc-wip.git
-          - target: trunk
-            input: macos
+          - input: macos
             branch: release/macos
             base: feature/macos/trunk
             features:
               - feature/performance/trunk
             submodules: |-
               extra https://github.com/TritonDataCenter/pkgsrc-extra.git
-          - target: quarterly
-            input: illumos
-            branch: release/${{ inputs.quarter }}
-            base: feature/miscfix/${{ inputs.quarter }}
-            features:
-              - feature/pbulk/${{ inputs.quarter }}
-              - feature/pbulkmulti/${{ inputs.quarter }}
-              - feature/performance/${{ inputs.quarter }}
-              - feature/backports/${{ inputs.quarter }}
-            submodules: |-
-              extra https://github.com/TritonDataCenter/pkgsrc-extra.git ${{ inputs.quarter }}
-              joyent https://github.com/TritonDataCenter/pkgsrc-joyent.git ${{ inputs.quarter }}
-              wip https://github.com/TritonDataCenter/pkgsrc-wip.git ${{ inputs.quarter }}
 
-    env:
+    env: &release_env
       RELEASE_BRANCH: >-
         ${{
-        matrix.target == (inputs.quarter && 'quarterly' || 'trunk')
-        && (github.event_name != 'workflow_dispatch' || inputs[matrix.input])
+        (github.event_name != 'workflow_dispatch' || inputs[matrix.input])
         && matrix.branch || ''
         }}
 
-    steps:
+    steps: &release_steps
       - uses: actions/checkout@v7
         if: ${{ env.RELEASE_BRANCH }}
         with:
@@ -210,3 +194,29 @@ jobs:
               fi
           fi
           git push --force origin "$RELEASE_BRANCH"
+
+  quarterly_release:
+    name: ${{ matrix.branch || 'quarterly release branch' }}
+    needs: quarterly_features
+    if: ${{ inputs.quarter && inputs.illumos }}
+    runs-on: *feature_runner
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - input: illumos
+            branch: release/${{ inputs.quarter }}
+            base: feature/miscfix/${{ inputs.quarter }}
+            features:
+              - feature/pbulk/${{ inputs.quarter }}
+              - feature/pbulkmulti/${{ inputs.quarter }}
+              - feature/performance/${{ inputs.quarter }}
+              - feature/backports/${{ inputs.quarter }}
+            submodules: |-
+              extra https://github.com/TritonDataCenter/pkgsrc-extra.git ${{ inputs.quarter }}
+              joyent https://github.com/TritonDataCenter/pkgsrc-joyent.git ${{ inputs.quarter }}
+              wip https://github.com/TritonDataCenter/pkgsrc-wip.git ${{ inputs.quarter }}
+
+    env: *release_env
+    steps: *release_steps
