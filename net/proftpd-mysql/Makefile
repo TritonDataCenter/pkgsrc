@@ -3,7 +3,7 @@
 .include "../../net/proftpd/Makefile.module"
 
 PROFTPD_MOD=	mysql
-PKGNAME=	${DISTNAME:S/proftpd/proftpd-${PROFTPD_MOD}/}
+PKGNAME=	${DISTNAME:S/proftpd/proftpd-${MYSQL_PKG_PREFIX}/}
 COMMENT=	MySQL module for proftpd
 
 CONFIGURE_ARGS+=	--with-shared=mod_sql_mysql
