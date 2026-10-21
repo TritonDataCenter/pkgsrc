@@ -1,9 +1,10 @@
-# $NetBSD: Makefile,v 1.61 2025/11/01 22:44:26 wiz Exp $
+# $NetBSD: Makefile,v 1.68 2026/10/20 22:59:05 nia Exp $
 #
 # Please also update the dependency pattern in mozilla-rootcerts-openssl
 # and bump its version when updating this package.
 
 DISTNAME=	mozilla-rootcerts-1.1.${CERTDATA_DATE}
+PKGREVISION=	2
 CATEGORIES=	security
 MASTER_SITES=	-https://hg.mozilla.org/mozilla-central/raw-file/${CERTDATA_COMMIT}/security/nss/lib/ckfw/builtins/certdata.txt
 EXTRACT_SUFX=	# empty
@@ -17,8 +18,11 @@ LICENSE=	mpl-2.0
 USE_TOOLS=	awk:run echo:run expr:run ln:run ls:run openssl:run rm:run mkdir:run
 
 # This must be kept in sync with security/mozilla-rootcerts-openssl
-CERTDATA_DATE=		20251029
-CERTDATA_COMMIT=	389b94c9230fdb44b7be2628fd6047b4a07e1be7
+# https://hg-edge.mozilla.org/mozilla-central/log/tip/security/nss/lib/ckfw/builtins/certdata.txt
+# 'created' date
+CERTDATA_DATE=		20260908
+# 'git commit hash'
+CERTDATA_COMMIT=	2cdbc69c6d239e6a406bf607f8d6fc1c0bd9af6c
 CERTDATA=		certdata-${CERTDATA_DATE}.txt
 
 WRKSRC=		${WRKDIR}
