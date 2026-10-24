@@ -128,6 +128,13 @@ MKDIR?=         mkdir -p
 
 ######################################################################
 
+# Do not create tools for known builtins.
+TOOLS_BUILTINS=	[ echo false printf pwd test true
+
+.for _t_ in ${TOOLS_BUILTINS}
+TOOLS_CREATE:=	${TOOLS_CREATE:N${_t_:Q}}
+.endfor
+
 # If the command line was defined, then we create a wrapper.
 # If the real command isn't a full path, then we create a wrapper.
 # If some command arguments were given, then we create a wrapper.
