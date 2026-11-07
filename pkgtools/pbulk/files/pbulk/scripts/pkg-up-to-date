@@ -30,7 +30,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-. @PBULK_CONFIG@
+. ${PBULK_CONF:-@PBULK_CONFIG@}
 
 set -e
 
@@ -40,7 +40,7 @@ if [ "${config_version}" != "@PBULK_CONFIG_VERSION@" ]; then
 	exit 1
 fi
 
-pkg="${packages}/All/$1.tgz"
+pkg="${packages}/All/${1}${pkg_sufx}"
 [ -f ${pkg} ]
 
 ${pkg_info} -qb ${pkg} | sed 's/:/ /' | while read file file_id; do
@@ -79,7 +79,7 @@ ${pkg_info} -qN ${pkg} | while read dep; do
 	[Yy][Ee][Ss])
 		;;
 	*)
-		[ "${packages}/All/${dep}.tgz" -ot "${pkg}" ]
+		[ "${packages}/All/${dep}${pkg_sufx}" -ot "${pkg}" ]
 		;;
 	esac
 done
