@@ -29,5 +29,14 @@ PLIST.ARM=	yes
 # libclang-cpp.so uses connect(), socket(), ...
 LDFLAGS.SunOS+=	-lsocket
 
+# XXX: Move files to gcc-libs and drop full dependency.  This is obviously
+# highly specific to illumos/x86_64 and must not be copied elsewhere.
+.PHONY: create-clang-cfg
+post-install: create-clang-cfg
+create-clang-cfg:
+	${RUN} p=`${_GCC_PREFIX}bin/gcc -print-libgcc-file-name 2>/dev/null`; \
+	    d=`dirname $$p`; ${ECHO} '--gcc-install-dir='$$d \
+	    > ${DESTDIR}${PREFIX}/bin/x86_64-pc-solaris2.11.cfg
+
 .include "../../mk/atomic64.mk"
 .include "../../mk/bsd.pkg.mk"
