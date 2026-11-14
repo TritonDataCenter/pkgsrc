@@ -1,0 +1,90 @@
+#!@SH@
+# $NetBSD$
+#
+# Script to manage creating/deleting chroots during the pbulk process
+#
+# Usage: chroot <build|scan> <create|delete> <dir>
+#
+
+. ${PBULK_CONF:-@PBULK_CONFIG@}
+
+set -e
+
+if [ "${config_version}" != "@PBULK_CONFIG_VERSION@" ]; then
+	echo "Your configuration has version ${config_version}."
+	echo "This version of pbulk expects version @PBULK_CONFIG_VERSION@."
+	exit 1
+fi
+
+phase=$1; shift
+operation=$1; shift
+chroot_dir=$1; shift
+
+case "${phase}" in
+build)
+	clients=${build_clients}
+	numchroots=${build_chroots}
+	;;
+scan)
+	clients=${scan_clients}
+	numchroots=1
+	;;
+*)
+	echo "$0: Unexpected phase '${phase}'" >&2
+	exit 1
+	;;
+esac
+
+case "${operation}" in
+create)
+	chroot_script=${chroot_create}
+	;;
+delete)
+	chroot_script=${chroot_delete}
+	;;
+*)
+	echo "$0: Unexpected operation '${operation}'" >&2
+	exit 1
+	;;
+esac
+
+if [ -z "${chroot_script}" ] || [ ! -x "${chroot_script}" ]; then
+	echo "$0: chroot_${operation} unset or not found/executable" >&2
+	exit 1
+fi
+
+# Create chroots on remote clients
+if [ -n "${clients}" ]; then
+	for client in ${clients}; do
+		if [ ${numchroots} -gt 1 ]; then
+			ssh $client "
+				i=1
+				while true; do
+					${chroot_script} ${chroot_dir}-${phase}-\${i} &
+					i=\$((i + 1))
+					if [ \$i -gt ${numchroots} ]; then
+						break
+					fi
+				done" &
+		else
+			ssh $client "${chroot_script} ${chroot_dir}-${phase}" &
+		fi
+	done
+# Create local chroots
+else
+	if [ ${numchroots} -gt 1 ]; then
+		i=1
+		while true; do
+			${chroot_script} ${chroot_dir}-${phase}-${i} &
+			i=$((i + 1))
+			if [ $i -gt ${numchroots} ]; then
+				break
+			fi
+		done
+	else
+		${chroot_script} ${chroot_dir}-${phase}
+	fi
+fi
+
+# Ensure all chroot operations are complete before continuing.
+wait
