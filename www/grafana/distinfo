@@ -1,4 +1,4 @@
-$NetBSD: distinfo,v 1.57 2026/11/13 12:27:34 wiz Exp $
+$NetBSD: distinfo,v 1.58 2026/11/14 14:14:24 wiz Exp $
 
 BLAKE2s (al.essio.dev_pkg_shellescape_@v_v1.6.0.mod) = 6b700bc0ea1a5a9070b79e2df5ee41bda8994973fbf2a4deac2a482ec151279b
 SHA512 (al.essio.dev_pkg_shellescape_@v_v1.6.0.mod) = 6e2becc6b0294a2ce097ef7bb8ddedfc9793e9e5281620bf920644fb9bef3bb69ad0367e7ffb706acf955c48bf46b118360107241014555562985337a0bbd051
@@ -14589,8 +14589,8 @@ Size (xorm.io_builder_@v_v0.3.13.mod) = 142 bytes
 BLAKE2s (xorm.io_builder_@v_v0.3.13.zip) = a551e022c94cce5cbb46957b5561d8f57a943b140277713bb6e15ff8aca77faa
 SHA512 (xorm.io_builder_@v_v0.3.13.zip) = 8aa3622cddb8965b508fc078aa020b92c1ea31d691fb99fc1ec097d6bc86a0bceb8bdd67c92d11091b4de1505b239fa7441c0b44d69546f6ba54809f79cb424c
 Size (xorm.io_builder_@v_v0.3.13.zip) = 48588 bytes
-SHA1 (patch-.._github.com_coreos_go-systemd_v22_daemon_sdnotify__other.go) = 53e5cca2aa720a0830891cb53fda7447383288ac
-SHA1 (patch-.._github.com_coreos_go-systemd_v22_daemon_sdnotify__unix.go) = 03ddd899b09cc1a763577018b5882dfba53ec44d
+SHA1 (patch-.._github.com_coreos_go-systemd_v22_daemon_sdnotify__other.go) = 3957d05d127fe6e3d17e6122c49ce6cda7127957
+SHA1 (patch-.._github.com_coreos_go-systemd_v22_daemon_sdnotify__unix.go) = cf4fff8d00bec6cada41b0824ad92daddd832ce6
 SHA1 (patch-.._k8s.io_apiserver_pkg_server_options_serving__noportreuse.go) = a84701c2014328d437b1e0273aba0b12126976f1
 SHA1 (patch-.._k8s.io_apiserver_pkg_server_options_serving__unix.go) = fb2f338b43bb85a463d33b182cb49bb01674b70d
 SHA1 (patch-conf_sample.ini) = 8861cec5f653cad38a53093846dfb2626982a3aa
