@@ -8,8 +8,12 @@ PKG_SUGGESTED_OPTIONS=	sqlite
 .include "../../mk/bsd.options.mk"
 
 .if !empty(PKG_OPTIONS:Mmysql)
+.  include "../../mk/mysql.buildlink3.mk"
+.  if ${MYSQL_PKG_PREFIX:Mmariadb*}
 DEPENDS+=		p5-DBD-MariaDB>=1.0:../../databases/p5-DBD-MariaDB
-# MySQL::Config: '0'
+.  else
+DEPENDS+=		p5-DBD-${MYSQL_PKG_PREFIX}-[0-9]*:../../databases/p5-DBD-mysql
+.  endif
 BUILD_PARAMS+=		--with mysql
 .endif
 
