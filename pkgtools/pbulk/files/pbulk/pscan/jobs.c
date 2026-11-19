@@ -279,6 +279,16 @@ add_job(const char *cat, size_t cat_len, const char *dir, size_t dir_len)
 }
 
 void
+add_job_pkgpath(const char *pkgpath, size_t pkgpath_len)
+{
+	char *location;
+
+	location = xasprintf("%.*s", (int)pkgpath_len, pkgpath);
+	add_job_full(location);
+	free(location);
+}
+
+void
 add_job_full(const char *location)
 {
 	if (len_jobs == allocated_jobs) {
