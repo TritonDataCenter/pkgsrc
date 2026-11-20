@@ -18,13 +18,22 @@ PLIST_VARS+=		naxsi perl uwsgi
 
 # documentation says naxsi must be the first module
 .if !empty(PKG_OPTIONS:Mnaxsi) || make(makesum) || make(mdi) || make(distclean)
-NAXSI_VERSION=			1.3
+NAXSI_VERSION?=			1.3
+.if ${NAXSI_VERSION} == "1.7"
+NAXSI_DISTFILE=			naxsi-${NAXSI_VERSION}-src-with-deps.tar.gz
+SITES.${NAXSI_DISTFILE}=	${MASTER_SITE_GITHUB:=wargio/naxsi/releases/download/${NAXSI_VERSION}/}
+NAXSI_SRCDIR=			naxsi_src
+NAXSI_RULES=			${WRKDIR}/naxsi_rules/naxsi_core.rules
+.else
 NAXSI_DISTNAME=			naxsi-${NAXSI_VERSION}
 NAXSI_DISTFILE=			${NAXSI_DISTNAME}.tar.gz
 SITES.${NAXSI_DISTFILE}=	-${MASTER_SITE_GITHUB:=nbs-system/naxsi/archive/}${NAXSI_VERSION}.tar.gz
+NAXSI_SRCDIR=			${NAXSI_DISTNAME}/naxsi_src
+NAXSI_RULES=			${WRKDIR}/${NAXSI_DISTNAME}/naxsi_config/naxsi_core.rules
+.endif
 DISTFILES+=			${NAXSI_DISTFILE}
 PLIST.naxsi=			yes
-CONFIGURE_ARGS+=		--add-module=../${NAXSI_DISTNAME}/naxsi_src
+CONFIGURE_ARGS+=		--add-module=../${NAXSI_SRCDIR}
 .endif
 
 .if !empty(PKG_OPTIONS:Mdebug)
@@ -194,7 +203,7 @@ CONFIGURE_ARGS+=		--add-module=../${FORMINPUT_DISTNAME}
 .endif
 
 .if !empty(PKG_OPTIONS:Mheaders-more) || make(makesum) || make(mdi) || make(distclean)
-HEADMORE_VERSION=		0.33
+HEADMORE_VERSION?=		0.33
 HEADMORE_DISTNAME=		headers-more-nginx-module-${HEADMORE_VERSION}
 HEADMORE_DISTFILE=		${HEADMORE_DISTNAME}.tar.gz
 SITES.${HEADMORE_DISTFILE}=	-${MASTER_SITE_GITHUB:=openresty/headers-more-nginx-module/archive/}v${HEADMORE_VERSION}.tar.gz
