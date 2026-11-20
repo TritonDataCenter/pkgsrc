@@ -16,7 +16,7 @@ PKG_SUGGESTED_OPTIONS=	apache mysql
 .if !empty(PKG_OPTIONS:Mmysql)
 DEPENDS+=	${PHP_PKG_PREFIX}-mysqli>=5.5.9:../../databases/php-mysqli
 .elif !empty(PKG_OPTIONS:Mpgsql)
-DEPENDS+=	${PHP_PKG_PREFIX}-pgsql>=5:../../databases/php-pgsql
+DEPENDS+=	${PHP_PKG_PREFIX}-pgsql*-[0-9]*:../../databases/php-pgsql
 .endif
 
 .if !empty(PKG_OPTIONS:Mapache)
