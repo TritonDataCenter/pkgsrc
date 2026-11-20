@@ -96,6 +96,17 @@ SOEXT=		so
 .endif
 PLIST_SUBST+=	SOEXT=${SOEXT}
 
+.if !empty(PKG_OPTIONS:Mnaxsi)
+.  if ${NAXSI_VERSION} == "1.7"
+post-patch:
+	${SED} '308,309s/MSIZE/NAXSI_MSIZE/g' \
+		${WRKDIR}/naxsi_src/libinjection/src/libinjection_sqli.c \
+		> ${WRKDIR}/naxsi_src/libinjection/src/libinjection_sqli.c.tmp
+	${MV} ${WRKDIR}/naxsi_src/libinjection/src/libinjection_sqli.c.tmp \
+		${WRKDIR}/naxsi_src/libinjection/src/libinjection_sqli.c
+.  endif
+.endif
+
 do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/objs/nginx ${DESTDIR}${PREFIX}/sbin/nginx
 .for file in ${EGFILES}
@@ -105,7 +116,7 @@ do-install:
 	${INSTALL_DATA} ${WRKSRC}/html/index.html ${DESTDIR}${EGDIR}/html/index.html
 	${INSTALL_MAN} ${WRKSRC}/objs/nginx.8 ${DESTDIR}${PREFIX}/${PKGMANDIR}/man8
 .if !empty(PKG_OPTIONS:Mnaxsi)
-	${INSTALL_DATA} ${WRKDIR}/${NAXSI_DISTNAME}/naxsi_config/naxsi_core.rules ${DESTDIR}${EGDIR}/conf
+	${INSTALL_DATA} ${NAXSI_RULES} ${DESTDIR}${EGDIR}/conf
 .endif
 .if !empty(PKG_OPTIONS:Mperl)
 	${INSTALL_LIB_DIR} ${DESTDIR}${PERL5_INSTALLVENDORARCH}/auto/nginx
