@@ -47,7 +47,7 @@ CONFIGURE_ARGS+=	--with-ruby-pc="ruby-${RUBY_VERSION}.pc"
 CONFIGURE_ENV+=		ac_cv_path_MJIT_CC=${CC:Q}
 CONFIGURE_ENV.Darwin+=	ac_cv_prog_dsymutil=
 
-DOCS=		BSDL CONTRIBUTING.md COPYING COPYING.ja ChangeLog GPL \
+DOCS=		BSDL CONTRIBUTING.md COPYING COPYING.ja GPL \
 		KNOWNBUGS.rb LEGAL NEWS.md README.ja.md README.md \
 		README.EXT README.EXT.ja
 
@@ -81,6 +81,7 @@ NOT_PAX_MPROTECT_SAFE+=	bin/${RUBY_NAME}
 
 pre-configure:
 	${CHMOD} -x ${WRKSRC}/sample/test.rb
+	${RM} -fr ${WRKSRC}/doc/ChangeLog
 
 pre-install:
 #	cd ${WRKSRC}/lib; \
@@ -96,7 +97,6 @@ post-install:
 			-o -name '*.o' -o -name 'gem_make.out' \
 			-o -name 'mkmf.log' \) -exec rm {} \;
 	cd ${WRKSRC}/doc && ${PAX} -rw . ${DESTDIR}${PREFIX}/${RUBY_DOC}
-	${MV} ${DESTDIR}${PREFIX}/${RUBY_DOC}/ChangeLog  ${DESTDIR}${PREFIX}/${RUBY_DOC}/ChangeLog.prev
 .for f in ${DOCS}
 	${INSTALL_DATA} ${WRKSRC}/${f} ${DESTDIR}${PREFIX}/${RUBY_DOC}
 .endfor

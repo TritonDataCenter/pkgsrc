@@ -1328,6 +1328,7 @@ ${RUBY_LIB}/syntax_suggest/explain_syntax.rb
 ${RUBY_LIB}/syntax_suggest/left_right_lex_count.rb
 ${RUBY_LIB}/syntax_suggest/lex_all.rb
 ${RUBY_LIB}/syntax_suggest/lex_value.rb
+${RUBY_LIB}/syntax_suggest/mini_stringio.rb
 ${RUBY_LIB}/syntax_suggest/parse_blocks_from_indent_line.rb
 ${RUBY_LIB}/syntax_suggest/pathname_from_message.rb
 ${RUBY_LIB}/syntax_suggest/priority_engulf_queue.rb
@@ -2521,18 +2522,6 @@ ${RUBY_DOC}/BSDL
 ${RUBY_DOC}/CONTRIBUTING.md
 ${RUBY_DOC}/COPYING
 ${RUBY_DOC}/COPYING.ja
-${RUBY_DOC}/ChangeLog
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-0.06_to_0.52
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-0.50_to_0.60
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-0.60_to_1.1
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-1.8.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-1.9.3
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-2.0.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-2.1.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-2.2.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-2.3.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-2.4.0
-${RUBY_DOC}/ChangeLog.prev/ChangeLog-YARV
 ${RUBY_DOC}/GPL
 ${RUBY_DOC}/KNOWNBUGS.rb
 ${RUBY_DOC}/LEGAL
