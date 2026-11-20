@@ -7,7 +7,7 @@ COMMENT=	Modular bulk build framework
 .include "../../pkgtools/pbulk/options.mk"
 
 USE_TOOLS+=	awk:run bzip2:run digest:run gzip:run make:run \
-		mail:run sed:run tar:run
+		mail:run sed:run tar:run xz:run
 DEPENDS+=	pbulk-base>=0.38:../../pkgtools/pbulk-base
 
 .include "../../mk/bsd.prefs.mk"
@@ -25,7 +25,7 @@ SUBST_STAGE.tools=	pre-configure
 SUBST_MESSAGE.tools=	Fixing references to tools
 SUBST_FILES.tools=	pbulk.conf scripts/build scripts/build-client-start \
 	scripts/bulkbuild scripts/bulkbuild-rebuild scripts/bulkbuild-restart \
-	scripts/client-clean scripts/client-prepare \
+	scripts/chroot scripts/client-clean scripts/client-prepare \
 	scripts/pkg-build scripts/pkg-up-to-date scripts/pre-build \
 	scripts/report scripts/scan scripts/scan-client-start scripts/upload \
 	scripts/compute-packages.awk scripts/create-broken-graph.awk \
@@ -34,7 +34,7 @@ SUBST_FILES.tools=	pbulk.conf scripts/build scripts/build-client-start \
 SUBST_VARS.tools=	AWK BZIP2 CHOWN DIGEST GZIP_CMD ID MAIL_CMD NEATO \
 			PBULK_CONFIG PBULK_CONFIG_VERSION PKG_ADD_CMD \
 			PKG_ADMIN_CMD PKG_DELETE_CMD PKG_INFO_CMD PREFIX \
-			SED SH TAR TARGET_MAKE
+			SED SH TAR TARGET_MAKE XZ
 
 CONF_FILES+=	share/examples/pbulk/pbulk.conf ${PKG_SYSCONFDIR}/pbulk.conf
 
