@@ -88,16 +88,16 @@ $NetBSD: patch-configure,v 1.3 2025/07/26 06:17:00 taca Exp $
      `
      LIBRUBY_RPATHFLAGS="${LIBRUBY_RPATHFLAGS:+$LIBRUBY_RPATHFLAGS }${rpathflag}"
      LIBRUBYARG_SHARED="${LIBRUBY_RPATHFLAGS:+$LIBRUBY_RPATHFLAGS }$LIBRUBYARG_SHARED"
-@@ -34717,7 +34722,7 @@ guard=INCLUDE_RUBY_CONFIG_H
+@@ -35599,7 +35593,7 @@
  (
    if test "x$CONFIGURE_TTY" = xyes
  then :
 -  color=--color
 +  color=--color=never
- else $as_nop
-   color=
- fi
-@@ -35956,21 +35961,7 @@ which seems to be undefined.  Please mak
+ else case e in #(
+   e) color= ;;
+ esac
+@@ -36848,22 +36842,7 @@
      "Makefile":F)
      tmpmk=confmk$$.tmp
      {
@@ -111,11 +111,13 @@ $NetBSD: patch-configure,v 1.3 2025/07/26 06:17:00 taca Exp $
 -
 -	    VCS='$(GIT)'
 -
--else $as_nop
--
- 	    VCS='echo cannot'
--
+-else case e in #(
+-  e)
+-	    VCS='echo cannot'
+-	 ;;
+-esac
 -fi
++	VCS='echo cannot'
  	case "$VCS" in #(
    '$(GIT)'|git) :
      VCSUP='$(VCS) pull --rebase $(GITPULLOPTIONS)' ;; #(
